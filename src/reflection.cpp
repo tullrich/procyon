@@ -25,6 +25,33 @@ along with 2DGame.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "reflection.h"
 
+void ClassReflectionTable::AddParent( const ClassReflectionTable* parent )
+{
+	TWODGAME_INFO( "Reflection", "Setting '%s' as parent class of '%s'.", parent->GetName(), mClassName );
+	mParents[ mParentCount++ ] = parent;
+}
+
+bool ClassReflectionTable::HasImmediateParent( const ClassReflectionTable* search ) const
+{
+	for( int i = 0; i < mParentCount; i++)
+	{
+		if(mParents[ i ] == search)
+			return true;
+
+	}
+	return false;
+}
+
+bool ClassReflectionTable::HasParent( const ClassReflectionTable* search ) const
+{
+	for( int i = 0; i < mParentCount; i++)
+	{
+		if(mParents[ i ] == search || mParents[ i ]->HasParent( search ))
+			return true;
+
+	}
+	return false;
+}
 
 ReflectionAutoRegister gAutoRegisteredClasses[MAX_REFLECTED_CLASSES];
 unsigned int gAutoRegisteredClassCount = 0;
@@ -43,7 +70,7 @@ void InitReflectionTables()
 		, gAutoRegisteredClassCount, MAX_REFLECTED_CLASSES );
 	for( int i = 0; i < gAutoRegisteredClassCount; i++ )
 	{
-		(*gAutoRegisteredClasses[i].mRegistrationFunction)( i );
+		( *gAutoRegisteredClasses[ i ].mRegistrationFunction )( i );
 	}
 }
 
@@ -65,23 +92,22 @@ void DestroyReflectionTables()
 	}
 }
 
-const char* ReflectableClass::GetClassName()
+const char* ReflectableClass::GetClassName() const
 {
 	return GetClass()->GetName();
 }
 
-unsigned int ReflectableClass::GetClassId()
+unsigned int ReflectableClass::GetClassId() const
 {
 	return GetClass()->GetId();
 }
 
-
-/*
-REFLECTION_TABLE_BEGIN( TestClass )
-	REGISTER_BASE_CLASS( TestBase )
-REFLECTION_TABLE_END()
-
-void SetupClassDefinition( ClassDefinition &cls )
+bool ReflectableClass::InstanceOf( const ReflectableClass *cls ) const
 {
-	cls.AddProperty("", &TestBase::min)
-}*/
+	return GetClass() == cls->GetClass() || GetClass()->HasParent( cls->GetClass() );
+}
+
+bool ReflectableClass::InstanceOf( const ClassReflectionTable *rt ) const
+{
+	return GetClass() == rt || GetClass()->HasParent( rt );
+}

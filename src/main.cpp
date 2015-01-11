@@ -79,6 +79,7 @@ public:
 
 class TestDerived : public TestBase
 {
+public:
 	DECLARE_REFLECTION_TABLE( TestDerived )
 };
 
@@ -86,6 +87,7 @@ class TestDerived : public TestBase
 REFLECTION_TABLE_EMPTY( TestBase )
 
 REFLECTION_TABLE_BEGIN( TestDerived )
+	ADD_PARENT_CLASSES( TestBase, TestBase )
 REFLECTION_TABLE_END()
 
 int main( int argc, char *argv[] )
@@ -103,12 +105,20 @@ int main( int argc, char *argv[] )
 		TestBase tb;
 		TWODGAME_DEBUG("System", "Get class name '%s'", tb.GetClassName());
 
-
 		TestDerived td;
 		TWODGAME_DEBUG("System", "Get class name '%s'", td.GetClassName());
 
+		TWODGAME_DEBUG("System", "Is tb an instanceOf td? '%i'", tb.InstanceOf( &td ));
+		TWODGAME_DEBUG("System", "Is td an instanceOf tb? '%i'", td.InstanceOf( &tb ));
+		TWODGAME_DEBUG("System", "Is tb an instanceOf tb? '%i'", tb.InstanceOf( &tb ));
+
+		TWODGAME_DEBUG("System", "Is tb an instanceOf TestDerived? '%i'", tb.InstanceOf( TestDerived::Class() ));
+		TWODGAME_DEBUG("System", "Is td an instanceOf TestBase? '%i'", td.InstanceOf( TestBase::Class() ));
+		TWODGAME_DEBUG("System", "Is tb an instanceOf TestBase? '%i'", tb.InstanceOf( TestBase::Class() ));
 
         //RunWindow();
+
+        DestroyReflectionTables();
 
 	}
 	
