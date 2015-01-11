@@ -79,8 +79,6 @@ else(MSVC)
     _FIND_LOGOG_LIBRARY(LOGOG_LIBRARY                   liblogog.a)
 endif(MSVC)
 
-message("logog library = " ${LOGOG_LIBRARY})
-
 # handle the QUIETLY and REQUIRED arguments and set LOGOG_FOUND to TRUE if 
 # all listed variables are TRUE
 include("${CMAKE_ROOT}/Modules/FindPackageHandleStandardArgs.cmake")
