@@ -30,5 +30,5 @@ find_package( Box2D REQUIRED )
 include_directories( ${BOX2D_INCLUDE_DIRS} )
 
 # 2DGame exe
-add_executable( 2DGame src/main.cpp )
+add_executable( 2DGame src/main.cpp src/reflection.cpp )
 target_link_libraries( 2DGame ${LOGOG_LIBRARY} ${SFML_LIBRARIES} ${TinyXML_LIBRARIES} ${BOX2D_LIBRARIES} )

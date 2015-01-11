@@ -25,8 +25,10 @@ along with 2DGame.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <cstdlib>
-#include "logog.hpp"
+#include "logging.h"
 #include <SFML/Window.hpp>
+
+#include "reflection.h"
 
 /*
 ================
@@ -66,6 +68,26 @@ void RunWindow()
     }
 }
 
+class TestBase : public ReflectableClass
+{
+public:
+
+	DECLARE_REFLECTION_TABLE( TestBase )
+
+	int min;
+};
+
+class TestDerived : public TestBase
+{
+	DECLARE_REFLECTION_TABLE( TestDerived )
+};
+
+
+REFLECTION_TABLE_EMPTY( TestBase )
+
+REFLECTION_TABLE_BEGIN( TestDerived )
+REFLECTION_TABLE_END()
+
 int main( int argc, char *argv[] )
 {
 	logog::INIT_PARAMS logogInit;
@@ -74,42 +96,20 @@ int main( int argc, char *argv[] )
 
 	LOGOG_INITIALIZE( &logogInit );
 	{
-		// filters must be instanced before sinks.
-		// only pass category 'Unrecoverable'.
-		logog::GetFilterDefault().Group( "Graphics" );
-
-
-		// filter audio.
-        logog::Filter filter;
-        filter.Group( "Audio" );
-
-		// sinks
-		logog::LogFile errFile( "log.txt" );
 		logog::Cout err;
 
-		filter.UnpublishToMultiple( logog::AllTargets() );
-		filter.PublishTo( err );
+		InitReflectionTables();
 
-#undef LOGOG_GROUP
-#undef LOGOG_CATEGORY
-#define LOGOG_GROUP  "Graphics"
-#define LOGOG_CATEGORY "Unrecoverable"
+		TestBase tb;
+		TWODGAME_DEBUG("System", "Get class name '%s'", tb.GetClassName());
 
-		// log stuff
-        INFO( "Hello, logog!" );
-        WARN( "This is a warning" );
 
-#undef LOGOG_GROUP
-#define LOGOG_GROUP "Audio"
+		TestDerived td;
+		TWODGAME_DEBUG("System", "Get class name '%s'", td.GetClassName());
 
-        INFO( "This is an audio log!" );
 
-#undef LOGOG_GROUP
-#define LOGOG_GROUP "AI"
+        //RunWindow();
 
-        INFO( "This is an AI log!" );
-
-        RunWindow();
 	}
 	
     LOGOG_SHUTDOWN();
