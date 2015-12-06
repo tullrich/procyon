@@ -4,7 +4,7 @@
 #
 #  BOX2D_FOUND - Was Box2D found
 #  BOX2D_INCLUDE_DIRS - the Box2D include directories
-#  BOX2D_LIBRARIES - Link to this
+#  BOX2D_LIBRARY - Link to this
 #
 #  This module accepts the following variables
 #

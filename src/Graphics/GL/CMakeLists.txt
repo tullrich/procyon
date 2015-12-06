@@ -1,0 +1,13 @@
+# CMakeLists.txt for Unix PlatformLib implementation
+cmake_minimum_required( VERSION 2.6 )
+
+set( PROCYON_GRAPHICS_SRC_FILES 
+	${PROCYON_PLATFORM_SRC_FILES} 
+	${CMAKE_CURRENT_SOURCE_DIR}/GLTexture.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/GLShader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/GLProgram.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/GLBuffer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/GLGeometry.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/GLMaterial.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/GLContext.cpp
+PARENT_SCOPE )

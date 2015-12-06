@@ -1,34 +1,55 @@
-# CMakeLists.txt for 2DGame
+# CMakeLists.txt for Procyon
 cmake_minimum_required( VERSION 2.6 )
 
-# start proj.
-project( 2DGame )
+# turn on with 'cmake -Dtest=ON'
+option(test "Build all tests." OFF)
+option(examples "Build the examples." ON)
+option(editor "Build the editor." ON)
+
+# start proj
+project( Procyon )
+
+# Platform determination
+if ( UNIX )
+	set( PROCYON_LINUX true )
+endif ( UNIX )
 
 # define the path of our additional CMake modules
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/" )
 
-# Logog Static Library
-# https://github.com/johnwbyrd/logog.git
-find_package( Logog REQUIRED )
-include_directories( ${LOGOG_INCLUDE_DIRS} )
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-# Simple Fast Media Library (SFML)
-# Possible link targets system, window, graphics, network, audio, main
-find_package( SFML REQUIRED COMPONENTS system window graphics network audio )
-include_directories( ${SFML_INCLUDE_DIR} )
+# STB
+add_subdirectory( lib/stb )
 
-# GLM Math Library
-find_package( GLM REQUIRED )
-include_directories( ${GLM_INCLUDE_DIRS} )
+# Modules
+set(PROCYON_LINKER_INPUT)
+add_subdirectory( src/Common )
+add_subdirectory( src/Graphics )
+add_subdirectory( src/Platform )
+add_subdirectory( src/Collision )
+add_subdirectory( src/Engine )
+add_subdirectory( src/Audio )
 
-# TinyXML Library
-find_package( TinyXML REQUIRED )
-include_directories( ${TinyXML_INCLUDE_DIRS} )
+# Procyon lib
+add_library(Procyon_lib STATIC)
 
-# Box2D Library
-find_package( Box2D REQUIRED )
-include_directories( ${BOX2D_INCLUDE_DIRS} )
+target_link_libraries(Procyon_lib
+	${PROCYON_LINKER_INPUT}
+)
 
-# 2DGame exe
-add_executable( 2DGame src/main.cpp src/reflection.cpp )
-target_link_libraries( 2DGame ${LOGOG_LIBRARY} ${SFML_LIBRARIES} ${TinyXML_LIBRARIES} ${BOX2D_LIBRARIES} )
+# optional tests
+if ( test )
+	add_subdirectory( tests )
+endif()
+
+# optional examples
+if ( examples )
+	add_subdirectory( examples/Sandbox )
+	add_subdirectory( examples/Box2dWorld )
+endif()
+
+# optional editor
+if ( editor )
+	add_subdirectory( editor )
+endif()
