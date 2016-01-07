@@ -22,23 +22,41 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
+#ifndef _RECENT_FILE_LIST_H
+#define _RECENT_FILE_LIST_H
 
-#include "Sandbox.h"
+#include <QObject>
+#include <QStringList>
 
-int main( int argc, char *argv[] )
+class QMenu;
+
+class RecentFileList : public QObject
 {
-	LOGOG_INITIALIZE();
-	{
-		logog::Cout err;
-        logog::GetFilterDefault().Group( "FontFace" );
+	Q_OBJECT
+public:
+	RecentFileList( QObject *owner, QMenu *menu, int maxFileCount );
 
-        Sandbox sb;
-        sb.Initialize( argc, argv );
-        sb.Run();
-        sb.Cleanup();
-	}
+	void AddRecentFile( const QString& filepath );
 
-    LOGOG_SHUTDOWN();
+	void SetFiles( QStringList files );
+	QStringList GetFiles() const;
 
-	return 0;
-}
+signals:
+	void RecentFileSelected( QString filepath );
+
+protected slots:
+	void OpenRecentFile();
+
+protected:
+	void SyncMenuWidget();
+
+	QMenu *mMenu;
+
+	// The maximum number of file to display
+	int mMaxFiles;
+
+    // Recent file action items (appear in the Recent menu)
+    QStringList mRecentPaths;
+};
+
+#endif /* _RECENT_FILE_LIST_H */

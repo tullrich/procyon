@@ -40,7 +40,7 @@ using namespace Procyon::GL;
 
 Console.cpp
 
-Static console implementation used by the engine for debug io. The console will soon be made to execute registered commands from all over the engine via Console_RegisterCommand and Console_Execute(). 
+Static console implementation used by the engine for debug io. The console will soon be made to execute registered commands from all over the engine via Console_RegisterCommand and Console_Execute().
 
 This implementation is also capable of rendering a debug overlay using Console_Open(), Console_Close(), and Console_Render(); by default triggered via '~'.
 
@@ -61,7 +61,17 @@ Console style vars
 #define CONSOLE_Y_RES 250.0f
 
 // font file loaded by the console
-#define CONSOLE_FONT_FILE "DejaVuSansMono.ttf"
+//#define CONSOLE_FONT_FILE "OpenSans-Regular.ttf"
+#define CONSOLE_FONT_FILE "DejaVuSans.ttf"
+//#define CONSOLE_FONT_FILE "DejaVuSansMono.ttf"
+//#define CONSOLE_FONT_FILE "arial.ttf"
+
+//#define CONSOLE_FONT_FILE "Aladin-Regular.ttf"
+//#define CONSOLE_FONT_FILE "nulshock bd.ttf"
+//#define CONSOLE_FONT_FILE "PassionOne-Regular.ttf"
+//#define CONSOLE_FONT_FILE "Economica-Regular.ttf"
+//#define CONSOLE_FONT_FILE "Jurassic Park.ttf"
+//#define CONSOLE_FONT_FILE "PoiretOne-Regular.ttf"
 
 // console font height in pixels
 #define CONSOLE_FONT_HEIGHT 16
@@ -78,10 +88,10 @@ Console style vars
 // rate that the console will slide open in seconds
 #define OPEN_TIME 0.1f
 
-// outer border size 
+// outer border size
 #define CONSOLE_BORDER_SIZE 2.0f
 
-// inner border text padding 
+// inner border text padding
 #define CONSOLE_INNER_PADDING 2.0f
 
 // prompt text color
@@ -107,447 +117,447 @@ Computed vars
 
 namespace Procyon {
 
-	// initialized state of the console
-	static bool 			sConsoleInitialized = false;
+    // initialized state of the console
+    static bool 			sConsoleInitialized = false;
 
-	// open state of the console
-	static bool				sConsoleOpen 		= false;
+    // open state of the console
+    static bool				sConsoleOpen 		= false;
 
-	// console Renderables
-	static Shape* 			sBackground			= NULL;
-	static Shape* 			sBackground2		= NULL;
-	static Text* 			sPromptText 		= NULL;
-	static Text* 			sInputText			= NULL;
+    // console Renderables
+    static Shape* 			sBackground			= NULL;
+    static Shape* 			sBackground2		= NULL;
+    static Text* 			sPromptText 		= NULL;
+    static Text* 			sInputText			= NULL;
 
-	// renderables storing the visible history
-	static Text* 			sHistory[ VISIBLE_LINES ];
+    // renderables storing the visible history
+    static Text* 			sHistory[ VISIBLE_LINES ];
 
-	// camera used for view transformation during rendering
-	static Camera2D* 		sConsoleCamera 		= NULL;
+    // camera used for view transformation during rendering
+    static Camera2D* 		sConsoleCamera 		= NULL;
 
-	// font used for rendering
-	static FontFace* 		sConsoleFont 		= NULL;
+    // font used for rendering
+    static FontFace* 		sConsoleFont 		= NULL;
 
-	// the next element of sHistory to be used for output.
-	static int 				sNextHistoryLine 	= 0;
+    // the next element of sHistory to be used for output.
+    static int 				sNextHistoryLine 	= 0;
 
-	// controls the visibility of the cursor (> 0 represents visible)
-	static float 			sBlinkTimer 		= 0.0f;
+    // controls the visibility of the cursor (> 0 represents visible)
+    static float 			sBlinkTimer 		= 0.0f;
 
-	/*
-	================
-	HeightForRow
+    /*
+    ================
+    HeightForRow
 
-	Returns the y position (in the coordinate system of sConsoleCamera) to position an sHistory element when representing the provided row.
-	================
-	*/
-	static float HeightForRow( int row )
-	{
-		return TEXT_PADDING + CONSOLE_FONT_HEIGHT * (row + 1);
-	}
+    Returns the y position (in the coordinate system of sConsoleCamera) to position an sHistory element when representing the provided row.
+    ================
+    */
+    static float HeightForRow( int row )
+    {
+        return TEXT_PADDING + CONSOLE_FONT_HEIGHT * (row + 1);
+    }
 
-	/*
-	================
-	InitBackground
+    /*
+    ================
+    InitBackground
 
-	Inits the sBackground and sBackground2 renderables.
-	================
-	*/
-	static void InitBackground()
-	{
-		// the colored border on all edges except the top
-	    sBackground = new RectShape();
-		sBackground->SetColor( glm::vec4( 0.4f, 0.4, 0.4, 1.0f) );
-	    sBackground->SetPosition( 0.0f, CONSOLE_Y_RES );
-	    sBackground->SetDimensions( CONSOLE_X_RES, -CONSOLE_Y_RES );
+    Inits the sBackground and sBackground2 renderables.
+    ================
+    */
+    static void InitBackground()
+    {
+        // the colored border on all edges except the top
+        sBackground = new RectShape();
+        sBackground->SetColor( glm::vec4( 0.4f, 0.4, 0.4, 1.0f) );
+        sBackground->SetPosition( 0.0f, CONSOLE_Y_RES );
+        sBackground->SetDimensions( CONSOLE_X_RES, -CONSOLE_Y_RES );
 
-	    // the inner background
-		sBackground2 = new RectShape();
-		sBackground2->SetColor( glm::vec4( 0.1, 0.1, 0.1f, 1.0f) );
-	    sBackground2->SetPosition( CONSOLE_BORDER_SIZE, CONSOLE_Y_RES );
-	    sBackground2->SetDimensions( CONSOLE_X_RES - 2.0f * CONSOLE_BORDER_SIZE
-	    	, -CONSOLE_Y_RES + CONSOLE_BORDER_SIZE );
-	}
+        // the inner background
+        sBackground2 = new RectShape();
+        sBackground2->SetColor( glm::vec4( 0.1, 0.1, 0.1f, 1.0f) );
+        sBackground2->SetPosition( CONSOLE_BORDER_SIZE, CONSOLE_Y_RES );
+        sBackground2->SetDimensions( CONSOLE_X_RES - 2.0f * CONSOLE_BORDER_SIZE
+            , -CONSOLE_Y_RES + CONSOLE_BORDER_SIZE );
+    }
 
-	/*
-	================
-	InitHistory
+    /*
+    ================
+    InitHistory
 
-	Inits the sHisory renderables.
-	================
-	*/
-	static void InitHistory()
-	{
-		for ( int i = 0; i < VISIBLE_LINES; i++ )
-		{
-			sHistory[ i ] = new Text( "", sConsoleFont, CONSOLE_FONT_HEIGHT );
-			sHistory[ i ]->SetColor( sTextColor );
-			sHistory[ i ]->SetPosition( TEXT_PADDING, HeightForRow( i ) );
-		}
-	}
+    Inits the sHisory renderables.
+    ================
+    */
+    static void InitHistory()
+    {
+        for ( int i = 0; i < VISIBLE_LINES; i++ )
+        {
+            sHistory[ i ] = new Text( "", sConsoleFont, CONSOLE_FONT_HEIGHT );
+            sHistory[ i ]->SetColor( sTextColor );
+            sHistory[ i ]->SetPosition( TEXT_PADDING, HeightForRow( i ) );
+        }
+    }
 
-	/*
-	================
-	InitInputLine
+    /*
+    ================
+    InitInputLine
 
-	Inits the prompt line renderables.
-	================
-	*/
-	static void InitInputLine()
-	{
-		sPromptText = new Text( PROMPT_TEXT, sConsoleFont, CONSOLE_FONT_HEIGHT );
-		sPromptText->SetColor( sPromptColor );
-		sPromptText->SetPosition( TEXT_PADDING, TEXT_PADDING );
+    Inits the prompt line renderables.
+    ================
+    */
+    static void InitInputLine()
+    {
+        sPromptText = new Text( PROMPT_TEXT, sConsoleFont, CONSOLE_FONT_HEIGHT );
+        sPromptText->SetColor( sPromptColor );
+        sPromptText->SetPosition( TEXT_PADDING, TEXT_PADDING );
 
-		const float promptSize = sPromptText->GetTextDimensions().x + PROMPT_PADDING;
+        const int promptSize = (int)sPromptText->GetTextDimensions().x + PROMPT_PADDING;
 
-		sInputText = new Text( "", sConsoleFont, CONSOLE_FONT_HEIGHT );
-		sInputText->SetColor( glm::vec3( 1.0f, 1.0f, 1.0f ) );
-		sInputText->SetPosition( TEXT_PADDING + promptSize, TEXT_PADDING );
-	}
+        sInputText = new Text( "", sConsoleFont, CONSOLE_FONT_HEIGHT );
+        sInputText->SetColor( glm::vec3( 1.0f, 1.0f, 1.0f ) );
+        sInputText->SetPosition( TEXT_PADDING + promptSize, TEXT_PADDING );
+    }
 
-	/*
-	================
-	Console_Init
+    /*
+    ================
+    Console_Init
 
-	Initializes the console. This creates gl assets so it must be done after the rendering subsystem.
+    Initializes the console. This creates gl assets so it must be done after the rendering subsystem.
 
-	TODO: Split this into Console_Init() and Console_InitGraphics()
-	================
-	*/
-	void Console_Init()
-	{
-		// bail if already initialized
-		if ( sConsoleInitialized )
-		{
-        	PROCYON_WARN( "Console", "Multiple calls to Console_Init()" );
-			return;
-		}
+    TODO: Split this into Console_Init() and Console_InitGraphics()
+    ================
+    */
+    void Console_Init()
+    {
+        // bail if already initialized
+        if ( sConsoleInitialized )
+        {
+            PROCYON_WARN( "Console", "Multiple calls to Console_Init()" );
+            return;
+        }
 
         PROCYON_DEBUG( "Console", "Initializing Console" );
 
-		sConsoleInitialized = true;
+        sConsoleInitialized = true;
         sConsoleOpen 		= false;
         sBlinkTimer 		= 0.0f;
         sNextHistoryLine 	= 0;
-		sConsoleFont 		= CreateFontFace( CONSOLE_FONT_FILE );
+        sConsoleFont 		= CreateFontFace( CONSOLE_FONT_FILE );
 
-		// Setup the console camera
-		sConsoleCamera = new Camera2D();
-    	sConsoleCamera->OrthographicProj( 0.0f, CONSOLE_X_RES, -CONSOLE_Y_RES, 0.0f );
+        // Setup the console camera
+        sConsoleCamera = new Camera2D();
+        sConsoleCamera->OrthographicProj( 0.0f, CONSOLE_X_RES, -CONSOLE_Y_RES, 0.0f );
 
         InitBackground();
         InitHistory();
         InitInputLine();
-	}
+    }
 
-	/*
-	================
-	Console_Destroy
+    /*
+    ================
+    Console_Destroy
 
-	Destroy the consoles assets.
-	================
-	*/
-	void Console_Destroy()
-	{
-		if ( !sConsoleInitialized )
-		{
-        	PROCYON_WARN( "Console", "Console_Destroy() called before Console_Init()" );
-        	return;
-		}
+    Destroy the consoles assets.
+    ================
+    */
+    void Console_Destroy()
+    {
+        if ( !sConsoleInitialized )
+        {
+            PROCYON_WARN( "Console", "Console_Destroy() called before Console_Init()" );
+            return;
+        }
 
-		delete sConsoleFont;
-		delete sConsoleCamera;
+        delete sConsoleFont;
+        delete sConsoleCamera;
 
-		delete sBackground;
-		delete sBackground2;
+        delete sBackground;
+        delete sBackground2;
 
-		for ( int i = 0; i < VISIBLE_LINES; i++ )
-		{
-			delete sHistory[ i ];
-		}
+        for ( int i = 0; i < VISIBLE_LINES; i++ )
+        {
+            delete sHistory[ i ];
+        }
 
-		delete sPromptText;
-		delete sInputText;
+        delete sPromptText;
+        delete sInputText;
 
-		sConsoleInitialized = false;
-	}
+        sConsoleInitialized = false;
+    }
 
-	/*
-	================
-	Console_IsOpen
+    /*
+    ================
+    Console_IsOpen
 
-	Returns true if the console is open.
-	================
-	*/
-	bool Console_IsOpen()
-	{
-		return sConsoleOpen;
-	}
+    Returns true if the console is open.
+    ================
+    */
+    bool Console_IsOpen()
+    {
+        return sConsoleOpen;
+    }
 
-	/*
-	================
-	Console_SetOpen
+    /*
+    ================
+    Console_SetOpen
 
-	Sets the open state of the console. 
-	================
-	*/
-	void Console_SetOpen( bool open )
-	{
-		sConsoleOpen = open;
+    Sets the open state of the console.
+    ================
+    */
+    void Console_SetOpen( bool open )
+    {
+        sConsoleOpen = open;
         PROCYON_DEBUG( "Console", "Console %s", ( sConsoleOpen ) ? "opened" : "closed" );
-	}
+    }
 
-	/*
-	================
-	Console_SetOpen
+    /*
+    ================
+    Console_SetOpen
 
-	Toggle the open state of the console.
-	================
-	*/
-	void Console_Toggle()
-	{
-		Console_SetOpen( !sConsoleOpen );
-	}
+    Toggle the open state of the console.
+    ================
+    */
+    void Console_Toggle()
+    {
+        Console_SetOpen( !sConsoleOpen );
+    }
 
-	/*
-	================
-	Console_Process
+    /*
+    ================
+    Console_Process
 
-	Advance the state of the console.
-	================
-	*/
-	void Console_Process( FrameTime t )
-	{
-		// scroll open/close by altering the projection
-		float heightDelta = ( -CONSOLE_Y_RES / OPEN_TIME ) * t.dt * ( ( sConsoleOpen ) ? 1.0f : -1.0f );
-		sConsoleCamera->OrthographicProj( 0.0f, CONSOLE_X_RES, -CONSOLE_Y_RES
-			, glm::clamp( sConsoleCamera->GetHeight() - CONSOLE_Y_RES - heightDelta, 0.0f, CONSOLE_Y_RES ) );
+    Advance the state of the console.
+    ================
+    */
+    void Console_Process( FrameTime t )
+    {
+        // scroll open/close by altering the projection
+        float heightDelta = ( -CONSOLE_Y_RES / OPEN_TIME ) * t.dt * ( ( sConsoleOpen ) ? 1.0f : -1.0f );
+        sConsoleCamera->OrthographicProj( 0.0f, CONSOLE_X_RES, -CONSOLE_Y_RES
+            , glm::clamp( sConsoleCamera->GetHeight() - CONSOLE_Y_RES - heightDelta, 0.0f, CONSOLE_Y_RES ) );
 
-		// oscilate the blink timer, > 0 represents visible
-		sBlinkTimer = sin( t.tsl * M_PI * 2.0f / CURSOR_BLINK_PERIOD );
-	}
+        // oscilate the blink timer, > 0 represents visible
+        sBlinkTimer = sin( t.tsl * M_PI * 2.0f / CURSOR_BLINK_PERIOD );
+    }
 
-	/*
-	================
-	Console_Render
+    /*
+    ================
+    Console_Render
 
-	Renders the console.
-	================
-	*/
-	void Console_Render( Renderer* renderer )
-	{
-		// only render if open
-		if ( sConsoleCamera->GetHeight() > CONSOLE_Y_RES )
-		{
-			// render everything in the console coordinate system.
-			renderer->PushCamera( *sConsoleCamera );
+    Renders the console.
+    ================
+    */
+    void Console_Render( Renderer* renderer )
+    {
+        // only render if open
+        if ( sConsoleCamera->GetHeight() > CONSOLE_Y_RES )
+        {
+            // render everything in the console coordinate system.
+            renderer->PushCamera( *sConsoleCamera );
 
-			// render the background
-			renderer->Draw( sBackground );
-			renderer->Draw( sBackground2 );
+            // render the background
+            renderer->Draw( sBackground );
+            renderer->Draw( sBackground2 );
 
-			// render the history text
-			for ( int i = 0; i < VISIBLE_LINES; i++ )
-			{
-				renderer->Draw( sHistory[ i ] );
-			}
+            // render the history text
+            for ( int i = 0; i < VISIBLE_LINES; i++ )
+            {
+                renderer->Draw( sHistory[ i ] );
+            }
 
-			// render the input line
-			renderer->Draw( sPromptText );
-			renderer->Draw( sInputText );
+            // render the input line
+            renderer->Draw( sPromptText );
+            renderer->Draw( sInputText );
 
-			// render the cursor
-			if ( sBlinkTimer > 0.0f )
-			{
-				float cursorX = sInputText->GetTextDimensions().x 
-					+ sPromptText->GetTextDimensions().x + PROMPT_PADDING;
+            // render the cursor
+            if ( sBlinkTimer > 0.0f )
+            {
+                float cursorX = sInputText->GetTextDimensions().x
+                    + sPromptText->GetTextDimensions().x + PROMPT_PADDING;
 
-				renderer->DrawLine( 
-					glm::vec2( TEXT_PADDING + cursorX + 1.0f, TEXT_PADDING ),
-					glm::vec2( TEXT_PADDING + cursorX + 1.0f, TEXT_PADDING + CONSOLE_FONT_HEIGHT - 1.0f ),
-					glm::vec4( sPromptColor, 1.0f ) );
-			}
+                renderer->DrawLine(
+                    glm::vec2( TEXT_PADDING + cursorX + 1.0f, TEXT_PADDING ),
+                    glm::vec2( TEXT_PADDING + cursorX + 1.0f, TEXT_PADDING + CONSOLE_FONT_HEIGHT - 1.0f ),
+                    glm::vec4( sPromptColor, 1.0f ) );
+            }
 
-			renderer->PopCamera();
-		}
-	}
+            renderer->PopCamera();
+        }
+    }
 
-	/*
-	================
-	Console_PrintLine
+    /*
+    ================
+    Console_PrintLine
 
-	Prints a massage to the console in the provided color. This advances the history by 1 and will drop previous messages off the end of the buffer.
-	================
-	*/
-	void Console_PrintLine( const std::string& msg, const glm::vec3& rgb )
-	{
-		sHistory[ sNextHistoryLine ]->SetText( msg );
-		sHistory[ sNextHistoryLine ]->SetColor( rgb );
+    Prints a massage to the console in the provided color. This advances the history by 1 and will drop previous messages off the end of the buffer.
+    ================
+    */
+    void Console_PrintLine( const std::string& msg, const glm::vec3& rgb )
+    {
+        sHistory[ sNextHistoryLine ]->SetText( msg );
+        sHistory[ sNextHistoryLine ]->SetColor( rgb );
 
-		// set the position of every render line to their new 'row' position
-		// computed from sNextHistoryLine
-		for ( int i = 0; i < VISIBLE_LINES; i++ )
-		{
-			int row = ( i + VISIBLE_LINES - sNextHistoryLine ) % VISIBLE_LINES;
-			sHistory[ i ]->SetPosition( TEXT_PADDING, HeightForRow( row ) );
-		}
+        // set the position of every render line to their new 'row' position
+        // computed from sNextHistoryLine
+        for ( int i = 0; i < VISIBLE_LINES; i++ )
+        {
+            int row = ( i + VISIBLE_LINES - sNextHistoryLine ) % VISIBLE_LINES;
+            sHistory[ i ]->SetPosition( TEXT_PADDING, HeightForRow( row ) );
+        }
 
-		// advance the history bottom row
-		sNextHistoryLine = ( VISIBLE_LINES + sNextHistoryLine - 1 ) % VISIBLE_LINES;
-	}
+        // advance the history bottom row
+        sNextHistoryLine = ( VISIBLE_LINES + sNextHistoryLine - 1 ) % VISIBLE_LINES;
+    }
 
-	/*
-	================
-	Console_PrintLine
+    /*
+    ================
+    Console_PrintLine
 
-	thunk with the default color (sTextColor).
-	================
-	*/
-	void Console_PrintLine( const std::string& msg )
-	{
-		Console_PrintLine( msg, sTextColor );
-	}
+    thunk with the default color (sTextColor).
+    ================
+    */
+    void Console_PrintLine( const std::string& msg )
+    {
+        Console_PrintLine( msg, sTextColor );
+    }
 
-	/*
-	================
-	Console_PrintLine
+    /*
+    ================
+    Console_PrintLine
 
-	Clear all history text.
-	================
-	*/
-	void Console_Clear()
-	{
-		for ( int i = 0; i < VISIBLE_LINES; i++ )
-		{
-			sHistory[ i ]->SetText( "" );
-			sHistory[ i ]->SetColor( sTextColor );
-		}
-		sNextHistoryLine = 0;
-	}
+    Clear all history text.
+    ================
+    */
+    void Console_Clear()
+    {
+        for ( int i = 0; i < VISIBLE_LINES; i++ )
+        {
+            sHistory[ i ]->SetText( "" );
+            sHistory[ i ]->SetColor( sTextColor );
+        }
+        sNextHistoryLine = 0;
+    }
 
-	/*
-	================
-	Console_Execute
+    /*
+    ================
+    Console_Execute
 
-	Execute a string and call it's handler function.
+    Execute a string and call it's handler function.
 
-	@return true if the command succeeded in calling a handler.
-	================
-	*/
-	bool Console_Execute( const std::string& cmd )
-	{
-		// prefix and append to the history buffer
-		std::stringstream ss;
-		ss << "> " << cmd;
-		Console_PrintLine( ss.str() );
+    @return true if the command succeeded in calling a handler.
+    ================
+    */
+    bool Console_Execute( const std::string& cmd )
+    {
+        // prefix and append to the history buffer
+        std::stringstream ss;
+        ss << "> " << cmd;
+        Console_PrintLine( ss.str() );
 
-		// hardcoded commands for now
-		if ( cmd == "help" )
-		{
-			Console_PrintLine( "Usage: <cmd> [args]");
-		}
-		else if ( cmd == "msaa" )
-		{
-			static bool msaaOn = false;
+        // hardcoded commands for now
+        if ( cmd == "help" )
+        {
+            Console_PrintLine( "Usage: <cmd> [args]");
+        }
+        else if ( cmd == "msaa" )
+        {
+            static bool msaaOn = false;
 
-			if ( !msaaOn )
-			{
-				msaaOn = true;
-    			glEnable( GL_MULTISAMPLE );
-    			//glEnable( GL_LINE_SMOOTH );
-				Console_PrintLine( "MSAA on");
-			}
-			else
-			{
-				msaaOn = false;
-    			glDisable( GL_MULTISAMPLE );
-    			//glDisable( GL_LINE_SMOOTH );
-				Console_PrintLine( "MSAA off");
-			}
-		}
-		else if ( cmd == "clear" )
-		{
-			Console_Clear();
-		}
-		else
-		{
-			Console_PrintLine( "Unknown command!",  sErrorColor );
-			return false; // failure - unknown command
-		}
+            if ( !msaaOn )
+            {
+                msaaOn = true;
+                glEnable( GL_MULTISAMPLE );
+                //glEnable( GL_LINE_SMOOTH );
+                Console_PrintLine( "MSAA on");
+            }
+            else
+            {
+                msaaOn = false;
+                glDisable( GL_MULTISAMPLE );
+                //glDisable( GL_LINE_SMOOTH );
+                Console_PrintLine( "MSAA off");
+            }
+        }
+        else if ( cmd == "clear" )
+        {
+            Console_Clear();
+        }
+        else
+        {
+            Console_PrintLine( "Unknown command!",  sErrorColor );
+            return false; // failure - unknown command
+        }
 
-		return true; // success
-	}
+        return true; // success
+    }
 
-	/*
-	================
-	Console_Execute
+    /*
+    ================
+    Console_Execute
 
-	Lets the console handle input events (mainly concerned with key events).
+    Lets the console handle input events (mainly concerned with key events).
 
-	@return true if the event should be absorbed.
-	================
-	*/
-	bool Console_HandleEvent( const InputEvent& ev )
-	{
-		if ( ev.type == EVENT_KEY_DOWN )
-		{
-    		if ( ev.keysym == KEY_RETURN )
-    		{
-    			// execute the input text if not empty
-    			if ( !sInputText->GetText().empty() )
-    			{
-    				Console_Execute( sInputText->GetText() );
-    				sInputText->SetText( "" );
-    			}
-    		}
-    		else if ( ev.keysym == KEY_ESCAPE )
-    		{
-    			// close on escape
-    			Console_SetOpen( false );
-    		}
-    		else if ( ev.keysym == KEY_BACKSPACE )
-    		{
-    			// erase on backspace
-    			if ( sInputText->CharacterCount() > 0 )
-    			{
-    				sInputText->EraseBack();
-    			}
-    		}
-    		else if ( ev.unicode > 0x1F && ev.unicode < 0x80 ) // ascii non-control only
-			{
-				// handle a character key
+    @return true if the event should be absorbed.
+    ================
+    */
+    bool Console_HandleEvent( const InputEvent& ev )
+    {
+        if ( ev.type == EVENT_KEY_DOWN )
+        {
+            if ( ev.keysym == KEY_RETURN )
+            {
+                // execute the input text if not empty
+                if ( !sInputText->GetText().empty() )
+                {
+                    Console_Execute( sInputText->GetText() );
+                    sInputText->SetText( "" );
+                }
+            }
+            else if ( ev.keysym == KEY_ESCAPE )
+            {
+                // close on escape
+                Console_SetOpen( false );
+            }
+            else if ( ev.keysym == KEY_BACKSPACE )
+            {
+                // erase on backspace
+                if ( sInputText->CharacterCount() > 0 )
+                {
+                    sInputText->EraseBack();
+                }
+            }
+            else if ( ev.unicode > 0x1F && ev.unicode < 0x80 ) // ascii non-control only
+            {
+                // handle a character key
 
-				// the future width of the input text field.
-				float inputWidth = sInputText->GetTextDimensions().x
-					+ sConsoleFont->GetMaxGlyphWidth( CONSOLE_FONT_HEIGHT );
+                // the future width of the input text field.
+                float inputWidth = sInputText->GetTextDimensions().x
+                    + sConsoleFont->GetMaxGlyphWidth( CONSOLE_FONT_HEIGHT );
 
-				// the width available to the input text field.
-				float available = CONSOLE_X_RES 			// start with the total x res
-					- 2.0f * TEXT_PADDING					// remove the border + padding
-					- sPromptText->GetTextDimensions().x 	// remove the prompt width
-					- PROMPT_PADDING;						// remove the padding between prompt and input text field
+                // the width available to the input text field.
+                float available = CONSOLE_X_RES 			// start with the total x res
+                    - 2.0f * TEXT_PADDING					// remove the border + padding
+                    - sPromptText->GetTextDimensions().x 	// remove the prompt width
+                    - PROMPT_PADDING;						// remove the padding between prompt and input text field
 
-				if ( inputWidth <= available )
-				{
-					PROCYON_DEBUG( "Console", "Keydown Event '%li' '%c'", ev.unicode, ev.unicode );
+                if ( inputWidth <= available )
+                {
+                    PROCYON_DEBUG( "Console", "Keydown Event '%li' '%c'", ev.unicode, ev.unicode );
 
-					// append the char to the input buffer.
-					sInputText->Append( std::string( 1, (char)( ev.unicode & 0x7F ) ) );
-				}
-			}
+                    // append the char to the input buffer.
+                    sInputText->Append( std::string( 1, (char)( ev.unicode & 0x7F ) ) );
+                }
+            }
 
-			// absorb all key down events
-			return true;
-		}
-		else if ( ev.type == EVENT_KEY_UP )
-		{
-			// absorb keyups as well
-			return true;
-		}
+            // absorb all key down events
+            return true;
+        }
+        else if ( ev.type == EVENT_KEY_UP )
+        {
+            // absorb keyups as well
+            return true;
+        }
 
-		// don't absorb anything else
-		return false;
-	}
+        // don't absorb anything else
+        return false;
+    }
 
 } /* namespace Procyon */

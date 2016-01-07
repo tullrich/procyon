@@ -37,6 +37,8 @@ namespace Procyon {
     class World;
 }
 class Grid;
+class MapDocument;
+class QTimer;
 
 class ProcyonCanvas : public QOpenGLWidget
 {
@@ -44,31 +46,43 @@ class ProcyonCanvas : public QOpenGLWidget
 
 public:
 
-                                ProcyonCanvas( QWidget* Parent );
-    virtual                     ~ProcyonCanvas();
+            ProcyonCanvas( QWidget* Parent );
+    virtual ~ProcyonCanvas();
 
     // Set the render grid tile size
-    void                        SetShowGrid( bool render );
-
-    // Set the grid 
-    void                        SetGridSize( float gridSize );
+    float   GetGridSize() const;
+    bool    GetShowGrid() const;
 
     // Reset the camera transform back to the origin.
-    void                        ResetCamera();
+    void    ResetCamera();
 
-    // Returns the current camera used by this camera.
-    const Procyon::Camera2D*    GetCamera() { return mCamera; }
+    void    PauseRendering();
+    void    StartRendering();
 
 signals:
     void    CameraChanged( const Procyon::Camera2D* camera );
 
+public slots:
+    void    OnActiveDocumentChanged( MapDocument *doc);
+
+    // enable/disable the grid
+    void    ToggleShowGrid( bool show );
+
+    // toggle the grid
+    void    SetGridSize( float gridSize );
+
+    void    SaveCameraState();
+
 protected:
     virtual void    initializeGL();
     virtual void    paintGL();
+    virtual void    resizeGL(int w, int h);
 
     // Internal utility
     glm::vec2       WindowToWorld( const QPointF& point );
     glm::vec2       WindowToScreen( const QPointF& point );
+    void            Zoom( float amount );
+    void            MoveCamera( float xMove, float yMove );
 
     // Input handlers
     virtual void    mousePressEvent( QMouseEvent* event );
@@ -81,14 +95,17 @@ protected:
     void OnMouseDrag( QMouseEvent* event );
     void OnMouseMove( QMouseEvent* event );
 
-    // Viewport camera
-	Procyon::Camera2D* 	mCamera;
+    // repaint timer
+    QTimer              *mTimer;
 
     // Scene renderer
-    Procyon::Renderer* 	mRenderer;
+    Procyon::Renderer   *mRenderer;
+
+    // Viewport camera
+    Procyon::Camera2D*  mCamera;
 
     // World renderable
-    Procyon::World*     mWorld;
+    MapDocument         *mActiveDocument;
 
     // Grid renderable
     Grid*				mGrid;

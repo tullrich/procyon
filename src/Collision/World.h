@@ -57,6 +57,7 @@ namespace Procyon {
 		TILE_EMPTY,
 		TILE_FILLED,
 		TILE_1,
+		TILE_TYPE_COUNT
 	};
 
 	class Map
@@ -71,11 +72,14 @@ namespace Procyon {
 					World();
 
 		void  		LoadMap( const Map* map );
-		void 		SetTileType( const glm::ivec2& t, TileType type );
 		void 		Render( Renderer *r );
 
 		void 		TileIntersection( const Aabb& bounds, std::vector<glm::ivec2>& out );
 		bool 		IsInternalCollision( const glm::ivec2& gridCoords, const Contact& c );
+
+		void 		SetTileType( const glm::ivec2& t, TileType type );
+		TileType 	GetTileType( const glm::ivec2& t ) const;
+
 		TileType	PointToTile( const glm::vec2& point );
 
 	protected:

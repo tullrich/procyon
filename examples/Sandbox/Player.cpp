@@ -206,7 +206,7 @@ namespace Procyon {
 
 	void Player::SetLeftRightInput( float input )
 	{
-		const float kSpeed = 0.5f;
+		const float kSpeed = 75.0f;
 		mVelocity.x = glm::clamp( kSpeed * input, -kSpeed, kSpeed );
 	}
 

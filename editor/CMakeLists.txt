@@ -12,6 +12,9 @@ set( CMAKE_AUTOMOC ON )
 # Finds all <name>.ui files and generates a ui_<name>.h header in the binary dir.
 set( CMAKE_AUTOUIC ON )
 
+# Finds specified .qrc files and runs the rcc tool to generate
+set( CMAKE_AUTORCC ON )
+
 # Allows the build to find the above generated files in the binary dir.
 set( CMAKE_INCLUDE_CURRENT_DIR ON )
 
@@ -26,14 +29,18 @@ include_directories(
 
 # Create the Editor.exe
 add_executable(Editor 
+	main.cpp
 	editor.cpp 
-	editor_main.cpp
 	ProcyonCanvas.cpp
 	ProcyonQtUtil.cpp
 	Grid.cpp
 	LogOutputTarget.cpp
 	EditorAssets.cpp
-	)
+	MapDocument.cpp
+	EditorSettings.cpp
+	RecentFileList.cpp
+	editor_resources.qrc
+)
 
 # Link against Qt5 and Procyon targets.
 target_link_libraries(Editor

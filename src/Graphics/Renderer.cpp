@@ -25,6 +25,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Renderer.h"
 #include "RenderCore.h"
 #include "Renderable.h"
+#include "GLTexture.h"
 
 namespace Procyon {
 
@@ -101,7 +102,7 @@ namespace Procyon {
 	{
 		return mRenderCore;
 	}
-	
+
 	RenderCore* Renderer::GetRenderCore()
 	{
 		return mRenderCore;
@@ -177,5 +178,34 @@ namespace Procyon {
         cmd.quaddata         = &quaddata;
         mRenderCore->AddOrAppendCommand( cmd );
 	}
+
+    void Renderer::DrawFullscreenTexture( const GL::GLTexture* tex )
+    {
+        const Camera2D & cam = GetCamera();
+
+        BatchedQuad quaddata;
+        quaddata.position[0] = 0.0f;
+        quaddata.position[1] = 0.0f;
+        quaddata.size[0]     = tex->Width();
+        quaddata.size[1]     = tex->Height();
+        quaddata.rotation    = 0.0f;
+        quaddata.uvoffset[0] = 0.0f;
+        quaddata.uvoffset[1] = 0.0f;
+        quaddata.uvsize[0]   = 1.0f;
+        quaddata.uvsize[1]   = 1.0f;
+        quaddata.tint[0]     = 0.0f;
+        quaddata.tint[1]     = 0.0f;
+        quaddata.tint[2]     = 0.0f;
+
+        RenderCommand cmd;
+        cmd.op               = RENDER_OP_QUAD;
+        cmd.program        = NULL;
+        cmd.flags            = RENDER_SCREEN_SPACE;
+        cmd.texture          = tex;
+        cmd.instancecount    = 1;
+        cmd.quaddata         = &quaddata;
+        mRenderCore->AddOrAppendCommand( cmd );
+
+    }
 
 } /* namespace Procyon */

@@ -22,23 +22,31 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
+#ifndef XML_MAP_H
+#define XML_MAP_H
 
-#include "Sandbox.h"
+#include "ProcyonCommon.h"
+#include "World.h"
 
-int main( int argc, char *argv[] )
-{
-	LOGOG_INITIALIZE();
+namespace Procyon {
+	
+	class XmlMap : public Map
 	{
-		logog::Cout err;
-        logog::GetFilterDefault().Group( "FontFace" );
+	public:
+		XmlMap( const std::string& filePath );
 
-        Sandbox sb;
-        sb.Initialize( argc, argv );
-        sb.Run();
-        sb.Cleanup();
-	}
+		const std::string& GetFilePath() const { return mFilePath; }
 
-    LOGOG_SHUTDOWN();
+		bool Load();
 
-	return 0;
-}
+		virtual TileType GetTileType( int x, int y ) const;
+
+	protected:
+		std::string mFilePath;
+		
+		TileType 	mTiles[ WORLD_WIDTH ][ WORLD_HEIGHT ];
+	};
+	
+} /* namespace Procyon */
+
+#endif /* XML_MAP_H */

@@ -35,6 +35,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 namespace Procyon 
 {
     class Renderer;
+    class Map;
 }
 class Grid;
 
@@ -46,7 +47,7 @@ class Sandbox : public MainLoop
 public:
                     Sandbox();
 
-    virtual void    Initialize();
+    virtual void    Initialize( int argc, char *argv[] );
     virtual void    Cleanup();
 
     virtual void    Process( FrameTime t );
@@ -61,12 +62,17 @@ public:
 
     virtual void    OnWindowChanged( const InputEvent& ev );
 
+protected:
+    Map*            LoadMap( std::string filePath );
+
     IJoystick*      mJoyStick;
     Player*         mPlayer;
     Renderer*       mRenderer;
     AudioDevice*    mAudioDev;
     Camera2D*       mCamera;
     Grid*           mGrid;
+    Map*            mCustomMap;
+
 };
 	
 #endif /* _SANDBOX_H */

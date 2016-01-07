@@ -57,15 +57,15 @@ namespace Procyon {
 			case LOGOG_LEVEL_ALERT: 	return Qt::red;
 			case LOGOG_LEVEL_CRITICAL: 	return Qt::red;
 			case LOGOG_LEVEL_ERROR: 	return Qt::red;
-			case LOGOG_LEVEL_WARN: 		return Qt::yellow;
-			case LOGOG_LEVEL_WARN1: 	return Qt::yellow;
-			case LOGOG_LEVEL_WARN2: 	return Qt::yellow;
-			case LOGOG_LEVEL_WARN3: 	return Qt::yellow;
-			case LOGOG_LEVEL_INFO: 		return Qt::gray;
-			case LOGOG_LEVEL_DEBUG: 	return Qt::gray;
-			case LOGOG_LEVEL_ALL: 		return Qt::gray;
+			case LOGOG_LEVEL_WARN: 		return Qt::darkYellow;
+			case LOGOG_LEVEL_WARN1: 	return Qt::darkYellow;
+			case LOGOG_LEVEL_WARN2: 	return Qt::darkYellow;
+			case LOGOG_LEVEL_WARN3: 	return Qt::darkYellow;
+			case LOGOG_LEVEL_INFO: 		return Qt::darkGray;
+			case LOGOG_LEVEL_DEBUG: 	return Qt::darkGray;
+			case LOGOG_LEVEL_ALL: 		return Qt::darkGray;
 			case LOGOG_LEVEL_NONE:		// Intentional fall through
-			default:  					return Qt::gray;
+			default:  					return Qt::darkGray;
 		}
 	}
 
@@ -82,12 +82,11 @@ namespace Procyon {
 			m_sMessageBuffer.clear();
 
 			QColor c = ErrorLevelColor( topic.Level() );
-			QString escapedMsg = QString( topic.Message() );
 
 			m_sMessageBuffer.format( "<span style=\"color:rgb(%i,%i,%i)\">%s:</span> %s" 
 				, c.red(), c.green(), c.blue()
 				, ErrorLevelDescription( topic.Level() )
-				, escapedMsg.toUtf8().data() );
+				, topic.Message().c_str() );
 
 			return m_sMessageBuffer;
 		}
@@ -98,9 +97,14 @@ namespace Procyon {
 	public:
 		LogOutputTarget( LogOutputView* textEdit )
 			: mTextEdit( textEdit )
+			, mFormatter( new LogOutputFormatter() )
 		{
-			static LogOutputFormatter logFormat;
-			SetFormatter( logFormat );
+			SetFormatter( *mFormatter );
+		}
+
+		virtual ~LogOutputTarget()
+		{
+			delete mFormatter;
 		}
 
 		virtual int Output( const LOGOG_STRING &data )
@@ -111,6 +115,7 @@ namespace Procyon {
 
 	protected:
 		LogOutputView* 			mTextEdit;
+		LogOutputFormatter*		mFormatter;
 	};
 
 

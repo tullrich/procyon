@@ -41,6 +41,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Player.h"
 #include "CustomSprites.h"
 #include "Text.h"
+#include "XmlMap.h"
+
 #include "SandboxAssets.h"
 #include "../../editor/Grid.h"
 
@@ -55,10 +57,11 @@ Sandbox::Sandbox()
     , mRenderer( NULL )
     , mCamera( NULL )
     , mGrid( NULL )
+    , mCustomMap( NULL )
 {
 }
 
-void Sandbox::Initialize()
+void Sandbox::Initialize( int argc, char *argv[] )
 {
     // Create the audio device
     mAudioDev = new AudioDevice();
@@ -68,12 +71,25 @@ void Sandbox::Initialize()
 
     SandboxAssets::Load();
 
+    if ( argc >= 2 )
+    {
+        mCustomMap = LoadMap( argv[ 1 ] );
+    }
+
     mWindow->SetIcon( *SandboxAssets::sWindowIcon );
 
     fps = new Text( SandboxAssets::sMainFont, 16 );
 
     world = new World();
-    world->LoadMap( SandboxAssets::sMap );
+
+    if ( mCustomMap )
+    {
+        world->LoadMap( mCustomMap );
+    }
+    else
+    {
+        world->LoadMap( SandboxAssets::sMap );
+    }
 
     Console_Init();
 
@@ -101,12 +117,12 @@ void Sandbox::Cleanup()
     delete mPlayer;
     delete mCamera;
 
-    Console_Destroy();
+    delete mCustomMap;
     SandboxAssets::Destroy();
+    Console_Destroy();
 
     delete mRenderer;
     delete mAudioDev;
-
 }
 
 void Sandbox::Process( FrameTime t )
@@ -133,7 +149,7 @@ void Sandbox::Process( FrameTime t )
         double stickValue = mJoyStick->GetAxisValue( AXIS_LEFT_STICK_X );
         mPlayer->SetLeftRightInput( stickValue );
     }
-    
+
     if ( LRInput[0] )
     {
         mPlayer->SetLeftRightInput( -1.0f );
@@ -151,9 +167,10 @@ void Sandbox::Process( FrameTime t )
 
     const RenderFrameStats& stats = mRenderer->GetRenderCore()->GetFrameStats();
     std::stringstream builder;
-    fps->SetPosition( -mCamera->GetWidth() / 2.0f, -mCamera->GetHeight() / 2.0f );
+    fps->SetPosition( int(6.0f-mCamera->GetWidth() / 2.0f), int(6.0f-mCamera->GetHeight() / 2.0f) );
+    //fps->SetPosition( 6.0f-mCamera->GetWidth() / 2.0f, 6.0f-mCamera->GetHeight() / 2.0f );
     builder << "fps " << (int)mAvgFPS << " batches " << stats.batches << " quads " << stats.totalquads;
-    builder << " min " << stats.batchmin << " max " << stats.batchmax;
+    builder << " [min " << stats.batchmin << " max " << stats.batchmax << "]";
     fps->SetText( builder.str() );
 }
 
@@ -167,28 +184,21 @@ void Sandbox::Render()
 
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
-    glHint(GL_POINT_SMOOTH, GL_NICEST);
-    glHint( GL_LINE_SMOOTH, GL_NICEST );
-    glHint(GL_POLYGON_SMOOTH, GL_NICEST);
-
-    //glEnable(GL_POINT_SMOOTH);
-    //glEnable( GL_LINE_SMOOTH );
-    //glEnable(GL_POLYGON_SMOOTH);
 
     mRenderer->BeginRender();
-    {   
+    {
         mRenderer->ResetCameras( *mCamera );
 
         world->Render( mRenderer );
 
-        mGrid->Render( mRenderer );
+        //mGrid->Render( mRenderer );
 
         mRenderer->Draw( mPlayer->GetRenderable() );
 
         mRenderer->Draw( fps );
 
-        mRenderer->DrawLine( glm::vec2( 0.0f ), glm::vec2( 100.0f ), glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ) );
-        
+        mRenderer->DrawFullscreenTexture( SandboxAssets::sMainFont->GetTexture2( 20 ) );
+
         Console_Render( mRenderer );
     }
     mRenderer->EndRender();
@@ -262,4 +272,15 @@ void Sandbox::OnWindowChanged( const InputEvent& ev )
     mCamera->OrthographicProj( -ev.width / 2.0f, ev.width / 2.0f
         , -ev.height / 2.0f, ev.height / 2.0f );
     //mCamera->OrthographicProj( -0.5f, 0.5f, -0.5f, 0.5f );
+}
+
+Map* Sandbox::LoadMap( std::string filePath )
+{
+    XmlMap *map = new XmlMap( filePath );
+    if ( !map->Load() )
+    {
+        delete map;
+        return NULL;
+    }
+    return map;
 }

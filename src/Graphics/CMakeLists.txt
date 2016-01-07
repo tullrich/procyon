@@ -1,10 +1,9 @@
 # CMakeLists.txt for Platformlib
 cmake_minimum_required( VERSION 2.6 )
 
-# OpenGL Library
 find_package( OpenGL REQUIRED )
-
 find_package( GLEW REQUIRED )
+find_package( Freetype REQUIRED )
 
 set( PROCYON_GRAPHICS_SRC_FILES )
 add_subdirectory( GL/ )
@@ -34,12 +33,14 @@ target_compile_definitions(Procyon_Graphics PUBLIC
 target_include_directories(Procyon_Graphics PUBLIC
 	${OPENGL_INCLUDE_DIR}
 	${GLEW_INCLUDE_DIR}
+	${FREETYPE_INCLUDE_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/GL
 )
 
 target_link_libraries(Procyon_Graphics
 	Procyon_Common
+	${FREETYPE_LIBRARIES}
 	${OPENGL_LIBRARIES}
 	${GLEW_LIBRARIES}
 )

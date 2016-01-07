@@ -34,7 +34,7 @@ class SandboxMap : public Map
     }
 };
 
-int SandboxMap::tiles[] 
+int SandboxMap::tiles[]
     = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 2, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -56,7 +56,8 @@ SoundBuffer*    SandboxAssets::sJumpSound       = NULL;
 
 void SandboxAssets::Load()
 {
-	sMainFont 		= CreateFontFace( "Economica-Regular.ttf" );
+	sMainFont 		= CreateFontFace( "arial.ttf" );
+	//sMainFont 		= CreateFontFace( "Economica-Regular.ttf" );
 	sMap 			= new SandboxMap();
     sWindowIcon     = new FileImage( "tile.png" );
     sPlayerTexture  = new GLTexture( GL_TEXTURE_2D, "raccoon.jpg" );

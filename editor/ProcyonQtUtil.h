@@ -27,6 +27,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Window.h"
 
+#include <QString>
+
 class QKeyEvent;
 class QPointF;
 
@@ -42,6 +44,12 @@ public:
 
 	// Translate a QPointF to glm::vec2
 	static glm::vec2				QPointFToVec2( const QPointF& point );
+
+	// Translate a QString to utf8 encoded std::string
+	static std::string 				QStringToUtf8( const QString& str );
+	static std::string 				QStringToUtf8( const QStringRef& str );
 };
+
+#include "ProcyonQtUtil.inl"
 
 #endif /* _PROCYON_QT_UTIL */

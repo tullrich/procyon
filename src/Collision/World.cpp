@@ -53,14 +53,6 @@ namespace Procyon {
 		}
 	}
 
-	void World::SetTileType( const glm::ivec2& t, TileType type )
-	{
-		if ( t.x < 0 || t.x >= WORLD_WIDTH ||
-			 t.y < 0 || t.y >= WORLD_HEIGHT )
-			return;
-		mTiles[ t.x ][ t.y ] = type;
-	}
-
 	void World::Render( Renderer *r )
 	{
 		static GLTexture* tex1 = new GLTexture( GL_TEXTURE_2D, "tile.png" );
@@ -135,6 +127,19 @@ namespace Procyon {
 		}
 
 		return false;
+	}
+
+	void World::SetTileType( const glm::ivec2& t, TileType type )
+	{
+		if ( t.x < 0 || t.x >= WORLD_WIDTH ||
+			 t.y < 0 || t.y >= WORLD_HEIGHT )
+			return;
+		mTiles[ t.x ][ t.y ] = type;
+	}
+
+	TileType World::GetTileType( const glm::ivec2& t ) const
+	{
+		return mTiles[ t.x ][ t.y ];
 	}
 
 	// Point in pixels

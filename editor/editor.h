@@ -27,6 +27,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _EDITOR_H
 
 #include <QMainWindow>
+#include <QList>
 
 class QLabel;
 
@@ -37,34 +38,74 @@ namespace Procyon {
 	class Camera2D;
 }
 class ProcyonCanvas;
+class MapDocument;
+class EditorSettings;
+class RecentFileList;
 
-
-class EditorForm : public QMainWindow
+class Editor : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    EditorForm(QWidget *parent = 0);
-    ~EditorForm();
+    Editor(QWidget *parent = 0);
+    ~Editor();
+    
+    RecentFileList* GetRecent() { return mRecentFiles; }
+
+signals:
+    void ActiveDocumentChanged(MapDocument *doc);
+
+public slots:
+    void SetActiveDocument( int idx );
 
 protected slots:
 	void GridSizeChanged( QAction* action );
 	void ResetViewport();
+    void TabMoved( int from, int to );
+
+    void NewDocument();
+    void OpenDocument( QString filePath = QString() );
+    bool SaveDocument( MapDocument *doc = NULL );
+    bool SaveDocumentAs( MapDocument *doc = NULL );
+    bool CloseDocument( MapDocument *doc = NULL, bool forceDiscard = false );
 
     // Update the status bar camera text to match the provided camera.
 	void CanvasCameraChanged( const Procyon::Camera2D* cam );
 
 protected:
+    void ShowStatusMessage( const QString& msg, bool permanent = false );
+    void AddDocument( MapDocument *doc, bool makeActive = true );
+
     void SetupOutputLog();
+
+    int GetDocumentIndex( MapDocument* doc ) const;
+    int GetDocumentIndex( const QString& filePath ) const;
+
+    virtual void closeEvent( QCloseEvent *event );
 
 	// Designer layout
     Ui::Editor* 	mUi;
+
+    // The shared global settings
+    EditorSettings* mSettings;
 
     // Main viewport canvas
     ProcyonCanvas* 	mCanvas;
 
     // Status bar camera position text
     QLabel* 		mCameraLabel;
+
+    // The document tab bar
+    QTabBar*        mTabBar;
+
+    // The active document (the one in the currently viewable tab)
+    MapDocument*    mActiveDocument;;
+
+    // The working set of map documents
+    QList< MapDocument* > mDocuments;    
+
+    // Recent file action items (appear in the Recent menu)
+    RecentFileList* mRecentFiles;
 };
 
 #endif /* _EDITOR_H */

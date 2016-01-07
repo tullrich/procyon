@@ -36,14 +36,21 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Camera.h"
 #include "Grid.h"
 #include "EditorAssets.h"
+#include "MapDocument.h"
+#include "EditorSettings.h"
+
+#define MIN_ZOOM 0.2f
+#define MAX_ZOOM 10.0f
 
 using namespace Procyon;
 
 ProcyonCanvas::ProcyonCanvas(QWidget* Parent)
 	: QOpenGLWidget(Parent)
-    , mCamera( NULL )
     , mRenderer( NULL )
     , mGhostTile( NULL )
+    , mActiveDocument( NULL )
+    , mTimer( NULL )
+    , mCamera( NULL )
 {
     // Accepts both clicking and tabbing focus, enabling keyboard events.
     setFocusPolicy( Qt::StrongFocus );
@@ -60,14 +67,12 @@ ProcyonCanvas::ProcyonCanvas(QWidget* Parent)
 
 ProcyonCanvas::~ProcyonCanvas()
 {
-    Console_Destroy();
-
+    delete mGhostTile;
+    delete mGrid;
+    delete mCamera;
     delete mRenderer;
-}
 
-void ProcyonCanvas::SetShowGrid( bool render )
-{
-    mGrid->SetEnabled( render );
+    Console_Destroy();
 }
 
 void ProcyonCanvas::SetGridSize( float gridSize )
@@ -75,11 +80,71 @@ void ProcyonCanvas::SetGridSize( float gridSize )
     mGrid->SetGridSize( (float)TILE_PIXEL_SIZE * gridSize );
 }
 
+float ProcyonCanvas::GetGridSize() const
+{ 
+   return  mGrid->GetGridSize(); 
+}
+
 // Reset the camera transform back to the origin.
 void ProcyonCanvas::ResetCamera()
 {
     mCamera->SetPosition( 0.0f, 0.0f );
     mCamera->SetZoom( 1.0f );
+
+    emit CameraChanged( mCamera );
+}
+
+void ProcyonCanvas::PauseRendering()
+{
+    disconnect(mTimer, SIGNAL(timeout()), this, SLOT(update()));
+    mTimer->stop();
+}
+
+void ProcyonCanvas::StartRendering()
+{
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(update()));
+    mTimer->start(1000 / 30);
+}
+
+
+void ProcyonCanvas::OnActiveDocumentChanged( MapDocument *doc )
+{
+    if ( mActiveDocument )
+    {
+        disconnect( mActiveDocument, SIGNAL( DocumentPreparingToSave() )
+           , this, SLOT( SaveCameraState() ) );
+
+        // Store current cam state before the switch
+        mActiveDocument->SaveCameraState( mCamera );
+    }
+
+    // Switch
+    mActiveDocument = doc;
+    connect( mActiveDocument, SIGNAL( DocumentPreparingToSave() )
+        , this, SLOT( SaveCameraState() ) );
+
+    // Restore previous state
+    if ( mCamera )
+    {
+        mActiveDocument->RestoreCameraState( mCamera );
+        emit CameraChanged( mCamera );
+    }
+}
+
+void ProcyonCanvas::ToggleShowGrid( bool render )
+{
+    mGrid->SetEnabled( render );
+}
+
+bool ProcyonCanvas::GetShowGrid() const
+{
+    return mGrid->GetEnabled();
+}
+
+void ProcyonCanvas::SaveCameraState()
+{
+    // Store current cam state before the save
+    mActiveDocument->SaveCameraState( mCamera );
 }
 
 void ProcyonCanvas::initializeGL()
@@ -98,33 +163,36 @@ void ProcyonCanvas::initializeGL()
     Console_Init();
 
     // Setup the repaint timer
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(repaint()));
-    timer->start(1000 / 60);
-
-    // Setup the viewport camera
-    mCamera     = new Camera2D();
-    mCamera->SetPosition( 0.0f, 0.0f );
-    mCamera->OrthographicProj( -(float)width()/2.0f, (float)width()/2.0f, -(float)height()/2.0f, (float)height()/2.0f );
+    mTimer      = new QTimer(this);
 
     // Create the renderer
     mRenderer   = new Renderer();
 
+    // Setup the viewport camera
+    mCamera     = new Procyon::Camera2D();
+    mCamera->SetPosition( 0.0f, 0.0f );
+    mCamera->OrthographicProj( -(float)1280.0f/2.0f, (float)1280.0f/2.0f, -(float)1280.0f/2.0f, (float)1280.0f/2.0f );
+    emit CameraChanged( mCamera ); 
+
     // Create the viewport grid
     mGrid       = new Grid( (float)TILE_PIXEL_SIZE );
+    mGrid->SetEnabled( EditorSettings::Get().GetGridVisible() );
+    mGrid->SetGridSize( (float)TILE_PIXEL_SIZE * EditorSettings::Get().GetGridSize() );
 
     // Load the bundled assets.
     EditorAssets::Load();
 
     mGhostTile  = new Sprite( EditorAssets::sTileTexture );
 
-    mWorld = new Procyon::World();
+    // Setup signals
+    connect( &EditorSettings::Get(), SIGNAL( GridVisibilityChanged( bool ) ), this, SLOT( ToggleShowGrid( bool ) ) );
+    connect( &EditorSettings::Get(), SIGNAL( GridSizeChanged( float ) ), this, SLOT( SetGridSize( float ) ) );
 
-    // Notify to setup initial state
-    emit CameraChanged( mCamera ); 
+    // start time-since-launch
+    mElapsed.start();
 
     // Start the DeltaTime tracker
-    mElapsed.start();
+    StartRendering();
 }
 
 void ProcyonCanvas::paintGL()
@@ -149,35 +217,43 @@ void ProcyonCanvas::paintGL()
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
     glEnable( GL_MULTISAMPLE );
-    //glHint(GL_POINT_SMOOTH, GL_NICEST);
-    //glHint( GL_LINE_SMOOTH, GL_NICEST );
-    //glHint(GL_POLYGON_SMOOTH, GL_NICEST);
-
-    //glEnable(GL_POINT_SMOOTH);
-    //glEnable( GL_LINE_SMOOTH );
-    //glEnable(GL_POLYGON_SMOOTH);
 
     // Render the scene
     mRenderer->BeginRender();
     {   
-        mRenderer->ResetCameras( *mCamera );
+        if ( mActiveDocument )
+        {
+            mRenderer->ResetCameras( *mCamera );
 
-        mWorld->Render( mRenderer );
+            mActiveDocument->GetWorld()->Render( mRenderer );
 
-        mGrid->Render( mRenderer );
+            mGrid->Render( mRenderer );
 
-        mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(32.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) );
-        mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 32.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f) );
+            mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(32.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) );
+            mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 32.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f) );
 
-        mRenderer->Draw( mGhostTile );
+            mRenderer->Draw( mGhostTile );
+        }
 
         Console_Render( mRenderer );
     }
     mRenderer->EndRender();
 }
 
+void ProcyonCanvas::resizeGL( int w, int h )
+{
+    if ( !mActiveDocument )
+        return;
+
+    mCamera->OrthographicProj( -(float)w/2.0f, (float)w/2.0f, -(float)h/2.0f, (float)h/2.0f );
+    emit CameraChanged( mCamera );
+}
+
 void ProcyonCanvas::keyPressEvent( QKeyEvent* event )
 {
+    if ( !mActiveDocument )
+        return;
+
     // Translate from Qt to Procyon event
     InputEvent ev = ProcyonQtUtil::TranslateKeyEvent( event );
     PROCYON_DEBUG( "ProcyonCanvas", "Keydown Event '%li' '%c'", ev.unicode, ev.unicode );
@@ -194,13 +270,40 @@ void ProcyonCanvas::keyPressEvent( QKeyEvent* event )
         // Move the camera
         switch( ev.keysym )
         {
-            case KEY_LEFT:  mCamera->Move(  -kCameraSpeed,  0.0f ); break;
-            case KEY_RIGHT: mCamera->Move(  kCameraSpeed,  0.0f ); break;
-            case KEY_UP:    mCamera->Move(  0.0f,  kCameraSpeed ); break;
-            case KEY_DOWN:  mCamera->Move(  0.0f, -kCameraSpeed ); break;
+            case KEY_LEFT:  MoveCamera(  -kCameraSpeed,  0.0f ); break;
+            case KEY_RIGHT: MoveCamera(  kCameraSpeed,  0.0f ); break;
+            case KEY_UP:    MoveCamera(  0.0f,  kCameraSpeed ); break;
+            case KEY_DOWN:  MoveCamera(  0.0f, -kCameraSpeed ); break;
             case KEY_TILDE: Console_Toggle(); break;
         }
     }
+}
+
+void ProcyonCanvas::Zoom( float amount )
+{
+   // Apply zoom amount
+    if ( mCamera->GetZoom() - amount <= MIN_ZOOM )
+    {
+        mCamera->SetZoom( MIN_ZOOM );
+    }
+    else if ( mCamera->GetZoom() - amount >= MAX_ZOOM )
+    {
+        mCamera->SetZoom( MAX_ZOOM );
+    }
+    else
+    {
+        mCamera->ZoomIn( amount );
+    }
+
+    emit CameraChanged( mCamera );
+}
+
+void ProcyonCanvas::MoveCamera( float xMove, float yMove )
+{
+    mCamera->Move( xMove, yMove );
+
+    // Notify
+    emit CameraChanged( mCamera );
 }
 
 // Convert a point from window to screen coordinates. ( screen is normalized [-1, 1] )
@@ -214,7 +317,12 @@ glm::vec2 ProcyonCanvas::WindowToScreen( const QPointF& point )
 glm::vec2 ProcyonCanvas::WindowToWorld( const QPointF& point )
 {
     glm::vec2 ndc = WindowToScreen( point );
-    return mCamera->ScreenToWorld( ndc );
+
+    if ( mActiveDocument )
+    {
+        return mCamera->ScreenToWorld( ndc );
+    }
+    return ndc;
 }
 
 // Called when the mouse is clicked over this widget.
@@ -229,7 +337,20 @@ void ProcyonCanvas::mouseReleaseEvent( QMouseEvent* event )
 {
     glm::vec2 scr = WindowToWorld( event->pos() );
     PROCYON_DEBUG( "ProcyonCanvas", "Mouse Release Event <%f, %f>", scr.x, scr.y );
-    mWorld->SetTileType( POINT_TO_TILE( scr.x, scr.y ), TILE_1 ); 
+
+    if ( !mActiveDocument )
+        return;
+
+    switch ( event->button() )
+    {
+        case Qt::LeftButton:
+            mActiveDocument->GetWorld()->SetTileType( POINT_TO_TILE( scr.x, scr.y ), TILE_1 );
+            break;
+        case Qt::RightButton:
+            mActiveDocument->GetWorld()->SetTileType( POINT_TO_TILE( scr.x, scr.y ), TILE_EMPTY );
+            break;
+    }
+    mActiveDocument->SetModified();
 }
 
 // Called when the mouse is moved over this widget *only* while a mouse button is pressed 
@@ -255,6 +376,9 @@ void ProcyonCanvas::mouseMoveEvent( QMouseEvent* event )
 
 void ProcyonCanvas::OnMouseDrag( QMouseEvent* event )
 {
+    if ( !mActiveDocument )
+        return;
+
     // Compute delta from last known mouse pos
     glm::vec2 ndc = WindowToScreen( event->pos() );
     glm::vec2 delta = mCamera->ScreenDirToWorldDir( ndc - mMouseLast );
@@ -263,10 +387,7 @@ void ProcyonCanvas::OnMouseDrag( QMouseEvent* event )
     mMouseLast = ndc;
 
     // Move the camera
-    mCamera->Move( -delta * glm::vec2( 0.5f ) );
-
-    // Notify
-    emit CameraChanged( mCamera );
+    MoveCamera( -delta.x * 0.75f, -delta.y * 0.75f );
 }
 
 void ProcyonCanvas::OnMouseMove( QMouseEvent* event )
@@ -274,9 +395,6 @@ void ProcyonCanvas::OnMouseMove( QMouseEvent* event )
     mGhostTile->SetPosition( WindowToWorld( event->pos()) );
     //PROCYON_DEBUG( "ProcyonCanvas", "MouseMove <%.2f, %.2f>", event->pos().x(), event->pos().y() );
 }
-
-#define MIN_ZOOM 0.2f
-#define MAX_ZOOM 10.0f
 
 // Called on mouse wheel.
 void ProcyonCanvas::wheelEvent( QWheelEvent* event )
@@ -287,20 +405,10 @@ void ProcyonCanvas::wheelEvent( QWheelEvent* event )
     float yScroll = (float)angleDelta.y() / 188.0f;
     yScroll /= 32.0f;
 
-    // Apply zoom amount
-    if ( mCamera->GetZoom() - yScroll <= MIN_ZOOM )
+    if ( mActiveDocument )
     {
-        mCamera->SetZoom( MIN_ZOOM );
-    }
-    else if ( mCamera->GetZoom() - yScroll >= MAX_ZOOM )
-    {
-        mCamera->SetZoom( MAX_ZOOM );
-    }
-    else
-    {
-        mCamera->ZoomIn( yScroll );
+        Zoom( yScroll );
     }
 
-    PROCYON_DEBUG( "ProcyonCanvas", "yScroll %f WheelEvent %f", yScroll, mCamera->GetZoom() );
     event->accept();
 }

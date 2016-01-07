@@ -30,6 +30,9 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #define GLYPH_COUNT 96
 
+struct FT_FaceRec_;
+typedef struct FT_FaceRec_* FT_Face;
+
 namespace Procyon {
 
 	namespace GL { class GLTexture;	}
@@ -38,12 +41,15 @@ namespace Procyon {
 	{
 		glm::vec2 	center;	// glyph center, baseline relative
 		glm::vec2 	size;	// glyph size, baseline relative (?)
+        glm::ivec2  pixel_offset;
+
 		glm::vec2 	uvoff;	// uv offset, bottom-left?
 		glm::vec2 	uvsize;	// uv box size
-		float 		advance;// x-axis advance
+
+		float 		    advance;// x-axis advance
 	};
 
-	class CachedFontSize
+	class StbCachedFontSize
 	{
 	public:
 		unsigned int 		size;
@@ -55,6 +61,22 @@ namespace Procyon {
 		void 				Rasterize( unsigned char* data );
 	};
 
+	class CachedFontSize
+	{
+	public:
+		unsigned int 		size;
+		Glyph 				    glyphs[ GLYPH_COUNT ];
+    	GL::GLTexture*   	atlas;
+    	float 				     newlinegap;
+
+		CachedFontSize( unsigned int fontsize, FT_Face face );
+
+    protected:
+        bool  CacheGlyphMetrics( FT_Face face );
+        bool ComputeAtlasPacking( glm::ivec2 dims );
+        bool Rasterize( FT_Face face, glm::ivec2 dims );
+	};
+
 	class FontFace
 	{
 	public:
@@ -62,9 +84,13 @@ namespace Procyon {
 								~FontFace();
 
 		const GL::GLTexture* 	GetTexture( unsigned int fontsize ) const;
+        const GL::GLTexture* 	GetTexture2( unsigned int fontsize ) const;
 		const Glyph* 			GetGlyph( unsigned int fontsize, unsigned int c ) const;
+		const Glyph* 			GetGlyph2( unsigned int fontsize, unsigned int c ) const;
 		float 					GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const;
+		float 					GetKerning2( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const;
 		float 					GetNewLineGap( unsigned int fontsize ) const;
+		float 					GetNewLineGap2( unsigned int fontsize ) const;
 		void 					EnsureCached( unsigned int fontsize ) const;
 
 		float 					GetMaxGlyphWidth( unsigned int fontsize ) const;
@@ -73,11 +99,16 @@ namespace Procyon {
 		bool 					BufferFile( const std::string& filepath, std::vector<char>& buffer );
 
 
+		typedef std::unordered_map<unsigned int, StbCachedFontSize*> StbFontSizeTable;
+		mutable StbFontSizeTable 		mStbCache;
+
 		typedef std::unordered_map<unsigned int, CachedFontSize*> FontSizeTable;
 		mutable FontSizeTable 			mCache;
 
 		std::vector<char>				mBuffer;
     	stbtt_fontinfo 					mFontInfo;
+
+    	FT_Face* 						mFace;
 	};
 
 	FontFace* 		CreateFontFace( const std::string& fontpath );

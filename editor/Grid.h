@@ -39,11 +39,13 @@ public:
 	// Construct Grid with tile dimensions
 			Grid( float gridSize );
 
-	// Toggle if this grid should actually render
+	// Set/Get if this grid should actually render
 	void 	SetEnabled( bool enabled ) { mEnabled = enabled; }
+	bool 	GetEnabled() const { return mEnabled; }
 
-	// Set the grid tile size to render
+	// Set/Get the grid tile size to render
 	void 	SetGridSize( float gridsize );
+	float 	GetGridSize() const { return mGridSize; }
 
 	// Set the major line frequency
 	void 	SetMajorLineFrequency( int frequency );

@@ -34,8 +34,9 @@ int main(int argc, char *argv[])
 	int ret;
     LOGOG_INITIALIZE();
     {
+        logog::GetFilterDefault().Group( "Editor" );
+        logog::Filter filter; filter.Group(_LG("MapDocument"));
         logog::Cout err;
-        logog::GetFilterDefault().Group( "Qt" );
 
 		QGLFormat glFormat;
 		glFormat.setVersion( 3, 3 );
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
 
 		QApplication app (argc, argv);
 
-		EditorForm *ef = new EditorForm();
+		Editor *ef = new Editor();
 	    ef->show();
 
 	    ret = app.exec();

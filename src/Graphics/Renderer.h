@@ -34,7 +34,7 @@ namespace Procyon {
 	class Renderable;
 	class Camera2D;
 	namespace GL { class GLTexture; }
-	
+
 	class Renderer
 	{
 	public:
@@ -52,6 +52,7 @@ namespace Procyon {
 		void 				DrawLine( const glm::vec2& start, const glm::vec2& end, const glm::vec4& color );
 		void				DrawWorldLine( const glm::vec2& start, const glm::vec2& end, const glm::vec4& color );
 		void 				DrawTexture( const GL::GLTexture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient );
+        void                DrawFullscreenTexture( const GL::GLTexture* tex );
 		void 				EndRender();
 
 
@@ -65,7 +66,7 @@ namespace Procyon {
    		CameraStack 		mCameras;
 		RenderCore* 		mRenderCore;
 	};
-	
+
 } /* namespace Procyon */
 
 #endif /* _RENDERER_H */
