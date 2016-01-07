@@ -1,0 +1,61 @@
+Major Features:
+  ✔ Open Maps in sandbox @done (15-12-28 13:00)
+  ☐ Organize World class somewhere
+  ✔ Use QSettings @done (15-12-27 23:30)
+    ✔ Recent docs @done (15-12-27 23:05)
+    ✔ Grid Enabled/Disabled and Grid size @done (15-12-27 13:43)
+  ☐ Working TileSets in editor and sandbox
+  ☐ Fixed size maps
+    ☐ correct camera behaviors
+  ☐ Paint + Grab + Selection tool
+
+Tweaks to Existing:
+  ✔ Fix statusbar message and PROCYON_*() logging @done (15-12-20 14:27)
+  ✔ Remove Block @done (15-12-27 23:37)
+  ✔ MapDocuments need a working 'modified' bit @done (15-12-27 23:54)
+  ☐ Make console categories configurable at runtime (console & editor?)
+  ☐ Multi document open
+  ☐ Change window title on tab change
+  ☐ Scroll bars on canvas
+  ☐ Commit to git
+
+Bugs:
+  ✔ Make Console look better, it seems fuzzy @done(2016-01-07 04:14pm) @project(Bugs)
+  ☐ Saving over an open file allows it to be open twice (QFileSystemWatcher)
+
+Stretch:
+  ☐ Fibers/Coroutines
+  ☐ Something with splines
+  ☐ Make a custom dialog model
+  ☐ Play-In-Editor via process exec (see QProcess)
+
+
+
+
+
+
+
+
+  Project
+  Contains maps
+  Contains texture database
+    Optimization: Atlas
+  Contains audio database
+    Optimization: Prebuilt sound banks
+  Contains Entity Defs
+
+The editor produces 1 Game Manifest (game.dat) and 1-N Content Packs (.content) used by the runtime
+Each content pack corresponds to a map
+The
+
+
+The runtime can be triggered to load and unload content packs
+The runtime moves between maps, interpreted differently by the (world, loading, etc) via a loading screen (embedded in the pack?)
+  Map types? Loading screen, world, menu?
+The runtime begins loading the right content pack via config file or hadcoded thing?
+
+Engine Loads Content Packs (zips?)
+  Contains Atlased Textures
+  Contains Maps
+  Contains Audio Banks
+  Contains Entity Defs

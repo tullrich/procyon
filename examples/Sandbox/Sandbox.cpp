@@ -197,7 +197,7 @@ void Sandbox::Render()
 
         mRenderer->Draw( fps );
 
-        mRenderer->DrawFullscreenTexture( SandboxAssets::sMainFont->GetTexture2( 20 ) );
+        //mRenderer->DrawFullscreenTexture( SandboxAssets::sMainFont->GetTexture( 20 ) );
 
         Console_Render( mRenderer );
     }

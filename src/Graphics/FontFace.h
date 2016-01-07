@@ -26,7 +26,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _FONT_FACE_H
 
 #include "ProcyonCommon.h"
-#include "stb_truetype.h"
 
 #define GLYPH_COUNT 96
 
@@ -47,18 +46,6 @@ namespace Procyon {
 		glm::vec2 	uvsize;	// uv box size
 
 		float 		    advance;// x-axis advance
-	};
-
-	class StbCachedFontSize
-	{
-	public:
-		unsigned int 		size;
-		Glyph 				glyphs[ GLYPH_COUNT ];
-    	GL::GLTexture*   	atlas;
-    	float 				newlinegap;
-
-		void 				InitGlyphs( const stbtt_fontinfo* info );
-		void 				Rasterize( unsigned char* data );
 	};
 
 	class CachedFontSize
@@ -83,30 +70,19 @@ namespace Procyon {
 								FontFace( const std::string& filepath, unsigned int fontsize );
 								~FontFace();
 
-		const GL::GLTexture* 	GetTexture( unsigned int fontsize ) const;
-        const GL::GLTexture* 	GetTexture2( unsigned int fontsize ) const;
+        const GL::GLTexture* 	GetTexture( unsigned int fontsize ) const;
 		const Glyph* 			GetGlyph( unsigned int fontsize, unsigned int c ) const;
-		const Glyph* 			GetGlyph2( unsigned int fontsize, unsigned int c ) const;
 		float 					GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const;
-		float 					GetKerning2( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const;
 		float 					GetNewLineGap( unsigned int fontsize ) const;
-		float 					GetNewLineGap2( unsigned int fontsize ) const;
 		void 					EnsureCached( unsigned int fontsize ) const;
-
 		float 					GetMaxGlyphWidth( unsigned int fontsize ) const;
 
 	protected:
 		bool 					BufferFile( const std::string& filepath, std::vector<char>& buffer );
 
-
-		typedef std::unordered_map<unsigned int, StbCachedFontSize*> StbFontSizeTable;
-		mutable StbFontSizeTable 		mStbCache;
-
 		typedef std::unordered_map<unsigned int, CachedFontSize*> FontSizeTable;
 		mutable FontSizeTable 			mCache;
 
-		std::vector<char>				mBuffer;
-    	stbtt_fontinfo 					mFontInfo;
 
     	FT_Face* 						mFace;
 	};

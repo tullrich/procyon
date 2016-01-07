@@ -169,7 +169,7 @@ namespace Procyon {
 			if ( c == '\n')
 			{
 				x = 0.0f;
-				y -= mFont->GetNewLineGap2( mFontSize );
+				y -= mFont->GetNewLineGap( mFontSize );
 				prev = 0;
 				continue;
 			}
@@ -179,7 +179,7 @@ namespace Procyon {
 			}
 			//TODO: Spaces are handled as quads... probably wrong.
 
-            const Glyph* g = mFont->GetGlyph2( mFontSize, c );
+            const Glyph* g = mFont->GetGlyph( mFontSize, c );
 
             if ( !g )
             {
@@ -188,7 +188,7 @@ namespace Procyon {
 
             if ( prev )
             {
-            	x += mFont->GetKerning2( mFontSize, prev, c );
+            	x += mFont->GetKerning( mFontSize, prev, c );
             }
 
             BatchedQuad quaddata;
@@ -208,7 +208,7 @@ namespace Procyon {
 	        RenderCommand cmd;
 	        cmd.op               = RENDER_OP_QUAD;
 	        cmd.program          = NULL;
-	        cmd.texture          = mFont->GetTexture2( mFontSize );
+	        cmd.texture          = mFont->GetTexture( mFontSize );
 	        cmd.instancecount    = 1;
 	        cmd.quaddata         = &quaddata;
 	        cmd.flags 		 	 = RENDER_SCREEN_SPACE;

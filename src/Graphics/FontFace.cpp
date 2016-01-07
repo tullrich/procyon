@@ -72,55 +72,6 @@ static void DumpGlyph( FT_Bitmap& bitmap )
 
 namespace Procyon {
 
-	void StbCachedFontSize::InitGlyphs( const stbtt_fontinfo* info )
-	{
-		float scale = stbtt_ScaleForPixelHeight( info, size );
-		PROCYON_DEBUG( "FontFace", "stbtt_ScaleForPixelHeight %i pixel height scale: %f", size, scale );
-
-		int ascent, descent, lineGap;
-		stbtt_GetFontVMetrics( info, &ascent, &descent, &lineGap );
-		PROCYON_DEBUG( "FontFace", "stbtt_GetFontVMetrics ascent: %i descent: %i linegap: %i"
-			, ascent, descent, lineGap );
-		newlinegap = scale * ( ascent - descent + lineGap );
-
-		for ( int i = 0; i < GLYPH_COUNT; i++ )
-		{
-			int x0, y0, x1, y1;
-			stbtt_GetCodepointBitmapBox( info, i + 32, scale, scale, &x0, &y0, &x1, &y1 );
-
-			Glyph& g = glyphs[ i ];
-			g.size   = glm::vec2( x1 - x0, y1 - y0 );
-			g.center = glm::vec2( x1 - g.size.x / 2.0f, -y0 - g.size.y / 2.0f );
-			g.center.y += -descent * scale;
-		}
-	}
-
-	void StbCachedFontSize::Rasterize( unsigned char* data )
-	{
-	    MemoryImage img( DEFAULT_FONT_IMG_X, DEFAULT_FONT_IMG_Y, 1 );
-
-	    stbtt_pack_context ctx;
-    	stbtt_packedchar packedChars[ GLYPH_COUNT ];
-	    stbtt_PackBegin( &ctx, img.MutableData(), img.Height(), img.Width(), 0, 1, 0 );
-	    stbtt_PackFontRange( &ctx, data, 0, size, 32, GLYPH_COUNT, packedChars );
-	    stbtt_PackEnd( &ctx );
-
-	    for ( int i = 0; i < GLYPH_COUNT; i++ )
-		{
-			Glyph& g = glyphs[ i ];
-			stbtt_packedchar& packed = packedChars[ i ];
-
-			g.uvoff = glm::vec2( packed.x0 / (float)DEFAULT_FONT_IMG_X, packed.y0 / (float)DEFAULT_FONT_IMG_Y );
-			g.uvsize = glm::vec2( packed.x1 - packed.x0, packed.y1 - packed.y0 )
-				/ glm::vec2( DEFAULT_FONT_IMG_X, DEFAULT_FONT_IMG_Y );
-			g.advance = packed.xadvance;
-		}
-
-	    atlas = new GLTexture( GL_TEXTURE_2D, img );
-	    atlas->SetMinMagFilter( GL_LINEAR, GL_LINEAR );
-	    //atlas->SetMinMagFilter( GL_NONE, GL_NONE );
-	}
-
 	CachedFontSize::CachedFontSize( unsigned int fontsize, FT_Face face )
 		: size( fontsize )
 		, atlas( NULL )
@@ -175,8 +126,8 @@ namespace Procyon {
             glyph.center = glyph.size / 2.0f - glm::vec2(-face->glyph->bitmap_left, glyph.size.y - face->glyph->bitmap_top);
             glyph.advance = face->glyph->advance.x >> 6;
 
-            PROCYON_DEBUG( "FontFace", "Codepoint '%c' advance %f width %f height %f left %f top %f"
-                , code, glyph.advance, glyph.size.x, glyph.size.y, glyph.center.x, glyph.center.y );
+            //PROCYON_DEBUG( "FontFace", "Codepoint '%c' advance %f width %f height %f left %f top %f"
+            //    , code, glyph.advance, glyph.size.x, glyph.size.y, glyph.center.x, glyph.center.y );
         }
 
         return true; // success
@@ -283,51 +234,24 @@ namespace Procyon {
 			PROCYON_ERROR( "FontFace", "FT_New_Face error" );
 		}
 
-
-		////////
-
-		if ( !BufferFile( filepath, mBuffer ) )
-		{
-	        throw std::runtime_error("Unable to open font file '" + filepath + "'!" );
-		}
-
-		stbtt_InitFont( &mFontInfo, (unsigned char*)mBuffer.data(), 0 );
-		PROCYON_DEBUG( "FontFace", "stbtt_InitFont glyphs '%i'.", mFontInfo.numGlyphs );
-
 		EnsureCached( fontsize );
 	}
 
 	FontFace::~FontFace()
 	{
-		FT_Done_Face( *mFace );
-		delete mFace;
-
-		for ( auto pair : mStbCache )
+		for ( auto pair : mCache )
 		{
-			StbCachedFontSize* fs = pair.second;
+			CachedFontSize* fs = pair.second;
 			delete fs->atlas;
 			delete fs;
 		}
+
+		FT_Done_Face( *mFace );
+		delete mFace;
 	}
 
 	void FontFace::EnsureCached( unsigned int fontsize ) const
 	{
-		{
-			auto search = mStbCache.find( fontsize );
-
-			if ( search == mStbCache.end() )
-			{
-				StbCachedFontSize* fs = new StbCachedFontSize();
-				memset( (void*)fs, 0, sizeof( StbCachedFontSize ) );
-
-				mStbCache[ fontsize ] 	= fs;
-				fs->size 			= fontsize;
-
-				fs->InitGlyphs( &mFontInfo );
-				fs->Rasterize( (unsigned char*)mBuffer.data() );
-			}
-		}
-
 		auto search = mCache.find( fontsize );
 
 		if ( search == mCache.end() )
@@ -339,11 +263,10 @@ namespace Procyon {
 
 	float FontFace::GetMaxGlyphWidth( unsigned int fontsize ) const
 	{
-		float scale = stbtt_ScaleForPixelHeight( &mFontInfo, fontsize );
-
-		int x0, y0, x1, y1;
-		stbtt_GetFontBoundingBox( &mFontInfo, &x0, &y0, &x1, &y1 );
-		return scale * x1;
+		//int x0, y0, x1, y1;
+		//float scale = stbtt_ScaleForPixelHeight( &mFontInfo, fontsize );
+		//stbtt_GetFontBoundingBox( &mFontInfo, &x0, &y0, &x1, &y1 );
+		return 0.0f;
 	}
 
 	bool FontFace::BufferFile( const std::string& filepath, std::vector<char>& buffer )
@@ -360,16 +283,7 @@ namespace Procyon {
 	    return true;
 	}
 
-	const GL::GLTexture* FontFace::GetTexture( unsigned int fontsize ) const
-	{
-        EnsureCached( fontsize );
-		auto search = mStbCache.find( fontsize );
-		if ( search == mStbCache.end() )
-			return NULL;
-		return search->second->atlas;
-	}
-
-    const GL::GLTexture* FontFace::GetTexture2( unsigned int fontsize ) const
+    const GL::GLTexture* FontFace::GetTexture( unsigned int fontsize ) const
     {
         EnsureCached( fontsize );
 		auto search = mCache.find( fontsize );
@@ -387,22 +301,6 @@ namespace Procyon {
 			c = 0x3F;
 		}
 
-		auto search = mStbCache.find( fontsize );
-		if ( search == mStbCache.end() )
-			return NULL; // Font size not found in the cache... for now just render nothing.
-
-		return &search->second->glyphs[ c - 32 ];
-	}
-
-	const Glyph* FontFace::GetGlyph2( unsigned int fontsize, unsigned int c ) const
-	{
-		if ( c < 32 || c >= (32 + GLYPH_COUNT) )
-		{
-			// unsupported character, return the '?' glyph
-			// as the replacement character.
-			c = 0x3F;
-		}
-
 		auto search = mCache.find( fontsize );
 		if ( search == mCache.end() )
 			return NULL; // Font size not found in the cache... for now just render nothing.
@@ -411,12 +309,6 @@ namespace Procyon {
 	}
 
 	float FontFace::GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const
-	{
-		float scale = stbtt_ScaleForPixelHeight( &mFontInfo, fontsize );
-		return scale * stbtt_GetCodepointKernAdvance( &mFontInfo, cb1, cb2 );
-	}
-
-	float FontFace::GetKerning2( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const
 	{
         if ( !FT_HAS_KERNING( (*mFace) ) )
             return 0.0f;
@@ -433,21 +325,10 @@ namespace Procyon {
             return 0.0f;
         }
 
-        if ( kern.x != 0 || kern.y != 0 )
-            PROCYON_DEBUG( "FontFace", "Kern <%i , %i>", kern.x >> 6, kern.y >> 6 );
 		return (float)( kern.x >> 6 );
 	}
 
 	float FontFace::GetNewLineGap( unsigned int fontsize ) const
-	{
-		auto search = mStbCache.find( fontsize );
-		if ( search == mStbCache.end() )
-			return 0.0f;
-
-		return search->second->newlinegap;
-	}
-
-	float FontFace::GetNewLineGap2( unsigned int fontsize ) const
 	{
 		auto search = mCache.find( fontsize );
 		if ( search == mCache.end() )
