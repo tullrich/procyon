@@ -55,7 +55,7 @@ namespace Procyon {
 
 	void World::Render( Renderer *r )
 	{
-		static GLTexture* tex1 = new GLTexture( GL_TEXTURE_2D, "tile.png" );
+		static GLTexture* tex1 = new GLTexture( GL_TEXTURE_2D, "sprites/tile.png" );
 
 		FOREACH_TILE_INDEX( mTiles )
 		{

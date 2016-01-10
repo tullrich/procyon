@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Map>
-    <Camera x="434.095" y="230.293" zoom="0.985871"/>
+    <Camera x="380.25" y="126" zoom="0.911569"/>
     <Tiles>
         <TileRow index="0">
             <Tile index="0">2</Tile>
@@ -19,7 +19,7 @@
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
             <Tile index="3">2</Tile>
-            <Tile index="4">0</Tile>
+            <Tile index="4">2</Tile>
             <Tile index="5">2</Tile>
             <Tile index="6">2</Tile>
             <Tile index="7">2</Tile>
@@ -31,8 +31,8 @@
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
             <Tile index="3">2</Tile>
-            <Tile index="4">0</Tile>
-            <Tile index="5">0</Tile>
+            <Tile index="4">2</Tile>
+            <Tile index="5">2</Tile>
             <Tile index="6">2</Tile>
             <Tile index="7">2</Tile>
             <Tile index="8">2</Tile>
@@ -40,74 +40,74 @@
         </TileRow>
         <TileRow index="3">
             <Tile index="0">2</Tile>
-            <Tile index="1">0</Tile>
+            <Tile index="1">2</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
+            <Tile index="3">2</Tile>
+            <Tile index="4">2</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
-            <Tile index="7">2</Tile>
-            <Tile index="8">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">2</Tile>
             <Tile index="9">2</Tile>
         </TileRow>
         <TileRow index="4">
             <Tile index="0">2</Tile>
             <Tile index="1">2</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
+            <Tile index="3">2</Tile>
             <Tile index="4">2</Tile>
-            <Tile index="5">2</Tile>
+            <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
-            <Tile index="7">2</Tile>
-            <Tile index="8">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">2</Tile>
             <Tile index="9">2</Tile>
         </TileRow>
         <TileRow index="5">
             <Tile index="0">2</Tile>
             <Tile index="1">2</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
+            <Tile index="3">2</Tile>
             <Tile index="4">2</Tile>
-            <Tile index="5">2</Tile>
-            <Tile index="6">2</Tile>
-            <Tile index="7">2</Tile>
-            <Tile index="8">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">2</Tile>
             <Tile index="9">2</Tile>
         </TileRow>
         <TileRow index="6">
             <Tile index="0">2</Tile>
             <Tile index="1">2</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
+            <Tile index="3">2</Tile>
+            <Tile index="4">2</Tile>
             <Tile index="5">2</Tile>
             <Tile index="6">0</Tile>
-            <Tile index="7">2</Tile>
-            <Tile index="8">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">2</Tile>
             <Tile index="9">2</Tile>
         </TileRow>
         <TileRow index="7">
             <Tile index="0">2</Tile>
             <Tile index="1">2</Tile>
-            <Tile index="2">2</Tile>
-            <Tile index="3">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">2</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
-            <Tile index="8">0</Tile>
+            <Tile index="8">2</Tile>
             <Tile index="9">2</Tile>
         </TileRow>
         <TileRow index="8">
             <Tile index="0">2</Tile>
             <Tile index="1">2</Tile>
-            <Tile index="2">2</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
-            <Tile index="5">0</Tile>
-            <Tile index="6">0</Tile>
+            <Tile index="5">2</Tile>
+            <Tile index="6">2</Tile>
             <Tile index="7">2</Tile>
-            <Tile index="8">0</Tile>
+            <Tile index="8">2</Tile>
             <Tile index="9">2</Tile>
         </TileRow>
         <TileRow index="9">

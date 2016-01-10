@@ -48,13 +48,29 @@ namespace Procyon {
 		float 		    advance;// x-axis advance
 	};
 
+    struct FontMetrics
+    {
+        FontMetrics()
+            : max_advance( 0 )
+            , line_height( 0 )
+            , ascender( 0 )
+            , descender( 0 )
+        {
+        }
+
+        int     max_advance;
+        int     line_height;
+        int     ascender;
+        int     descender;
+    };
+
 	class CachedFontSize
 	{
 	public:
-		unsigned int 		size;
-		Glyph 				    glyphs[ GLYPH_COUNT ];
-    	GL::GLTexture*   	atlas;
-    	float 				     newlinegap;
+		unsigned int 		   size;
+		Glyph 				       glyphs[ GLYPH_COUNT ];
+    	GL::GLTexture*   	 atlas;
+        FontMetrics             metrics;
 
 		CachedFontSize( unsigned int fontsize, FT_Face face );
 
@@ -70,12 +86,11 @@ namespace Procyon {
 								FontFace( const std::string& filepath, unsigned int fontsize );
 								~FontFace();
 
-        const GL::GLTexture* 	GetTexture( unsigned int fontsize ) const;
-		const Glyph* 			GetGlyph( unsigned int fontsize, unsigned int c ) const;
-		float 					GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const;
-		float 					GetNewLineGap( unsigned int fontsize ) const;
-		void 					EnsureCached( unsigned int fontsize ) const;
-		float 					GetMaxGlyphWidth( unsigned int fontsize ) const;
+        const GL::GLTexture*  GetTexture( unsigned int fontsize ) const;
+		const Glyph*               GetGlyph( unsigned int fontsize, unsigned int c ) const;
+		int                               GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const;
+		FontMetrics                 GetMetrics( unsigned int fontsize ) const;
+		void 					         EnsureCached( unsigned int fontsize ) const;
 
 	protected:
 		bool 					BufferFile( const std::string& filepath, std::vector<char>& buffer );

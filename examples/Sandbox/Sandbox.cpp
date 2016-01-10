@@ -167,7 +167,7 @@ void Sandbox::Process( FrameTime t )
 
     const RenderFrameStats& stats = mRenderer->GetRenderCore()->GetFrameStats();
     std::stringstream builder;
-    fps->SetPosition( int(6.0f-mCamera->GetWidth() / 2.0f), int(6.0f-mCamera->GetHeight() / 2.0f) );
+    fps->SetPosition( int(6.0f-mCamera->GetWidth() / 2.0f), int(-mCamera->GetHeight() / 2.0f) );
     //fps->SetPosition( 6.0f-mCamera->GetWidth() / 2.0f, 6.0f-mCamera->GetHeight() / 2.0f );
     builder << "fps " << (int)mAvgFPS << " batches " << stats.batches << " quads " << stats.totalquads;
     builder << " [min " << stats.batchmin << " max " << stats.batchmax << "]";
@@ -196,8 +196,6 @@ void Sandbox::Render()
         mRenderer->Draw( mPlayer->GetRenderable() );
 
         mRenderer->Draw( fps );
-
-        //mRenderer->DrawFullscreenTexture( SandboxAssets::sMainFont->GetTexture( 20 ) );
 
         Console_Render( mRenderer );
     }

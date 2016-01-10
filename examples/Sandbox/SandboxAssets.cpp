@@ -56,13 +56,13 @@ SoundBuffer*    SandboxAssets::sJumpSound       = NULL;
 
 void SandboxAssets::Load()
 {
-	sMainFont 		= CreateFontFace( "arial.ttf" );
-	//sMainFont 		= CreateFontFace( "Economica-Regular.ttf" );
+	sMainFont 		= CreateFontFace( "fonts/arial.ttf" );
+	//sMainFont 		= CreateFontFace( "fonts/Economica-Regular.ttf" );
 	sMap 			= new SandboxMap();
-    sWindowIcon     = new FileImage( "tile.png" );
-    sPlayerTexture  = new GLTexture( GL_TEXTURE_2D, "raccoon.jpg" );
-    sTileTexture    = new GLTexture( GL_TEXTURE_2D, "tile.png" );
-    sJumpSound      = new SoundBuffer( "jump.wav" );
+    sWindowIcon     = new FileImage( "sprites/tile.png" );
+    sPlayerTexture  = new GLTexture( GL_TEXTURE_2D, "sprites/raccoon.jpg" );
+    sTileTexture    = new GLTexture( GL_TEXTURE_2D, "sprites/tile.png" );
+    sJumpSound      = new SoundBuffer( "audio/jump.wav" );
 }
 
 void SandboxAssets::Destroy()

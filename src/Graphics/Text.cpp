@@ -23,10 +23,13 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Text.h"
+#include "Renderer.h"
 #include "RenderCore.h"
 #include "FontFace.h"
 
 namespace Procyon {
+
+    bool sDebugText = false;
 
 	Text::Text( const std::string& text, const FontFace* font, unsigned int fontsize /*= 32*/ )
 		: mFont( font )
@@ -112,43 +115,51 @@ namespace Procyon {
 
 	void Text::RecalculateDimensions()
 	{
-		mDims = glm::vec2( 0.0f );
+        const FontMetrics metrics = mFont->GetMetrics( mFontSize );
+		mDims = glm::vec2( 0.0f, metrics.line_height );
 
 		glm::vec2 		pen;
 		unsigned int 	prev = 0;
 
-		// Assumed ascii for now.
-		for( auto c : mText )
-		{
-			if ( c == '\n')
-			{
-				pen.x = 0.0f;
-				pen.y += mFont->GetNewLineGap( mFontSize );
-				prev = 0;
-				continue;
-			}
-			else if ( c == '\t' )
-			{
-				// do something with tabs?
-			}
+        if ( !mText.empty() )
+        {
+    		// Assumed ascii for now.
+    		for( auto c : mText )
+    		{
+    			if ( c == '\n')
+    			{
+    				pen.x = 0.0f;
+    				pen.y += metrics.line_height;
+    				prev = 0;
+    				continue;
+    			}
+    			else if ( c == '\t' )
+    			{
+    				// do something with tabs?
+    			}
 
-            const Glyph* g = mFont->GetGlyph( mFontSize, c );
+                const Glyph* g = mFont->GetGlyph( mFontSize, c );
 
-            if ( !g )
-            {
-            	continue; // unsupported character
-            }
+                if ( !g )
+                {
+                	continue; // unsupported character
+                }
 
-            if ( prev )
-            {
-            	pen.x += mFont->GetKerning( mFontSize, prev, c );
-            }
+                if ( prev )
+                {
+                	pen.x += mFont->GetKerning( mFontSize, prev, c );
+                }
 
-            pen.x += g->advance;
-            prev = c;
+                pen.x += g->advance;
+                prev = c;
 
-            mDims = glm::max( mDims, pen );
-		}
+                mDims = glm::max( mDims, pen );
+    		}
+        }
+        else
+        {
+            mDims.x = 5.0f;
+        }
 	}
 
 	const glm::vec2	Text::GetTextDimensions() const
@@ -156,10 +167,20 @@ namespace Procyon {
 		return mDims;
 	}
 
-	void Text::PostRenderCommands( RenderCore* rc ) const
+	void Text::PostRenderCommands( Renderer* r, RenderCore* rc ) const
 	{
+        const FontMetrics metrics = mFont->GetMetrics( mFontSize );
+
+        if ( sDebugText )
+        {
+            const glm::vec2 baselineStart = mPosition + glm::vec2( 0.0f, -metrics.descender );
+            if ( !mText.empty() )
+                r->DrawLine( baselineStart, baselineStart + glm::vec2( mDims.x, 0.0f ), glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f ) );
+            r->DrawWireframeRect( Rect( mPosition + glm::vec2(0.0f, 0.5f), glm::vec2( mDims.x, -mDims.y ) ), glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ) );
+        }
+
 		float x = 0.0f;
-		float y = 0.0f;
+		float y = -metrics.descender;
 
 		unsigned int prev = 0;
 
@@ -169,7 +190,7 @@ namespace Procyon {
 			if ( c == '\n')
 			{
 				x = 0.0f;
-				y -= mFont->GetNewLineGap( mFontSize );
+				y += mFont->GetMetrics( mFontSize ).line_height;
 				prev = 0;
 				continue;
 			}

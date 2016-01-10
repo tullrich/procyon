@@ -61,20 +61,20 @@ Console style vars
 #define CONSOLE_Y_RES 250.0f
 
 // font file loaded by the console
-//#define CONSOLE_FONT_FILE "OpenSans-Regular.ttf"
-#define CONSOLE_FONT_FILE "DejaVuSans.ttf"
-//#define CONSOLE_FONT_FILE "DejaVuSansMono.ttf"
-//#define CONSOLE_FONT_FILE "arial.ttf"
+//#define CONSOLE_FONT_FILE "fonts/OpenSans-Regular.ttf"
+//#define CONSOLE_FONT_FILE "fonts/DejaVuSans.ttf"
+#define CONSOLE_FONT_FILE "fonts/DejaVuSansMono.ttf"
+//#define CONSOLE_FONT_FILE "fonts/arial.ttf"
 
-//#define CONSOLE_FONT_FILE "Aladin-Regular.ttf"
-//#define CONSOLE_FONT_FILE "nulshock bd.ttf"
-//#define CONSOLE_FONT_FILE "PassionOne-Regular.ttf"
-//#define CONSOLE_FONT_FILE "Economica-Regular.ttf"
-//#define CONSOLE_FONT_FILE "Jurassic Park.ttf"
-//#define CONSOLE_FONT_FILE "PoiretOne-Regular.ttf"
+//#define CONSOLE_FONT_FILE "fonts/Aladin-Regular.ttf"
+//#define CONSOLE_FONT_FILE "fonts/nulshock bd.ttf"
+//#define CONSOLE_FONT_FILE "fonts/PassionOne-Regular.ttf"
+//#define CONSOLE_FONT_FILE "fonts/Economica-Regular.ttf"
+//#define CONSOLE_FONT_FILE "fonts/Jurassic Park.ttf"
+//#define CONSOLE_FONT_FILE "fonts/PoiretOne-Regular.ttf"
 
 // console font height in pixels
-#define CONSOLE_FONT_HEIGHT 16
+#define CONSOLE_FONT_HEIGHT 11
 
 // prompt text
 #define PROMPT_TEXT "$ >"
@@ -99,6 +99,9 @@ static const glm::vec3 	sPromptColor( 0.4f, 1.0f, 0.4f );
 
 // error text color
 static const glm::vec3 	sErrorColor( 1.0f, 0.7f, 0.7f );
+
+// system text color
+static const glm::vec3 	sSystemColor( 0.75f );
 
 // standard text print color
 static const glm::vec3 	sTextColor( 1.0f );
@@ -153,7 +156,9 @@ namespace Procyon {
     */
     static float HeightForRow( int row )
     {
-        return TEXT_PADDING + CONSOLE_FONT_HEIGHT * (row + 1);
+        // -1 indicates prompt line
+        const FontMetrics metrics = sConsoleFont->GetMetrics( CONSOLE_FONT_HEIGHT );
+        return TEXT_PADDING + metrics.line_height * (row+1);
     }
 
     /*
@@ -207,13 +212,13 @@ namespace Procyon {
     {
         sPromptText = new Text( PROMPT_TEXT, sConsoleFont, CONSOLE_FONT_HEIGHT );
         sPromptText->SetColor( sPromptColor );
-        sPromptText->SetPosition( TEXT_PADDING, TEXT_PADDING );
+        sPromptText->SetPosition( TEXT_PADDING, HeightForRow(-1) );
 
         const int promptSize = (int)sPromptText->GetTextDimensions().x + PROMPT_PADDING;
 
         sInputText = new Text( "", sConsoleFont, CONSOLE_FONT_HEIGHT );
         sInputText->SetColor( glm::vec3( 1.0f, 1.0f, 1.0f ) );
-        sInputText->SetPosition( TEXT_PADDING + promptSize, TEXT_PADDING );
+        sInputText->SetPosition( TEXT_PADDING + promptSize, HeightForRow(-1) );
     }
 
     /*
@@ -373,9 +378,10 @@ namespace Procyon {
                 float cursorX = sInputText->GetTextDimensions().x
                     + sPromptText->GetTextDimensions().x + PROMPT_PADDING;
 
+                const FontMetrics metrics = sConsoleFont->GetMetrics( CONSOLE_FONT_HEIGHT );
                 renderer->DrawLine(
                     glm::vec2( TEXT_PADDING + cursorX + 1.0f, TEXT_PADDING ),
-                    glm::vec2( TEXT_PADDING + cursorX + 1.0f, TEXT_PADDING + CONSOLE_FONT_HEIGHT - 1.0f ),
+                    glm::vec2( TEXT_PADDING + cursorX + 1.0f, TEXT_PADDING + metrics.line_height ),
                     glm::vec4( sPromptColor, 1.0f ) );
             }
 
@@ -466,19 +472,24 @@ namespace Procyon {
                 msaaOn = true;
                 glEnable( GL_MULTISAMPLE );
                 //glEnable( GL_LINE_SMOOTH );
-                Console_PrintLine( "MSAA on");
+                Console_PrintLine( "MSAA on", sSystemColor );
             }
             else
             {
                 msaaOn = false;
                 glDisable( GL_MULTISAMPLE );
                 //glDisable( GL_LINE_SMOOTH );
-                Console_PrintLine( "MSAA off");
+                Console_PrintLine( "MSAA off", sSystemColor );
             }
         }
         else if ( cmd == "clear" )
         {
             Console_Clear();
+        }
+        else if ( cmd == "debug_text" )
+        {
+            sDebugText = !sDebugText;
+            Console_PrintLine( std::string( "text debugging " ) + ( ( sDebugText ) ? "enabled": "disabled" ), sSystemColor );
         }
         else
         {
@@ -530,7 +541,7 @@ namespace Procyon {
 
                 // the future width of the input text field.
                 float inputWidth = sInputText->GetTextDimensions().x
-                    + sConsoleFont->GetMaxGlyphWidth( CONSOLE_FONT_HEIGHT );
+                    + sConsoleFont->GetMetrics( CONSOLE_FONT_HEIGHT ).max_advance;
 
                 // the width available to the input text field.
                 float available = CONSOLE_X_RES 			// start with the total x res

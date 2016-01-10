@@ -35,8 +35,8 @@ GLTexture*      EditorAssets::sTileTexture     = NULL;
 
 void EditorAssets::Load()
 {
-	sMainFont 		= CreateFontFace( "Economica-Regular.ttf" );
-    sTileTexture    = new GLTexture( GL_TEXTURE_2D, "tile.png" );
+	sMainFont 		= CreateFontFace( "fonts/Economica-Regular.ttf" );
+    sTileTexture    = new GLTexture( GL_TEXTURE_2D, "sprites/tile.png" );
 }
 
 void EditorAssets::Destroy()

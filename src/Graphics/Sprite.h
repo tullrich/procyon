@@ -32,7 +32,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-	namespace GL 
+	namespace GL
 	{
 		class GLProgram;
 		class GLTexture;
@@ -51,13 +51,13 @@ namespace Procyon {
     	glm::mat3 			GetUVTransform() const;
 
     	virtual void 		Render( const Camera2D* camera, RenderContext* rc ) const;
-    	virtual void 		PostRenderCommands( RenderCore* rc ) const;
+    	virtual void 		PostRenderCommands( Renderer* r, RenderCore* rc ) const;
 	protected:
 		GL::GLProgram* 		GetOrCreateDefaultProgram();
 
 		static GL::GLProgram* 	sDefaultProgram;
 	    const GL::GLTexture* 	mTexture;
-	    Rect 					mTextureRect;				
+	    Rect 					mTextureRect;
 	};
 
 } /* namespace Procyon */

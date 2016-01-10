@@ -32,7 +32,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 namespace Procyon {
 
 	class FontFace;
-	
+
 	class Text : public Transformable, public Renderable
 	{
 	public:
@@ -58,7 +58,7 @@ namespace Procyon {
 		const glm::vec2		GetTextDimensions() const;
 
 		// inherited from Renderable
-		virtual void 		PostRenderCommands( RenderCore* rc ) const;
+		virtual void 		PostRenderCommands( Renderer* r, RenderCore* rc ) const;
 
 	protected:
 		void				RecalculateDimensions();
@@ -69,7 +69,9 @@ namespace Procyon {
 		unsigned int 		mFontSize;
 		glm::vec2 			mDims;
 	};
-	
+
+    extern bool sDebugText;
+
 } /* namespace Procyon */
 
 #endif /* _TEXT_H */

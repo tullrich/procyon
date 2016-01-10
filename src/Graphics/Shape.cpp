@@ -78,7 +78,7 @@ namespace Procyon {
         rc->RenderShape( camera, this );
     }
 
-    void Shape::PostRenderCommands( RenderCore* rc ) const
+    void Shape::PostRenderCommands(  Renderer* r, RenderCore* rc ) const
     {
         glm::mat3 tform = GetTransform();
         glm::vec2 quaddata[] =

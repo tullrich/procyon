@@ -42,6 +42,35 @@ static stbrp_node sWorkspace[ FONT_IMG_DIM_MAX ];
 static bool sFreeTypeInitialized;
 static FT_Library sFreeType;
 
+static void DumpFace( FT_Face face, int size )
+{
+    /* face: global metrics, unhinted & manually scaled */
+    const int units_per_EM = face->units_per_EM;
+    const int newlinegap = glm::round((size * face->height) / (float)units_per_EM);
+    const int ascender = glm::round((size * face->ascender) / (float)units_per_EM);
+    const int descender = glm::round((size * face->descender) / (float)units_per_EM);
+    PROCYON_DEBUG( "FontFace", "face: height %i ascender %i descender %i"
+        , newlinegap
+        , ascender
+        , descender );
+
+    /* face->size->metrics: sized metrics, potentially hinted */
+    PROCYON_DEBUG( "FontFace", "face->size->metrics: height %i.%i ascender %i.%i descender %i.%i "
+        , face->size->metrics.height >> 6
+        , face->size->metrics.height & 0x3F
+        , face->size->metrics.ascender >> 6
+        , face->size->metrics.ascender & 0x3F
+        , face->size->metrics.descender >> 6
+        , face->size->metrics.descender & 0x3F );
+
+    /* face->bbox: even more values */
+    const glm::ivec2 min = ( glm::ivec2( face->bbox.xMin * size, face->bbox.yMin * size ) ) / units_per_EM;
+    const glm::ivec2 max = ( glm::ivec2( face->bbox.xMax * size, face->bbox.yMax * size  ) ) / units_per_EM;
+    const int glyph_height = max.y - min.y;
+    PROCYON_DEBUG( "FontFace", "face->bbox: height %i [xmin %i xmax %i] [ymin %i ymax %i]\n"
+        , glyph_height, min.x, max.x, min.y, max.y );
+}
+
 static void DumpGlyph( FT_Bitmap& bitmap )
 {
     assert( bitmap.pixel_mode == FT_PIXEL_MODE_GRAY );
@@ -75,9 +104,10 @@ namespace Procyon {
 	CachedFontSize::CachedFontSize( unsigned int fontsize, FT_Face face )
 		: size( fontsize )
 		, atlas( NULL )
-        , newlinegap( 0 )
 	{
 		memset( (void*)glyphs, 0, sizeof( atlas ) );
+
+        PROCYON_DEBUG( "FontFace", "CachedFontSize size %i", fontsize );
 
         /* input freetype pixel size */
 		FT_Error error = 0;
@@ -86,7 +116,8 @@ namespace Procyon {
 			PROCYON_ERROR( "FontFace", "FT_Set_Pixel_Sizes error with size %i", fontsize );
             return;
 		}
-        newlinegap = face->height;
+
+        DumpFace( face, fontsize );
 
         /* freetype first pass, compute the hinted glyph metrics */
         if ( !CacheGlyphMetrics( face ) )
@@ -112,6 +143,12 @@ namespace Procyon {
 
     bool CachedFontSize::CacheGlyphMetrics( FT_Face face )
     {
+        metrics.max_advance = face->size->metrics.max_advance >> 6;
+        metrics.ascender = face->size->metrics.ascender >> 6;
+        metrics.descender = face->size->metrics.descender >> 6;
+        metrics.line_height = metrics.ascender - metrics.descender;  // force that line_height = ascender + descender.
+        // Ignore the face->size->metrics.height =(
+
         /* foreach glyph */
         for ( unsigned char code = 32; code < GLYPH_COUNT + 32; code++ )
         {
@@ -121,9 +158,11 @@ namespace Procyon {
                 return false; // failure
             }
 
+            //int baseline_offset = int((float)min.y + (float)glyph_height / 2.0f);
+
             Glyph& glyph = glyphs[ code - 32 ];
             glyph.size = glm::vec2(face->glyph->bitmap.width, face->glyph->bitmap.rows );
-            glyph.center = glyph.size / 2.0f - glm::vec2(-face->glyph->bitmap_left, glyph.size.y - face->glyph->bitmap_top);
+            glyph.center = (glyph.size / 2.0f - glm::vec2(-face->glyph->bitmap_left, glyph.size.y - face->glyph->bitmap_top));
             glyph.advance = face->glyph->advance.x >> 6;
 
             //PROCYON_DEBUG( "FontFace", "Codepoint '%c' advance %f width %f height %f left %f top %f"
@@ -181,7 +220,6 @@ namespace Procyon {
     {
         MemoryImage img( dims.x, dims.y, 1 );
         unsigned char* data = img.MutableData();
-        memset( data, 0, dims.x * dims.y );
 
         for ( unsigned char code = 0; code < GLYPH_COUNT; code++ )
         {
@@ -258,15 +296,6 @@ namespace Procyon {
 		{
 			mCache[ fontsize ] = new CachedFontSize( fontsize, *mFace );
 		}
-
-	}
-
-	float FontFace::GetMaxGlyphWidth( unsigned int fontsize ) const
-	{
-		//int x0, y0, x1, y1;
-		//float scale = stbtt_ScaleForPixelHeight( &mFontInfo, fontsize );
-		//stbtt_GetFontBoundingBox( &mFontInfo, &x0, &y0, &x1, &y1 );
-		return 0.0f;
 	}
 
 	bool FontFace::BufferFile( const std::string& filepath, std::vector<char>& buffer )
@@ -308,7 +337,7 @@ namespace Procyon {
 		return &search->second->glyphs[ c - 32 ];
 	}
 
-	float FontFace::GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const
+	int FontFace::GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const
 	{
         if ( !FT_HAS_KERNING( (*mFace) ) )
             return 0.0f;
@@ -325,16 +354,16 @@ namespace Procyon {
             return 0.0f;
         }
 
-		return (float)( kern.x >> 6 );
+		return kern.x >> 6;
 	}
 
-	float FontFace::GetNewLineGap( unsigned int fontsize ) const
+	FontMetrics FontFace::GetMetrics( unsigned int fontsize ) const
 	{
 		auto search = mCache.find( fontsize );
 		if ( search == mCache.end() )
-			return 0.0f;
+			return FontMetrics();
 
-		return search->second->newlinegap;
+		return search->second->metrics;
 	}
 
 	FontFace* CreateFontFace( const std::string& fontpath )

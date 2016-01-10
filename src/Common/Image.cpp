@@ -66,7 +66,7 @@ namespace Procyon {
 	    PROCYON_DEBUG("Image", "Loaded '%s'. Width: %i Height: %i Components: %i."
 	    	, filename.c_str(), mWidth, mHeight, mComponents );
 	}
-	
+
 	FileImage::~FileImage()
 	{
 		stbi_image_free( mData );
@@ -78,7 +78,7 @@ namespace Procyon {
 		mWidth = width;
 		mHeight = height;
 		mComponents = glm::clamp<int>( components, 1, 4 );
-		mData = new unsigned char[ mWidth * mHeight * mComponents ];
+		mData = new unsigned char[ mWidth * mHeight * mComponents ]();
 	}
 
 	MemoryImage::MemoryImage( const IImage& in, int components )
@@ -86,7 +86,7 @@ namespace Procyon {
 		mWidth 		= in.Width();
 		mHeight 	= in.Height();
 		mComponents = glm::clamp<int>( components, 1, 4 );
-		mData 		= new unsigned char[ mWidth * mHeight * mComponents ];	
+		mData 		= new unsigned char[ mWidth * mHeight * mComponents ]();
 
 		const uint8_t* inData 	= in.Data();
 		int inComponents 		= in.Components();
@@ -96,17 +96,17 @@ namespace Procyon {
 
 			if ( mComponents >= 2 )
 			{
-				mData[ x * mComponents + 1 ] 
+				mData[ x * mComponents + 1 ]
 					= ( inComponents >= 2 ) ? inData[ x * inComponents + 1 ] : 0;
 			}
 			if ( mComponents >= 3 )
 			{
-				mData[ x * mComponents + 2 ] 
+				mData[ x * mComponents + 2 ]
 					= ( inComponents >= 3 ) ? inData[ x * inComponents + 2 ] : 0;
 			}
 			if ( mComponents >= 4 )
 			{
-				mData[ x * mComponents + 3 ] 
+				mData[ x * mComponents + 3 ]
 					= ( inComponents >= 4 ) ? inData[ x * inComponents + 3 ] : 0;
 			}
 		}
@@ -114,7 +114,7 @@ namespace Procyon {
 
 	MemoryImage::~MemoryImage()
 	{
-		delete mData;
+		delete[] mData;
 	}
 
 	unsigned char* MemoryImage::MutableData()

@@ -90,8 +90,16 @@ namespace Procyon {
 
 	void Renderer::Draw( const Renderable* r )
 	{
-		r->PostRenderCommands( mRenderCore );
+		r->PostRenderCommands( this, mRenderCore );
 	}
+
+    void Renderer::DrawWireframeRect( const Rect& rect, const glm::vec4& color )
+    {
+        DrawLine( rect.GetTopLeft(), rect.GetTopRight(), color );
+        DrawLine( rect.GetTopLeft(), rect.GetBottomLeft(), color );
+        DrawLine( rect.GetBottomRight(), rect.GetTopRight(), color );
+        DrawLine( rect.GetBottomRight(), rect.GetBottomLeft(), color );
+    }
 
 	void Renderer::EndRender()
 	{
@@ -153,7 +161,7 @@ namespace Procyon {
 	}
 
 
-	void Renderer::DrawTexture( const GL::GLTexture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient )
+	void Renderer::DrawTexture( const GL::GLTexture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, struct Rect textureRect /*= Rect() */ )
 	{
         BatchedQuad quaddata;
         quaddata.position[0] = pos.x;

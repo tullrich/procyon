@@ -21,6 +21,7 @@ Tweaks to Existing:
 
 Bugs:
   ✔ Make Console look better, it seems fuzzy @done(2016-01-07 04:14pm) @project(Bugs)
+  ☐ Console visuals are slightly off due to font changes
   ☐ Saving over an open file allows it to be open twice (QFileSystemWatcher)
 
 Stretch:

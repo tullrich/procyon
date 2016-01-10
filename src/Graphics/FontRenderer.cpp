@@ -34,7 +34,7 @@ namespace Procyon {
 
 	FontRenderer::FontRenderer()
 	{
-        mProgram = new GLProgram( "font.vert", "font.frag" );
+        mProgram = new GLProgram( "shaders/font.vert", "shaders/font.frag" );
         mMaterial = new GLMaterial( mProgram );
 	}
 
@@ -57,7 +57,7 @@ namespace Procyon {
             {
                 PROCYON_DEBUG( "Font", "Char %c <%f, %f>", c, x, y );
 
-                float offsetx = 0.0f, offsety = 0.0f;                
+                float offsetx = 0.0f, offsety = 0.0f;
                 stbtt_aligned_quad q = font.GetGlyphTransform( c - 32, &offsetx, &offsety );
 
                 glm::mat3 trans = glm::translate( glm::mat3(), glm::vec2( q.s0, q.t0 ) );

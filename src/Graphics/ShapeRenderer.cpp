@@ -36,7 +36,7 @@ namespace Procyon {
         : mProgram( NULL )
         , mMaterial( NULL )
     {
-        mProgram = new GLProgram( "shape.vert", "shape.frag" );
+        mProgram = new GLProgram( "shaders/shape.vert", "shaders/shape.frag" );
         mMaterial = new GLMaterial( mProgram );
     }
 

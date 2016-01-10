@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLProgram.h"
 #include "GLTexture.h"
 #include "RenderContext.h"
-#include "RenderCore.h"
+#include "Renderer.h"
 
 using namespace Procyon::GL;
 
@@ -54,7 +54,7 @@ namespace Procyon {
     {
         if ( !sDefaultProgram )
         {
-            sDefaultProgram = new GLProgram( "shader.vert", "shader.frag" );
+            sDefaultProgram = new GLProgram( "shaders/shader.vert", "shaders/shader.frag" );
         }
         return sDefaultProgram;
     }
@@ -79,29 +79,9 @@ namespace Procyon {
         rc->RenderSprite( camera, this );
     }
 
-    void Sprite::PostRenderCommands( RenderCore* rc ) const
+    void Sprite::PostRenderCommands( Renderer* r, RenderCore* rc ) const
     {
-        BatchedQuad quaddata;
-        quaddata.position[0] = mPosition.x;
-        quaddata.position[1] = mPosition.y;
-        quaddata.size[0]     = mDimensions.x;
-        quaddata.size[1]     = mDimensions.y;
-        quaddata.rotation    = mOrientation;
-        quaddata.uvoffset[0] = mTextureRect.topleft.x;
-        quaddata.uvoffset[1] = mTextureRect.topleft.y;
-        quaddata.uvsize[0]   = mTextureRect.dimensions.x;
-        quaddata.uvsize[1]   = mTextureRect.dimensions.y;
-        quaddata.tint[0]     = 0.0f;
-        quaddata.tint[1]     = 0.0f;
-        quaddata.tint[2]     = 0.0f;
-
-        RenderCommand cmd;
-        cmd.op               = RENDER_OP_QUAD;
-        cmd.program          = NULL;
-        cmd.texture          = mTexture;
-        cmd.instancecount    = 1;
-        cmd.quaddata         = &quaddata;
-        rc->AddOrAppendCommand( cmd );
+        r->DrawTexture( mTexture, mPosition, mDimensions, mOrientation, mTextureRect );
     }
 
 } /* namespace Procyon */

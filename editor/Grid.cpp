@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Renderer.h"
 
 using namespace Procyon;
-	
+
 Grid::Grid( float gridSize )
 	: mGridSize( gridSize )
 	, mEnabled( true )
@@ -59,8 +59,8 @@ void Grid::Render( Renderer* r )
 	{
 		float alpha = (((int)(yCursor / mGridSize)) % mMajorFrequency) ? 0.15f : 0.3f;
 
-		r->DrawWorldLine( glm::vec2( rect.GetTopLeft().x, yCursor )
-			, glm::vec2( rect.GetTopLeft().x + rect.GetWidth(), yCursor )
+		r->DrawWorldLine( glm::vec2( rect.GetTopLeft().x, yCursor ) + glm::vec2( 0.5f, 0.5f )
+			, glm::vec2( rect.GetTopLeft().x + rect.GetWidth(), yCursor ) + glm::vec2( 0.5f, 0.5f )
 			, glm::vec4( glm::vec3( 0.0f ), alpha )  );
 
 		yCursor += gridAdvance;
@@ -72,8 +72,8 @@ void Grid::Render( Renderer* r )
 	{
 		float alpha = (((int)(xCursor / mGridSize)) % mMajorFrequency) ? 0.15f : 0.3f;
 
-		r->DrawWorldLine( glm::vec2( xCursor, rect.GetTopLeft().y )
-			, glm::vec2( xCursor, rect.GetTopLeft().y - rect.GetHeight() )
+		r->DrawWorldLine( glm::vec2( xCursor, rect.GetTopLeft().y ) + glm::vec2( 0.5f, 0.5f )
+			, glm::vec2( xCursor, rect.GetTopLeft().y - rect.GetHeight() ) + glm::vec2( 0.5f, 0.5f )
 			, glm::vec4( glm::vec3( 0.0f ), alpha )  );
 
 		xCursor += gridAdvance;

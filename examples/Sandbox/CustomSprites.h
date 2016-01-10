@@ -48,7 +48,7 @@ public:
         static GLProgram* program = NULL;
         if ( !program )
         {
-            program = new GLProgram( "shader.vert", "shader2.frag" );
+            program = new GLProgram( "shaders/shader.vert", "shaders/shader2.frag" );
         }
         return program;
     }

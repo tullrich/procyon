@@ -56,8 +56,8 @@ namespace Procyon {
 
 	bool operator==( const RenderCommand& rc1, const RenderCommand& rc2 )
 	{
-	    return rc1.op == rc2.op 
-	    	&& rc1.program == rc2.program 
+	    return rc1.op == rc2.op
+	    	&& rc1.program == rc2.program
 	    	&& rc1.texture == rc2.texture
 	    	&& rc1.flags == rc2.flags;
 	}
@@ -82,9 +82,9 @@ namespace Procyon {
 		mBuffer 		= new GLBuffer( sizeof(gVertexAttribData), gVertexAttribData, GL_STREAM_DRAW );
 		mOffBuffer 		= new GLBuffer( sizeof(gVertexAttribData), gVertexAttribData, GL_STREAM_DRAW );
 
-   		mDefaultProg    = new GLProgram( "quadbatch.vert", "quadbatch.frag" );
-   		mDefaultPrimitiveProg 
-   						= new GLProgram( "primitive.vert", "primitive.frag" );
+   		mDefaultProg    = new GLProgram( "shaders/quadbatch.vert", "shaders/quadbatch.frag" );
+   		mDefaultPrimitiveProg
+   						= new GLProgram( "shaders/primitive.vert", "shaders/primitive.frag" );
 
 		ResetStats();
 	}
@@ -118,9 +118,9 @@ namespace Procyon {
 	{
 		switch ( rc.op )
 		{
-			case RENDER_OP_QUAD: 		
+			case RENDER_OP_QUAD:
 				return PushData( (const unsigned char*)rc.quaddata, rc.instancecount * sizeof(BatchedQuad) );
-			case RENDER_OP_PRIMITIVE:	
+			case RENDER_OP_PRIMITIVE:
 				return PushData( (const unsigned char*)rc.verts, rc.vertcount * sizeof(PrimitiveVertex) );
 		}
 
@@ -271,7 +271,7 @@ namespace Procyon {
 		{
 			glm::mat3 mv = camera.GetView();
 			glUniformMatrix3fv( mvMat, 1, false, glm::value_ptr( mv ) );
-			
+
 			glm::mat3 p = camera.GetProjection();
 			glUniformMatrix3fv( projLoc, 1, false, glm::value_ptr( p ) );
 		}

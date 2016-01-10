@@ -28,18 +28,19 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "ProcyonCommon.h"
 
 namespace Procyon {
-	
+
 	class Camera2D;
 	class RenderContext;
+    class Renderer;
 	class RenderCore;
 
 	class Renderable
 	{
 	public:
 		virtual void Render( const Camera2D* camera, RenderContext* rc ) const { };
-		virtual void PostRenderCommands( RenderCore* rc ) const = 0;
+		virtual void PostRenderCommands( Renderer* r, RenderCore* rc ) const = 0;
 	};
-	
+
 } /* namespace Procyon */
 
 #endif /* _RENDERABLE_H */

@@ -49,9 +49,10 @@ namespace Procyon {
 
 		void 				BeginRender();
 		void 				Draw( const Renderable* r );
+        void                DrawWireframeRect( const Rect& rect, const glm::vec4& color );
 		void 				DrawLine( const glm::vec2& start, const glm::vec2& end, const glm::vec4& color );
 		void				DrawWorldLine( const glm::vec2& start, const glm::vec2& end, const glm::vec4& color );
-		void 				DrawTexture( const GL::GLTexture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient );
+		void 				DrawTexture( const GL::GLTexture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, struct Rect textureRect = Rect() );
         void                DrawFullscreenTexture( const GL::GLTexture* tex );
 		void 				EndRender();
 

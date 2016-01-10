@@ -81,8 +81,8 @@ void ProcyonCanvas::SetGridSize( float gridSize )
 }
 
 float ProcyonCanvas::GetGridSize() const
-{ 
-   return  mGrid->GetGridSize(); 
+{
+   return  mGrid->GetGridSize();
 }
 
 // Reset the camera transform back to the origin.
@@ -172,7 +172,7 @@ void ProcyonCanvas::initializeGL()
     mCamera     = new Procyon::Camera2D();
     mCamera->SetPosition( 0.0f, 0.0f );
     mCamera->OrthographicProj( -(float)1280.0f/2.0f, (float)1280.0f/2.0f, -(float)1280.0f/2.0f, (float)1280.0f/2.0f );
-    emit CameraChanged( mCamera ); 
+    emit CameraChanged( mCamera );
 
     // Create the viewport grid
     mGrid       = new Grid( (float)TILE_PIXEL_SIZE );
@@ -220,7 +220,7 @@ void ProcyonCanvas::paintGL()
 
     // Render the scene
     mRenderer->BeginRender();
-    {   
+    {
         if ( mActiveDocument )
         {
             mRenderer->ResetCameras( *mCamera );
@@ -353,7 +353,7 @@ void ProcyonCanvas::mouseReleaseEvent( QMouseEvent* event )
     mActiveDocument->SetModified();
 }
 
-// Called when the mouse is moved over this widget *only* while a mouse button is pressed 
+// Called when the mouse is moved over this widget *only* while a mouse button is pressed
 // (since mouse tracking is disabled for this).
 void ProcyonCanvas::mouseMoveEvent( QMouseEvent* event )
 {
@@ -399,7 +399,7 @@ void ProcyonCanvas::OnMouseMove( QMouseEvent* event )
 // Called on mouse wheel.
 void ProcyonCanvas::wheelEvent( QWheelEvent* event )
 {
-    // Rotation delta in 1/8 degrees. 
+    // Rotation delta in 1/8 degrees.
     // positive indicates forward from the user, negative is towards the user.
     QPoint angleDelta = event->angleDelta();
     float yScroll = (float)angleDelta.y() / 188.0f;

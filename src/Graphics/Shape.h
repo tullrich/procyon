@@ -37,7 +37,7 @@ namespace Procyon {
 		class GLGeometry;
 		class GLProgram;
 	}
-	
+
 	class Shape : public Transformable, public Renderable
 	{
 	public:
@@ -49,18 +49,18 @@ namespace Procyon {
 
 	    glm::vec4 				GetColor() const;
 	    float 					GetAlpha() const;
-	    
+
 	    const GL::GLGeometry*	GetGeometry() const;
 
     	virtual void 			Render( const GL::GLProgram* program ) const;
     	virtual void 			Render( const Camera2D* camera, RenderContext* rc ) const;
-		virtual void 			PostRenderCommands( RenderCore* rc ) const;
+		virtual void 			PostRenderCommands( Renderer* r, RenderCore* rc ) const;
 
 	protected:
 	    glm::vec4       	mColor;
 	    GL::GLGeometry*     mGeometry;
 	};
-	
+
 } /* namespace Procyon */
 
 #endif /* _SHAPE_H */
