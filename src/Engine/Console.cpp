@@ -546,7 +546,18 @@ namespace Procyon {
                     sInputText->EraseBack();
                 }
             }
-            else if ( ev.unicode > 0x1F && ev.unicode < 0x80 ) // ascii non-control only
+
+			// absorb all key down events
+            return true;
+		}
+        else if ( ev.type == EVENT_KEY_UP )
+        {
+            // absorb keyups as well
+            return true;
+        }
+	    else if ( ev.type == EVENT_TEXT )
+		{
+            if ( ev.unicode > 0x1F && ev.unicode < 0x80 ) // ascii non-control only
             {
                 // handle a character key
 
@@ -569,12 +580,7 @@ namespace Procyon {
                 }
             }
 
-            // absorb all key down events
-            return true;
-        }
-        else if ( ev.type == EVENT_KEY_UP )
-        {
-            // absorb keyups as well
+            // absorb all text events
             return true;
         }
 

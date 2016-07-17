@@ -177,10 +177,10 @@ bool X11Window::InitSymbolTable()
 	xcb_get_modifier_mapping_cookie_t modMapCookie = xcb_get_modifier_mapping( mConnection );
 
 	xcb_generic_error_t *error = 0;
-    xcb_get_modifier_mapping_reply_t *modMapReply 
+    xcb_get_modifier_mapping_reply_t *modMapReply
     	= xcb_get_modifier_mapping_reply( mConnection, modMapCookie, &error);
-	
-    if (error) 
+
+    if (error)
     {
         free(error);
         return false;
@@ -241,7 +241,7 @@ bool X11Window::InitWindow( const std::string& title, unsigned width, unsigned h
 
     mWindow = xcb_generate_id( mConnection );
 
-	XCBError error( mConnection, 
+	XCBError error( mConnection,
 		xcb_create_window_checked( mConnection
 		, XCB_COPY_FROM_PARENT
 		, mWindow
@@ -312,7 +312,7 @@ xcb_keysym_t X11Window::KeyCodeStateToKeySym( xcb_keycode_t code, uint16_t state
 		ks1 = xcb_key_symbols_get_keysym( mSymsTable, code, 2 );
 		ks2 = xcb_key_symbols_get_keysym( mSymsTable, code, 3 );
 	}
-	 
+
 
 	if ( (state & mModifiers.numlock) && xcb_is_keypad_key( code ) )
 	{
@@ -359,17 +359,14 @@ xcb_keysym_t X11Window::KeyCodeStateToKeySym( xcb_keycode_t code, uint16_t state
 	return XCB_NO_SYMBOL;
 }
 
-bool X11Window::Poll( InputEvent& ievent )
+void X11Window::PollEvents()
 {
 	xcb_generic_event_t *event;
 
-	bool ret = false;
-
-	if ( (event = xcb_poll_for_event (mConnection) ) ) 
+	if ( (event = xcb_poll_for_event (mConnection) ) )
 	{
-
-	    ievent = InputEvent();
-
+		bool notify = false;
+	    InputEvent ievent;
 	    switch ( event->response_type & ~0x80 )
 	    {
 	    case XCB_KEY_PRESS: // key down
@@ -382,11 +379,11 @@ bool X11Window::Poll( InputEvent& ievent )
 	        	xcb_keysym_t modifiedKeysym = KeyCodeStateToKeySym( press->detail, press->state );
 
 	        	ievent = InputEvent( EVENT_KEY_DOWN );
-	        	ievent.keycode 		= (unsigned)press->detail;
+	        	ievent.scancode 	= (unsigned)press->detail;
 	        	ievent.keysym 		= TranslateKeySym( keysym );
 	        	ievent.unicode 		= KeySymToUnicode( modifiedKeysym );
 	        	ievent.modifiers 	= TranslateKeyState( press->state );
-	        	ret = true;
+	        	notify = true;
 
 				PROCYON_DEBUG( "X11", "Got Sym: %s %i %i", XKeysymToString( keysym )
 					, press->detail,  press->state );
@@ -406,11 +403,11 @@ bool X11Window::Poll( InputEvent& ievent )
 	        	xcb_keysym_t modifiedKeysym = KeyCodeStateToKeySym( release->detail, release->state );
 
 	        	ievent = InputEvent( EVENT_KEY_UP );
-	        	ievent.keycode 		= (unsigned)release->detail;
+	        	ievent.scancode 	= (unsigned)release->detail;
 	        	ievent.keysym 		= TranslateKeySym( keysym );
 	        	ievent.unicode 		= KeySymToUnicode( modifiedKeysym );
 	        	ievent.modifiers 	= TranslateKeyState( release->state );
-	        	ret = true;
+	        	notify = true;
 
 				PROCYON_DEBUG( "X11", "Got Sym: %s %i %i", XKeysymToString( keysym )
 					, release->detail,  release->state );
@@ -430,7 +427,7 @@ bool X11Window::Poll( InputEvent& ievent )
 	        ievent.rawy 			= press->event_y;
 	        ievent.mousex			= press->event_x / (float)mWidth;
 	        ievent.mousey 			= press->event_y / (float)mHeight;
-	        ret = true;
+	        notify = true;
 
 			PROCYON_DEBUG( "X11", "XCB_BUTTON_PRESS %i", press->detail );
 	        break;
@@ -445,7 +442,7 @@ bool X11Window::Poll( InputEvent& ievent )
 	        ievent.rawy 			= release->event_y;
 	        ievent.mousex			= release->event_x / (float)mWidth;
 	        ievent.mousey 			= release->event_y / (float)mHeight;
-	        ret = true;
+	        notify = true;
 
 			PROCYON_DEBUG( "X11", "XCB_BUTTON_RELEASE" );
 	        break;
@@ -460,7 +457,7 @@ bool X11Window::Poll( InputEvent& ievent )
 	        ievent.rawy 			= motion->event_y;
 	        ievent.mousex			= motion->event_x / (float)mWidth;
 	        ievent.mousey 			= motion->event_y / (float)mHeight;
-	        ret = true;
+	        notify = true;
 
 			//PROCYON_DEBUG( "X11", "XCB_MOTION_NOTIFY" );
 	    	break;
@@ -502,9 +499,12 @@ bool X11Window::Poll( InputEvent& ievent )
 	    }
 
 	    free( event );
-	}
 
-	return ret;
+		if ( notify )
+		{
+			mListener->HandleInputEvent( ievent );
+		}
+	}
 }
 
 void X11Window::SetTitle( const std::string& title )
@@ -598,7 +598,7 @@ xcb_window_t X11Window::GetXWindow()
 	return mWindow;
 }
 
-X11GLContext* X11Window::GetGLContext()
+GL::IGLContext* X11Window::GetGLContext()
 {
 	if( !mContext )
 	{
@@ -785,4 +785,13 @@ MouseButton X11Window::TranslateMouseButton( xcb_button_t state )
 }
 
 } /* namespace Unix */
+} /* namespace Procyon */
+
+namespace Procyon {
+
+IWindow* Window_Create( const std::string& title, unsigned height, unsigned width )
+{
+	return new Unix::X11Window( title, height, width );
+}
+
 } /* namespace Procyon */

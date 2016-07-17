@@ -23,16 +23,13 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "MainLoop.h"
-#include "X11Window.h"
-#include "X11GLContext.h"
+#include "Window.h"
 #include "GLContext.h"
 #include "Reflection.h"
 #include "Image.h"
 #include "Console.h"
 
-#include <unistd.h>
-
-using namespace Procyon::Unix;
+#include <thread>
 
 namespace Procyon {
 
@@ -53,9 +50,10 @@ namespace Procyon {
 
         InitReflectionTables();
 
-        X11Window* win  = new X11Window( windowTitle, width, height );
-        mWindow         = win;
-        mContext        = win->GetGLContext();
+        mWindow         = Window_Create( windowTitle, width, height );
+        mContext        = mWindow->GetGLContext();
+
+        mWindow->SetEventListener( this );
 	}
 
     double MainLoop::SecsSinceLaunch() const
@@ -72,7 +70,7 @@ namespace Procyon {
         DestroyReflectionTables();
     }
 
-    void MainLoop::HandleEvent( const InputEvent& ev )
+    void MainLoop::HandleInputEvent( const InputEvent& ev )
     {
         if ( ev.type == EVENT_KEY_DOWN &&
              ev.keysym == KEY_GRAVE )
@@ -131,14 +129,10 @@ namespace Procyon {
 	{
         while ( mWindow->IsOpen() )
         {
-            InputEvent ev;
-            while ( mWindow->Poll( ev ) )
-            {
-                HandleEvent( ev );
-            }
+            mWindow->PollEvents();
 
             double before = SecsSinceLaunch();
-            
+
             Frame();
 
             double framerate =  1.0 / ( SecsSinceLaunch() - before );
@@ -163,7 +157,7 @@ namespace Procyon {
         {
             int sleepmicros = ( TARGET_HZ - processRenderTime ) * 1.0e6;
             PROCYON_DEBUG( "MainLoop", "Sleeping for %i", sleepmicros );
-            usleep( sleepmicros );
+			std::this_thread::sleep_for( std::chrono::microseconds( sleepmicros ) );
         }
 	}
 

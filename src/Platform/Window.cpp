@@ -41,11 +41,26 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
+	WindowBase::WindowBase()
+		: mListener( nullptr )
+	{
+	}
+
+	void WindowBase::SetEventListener( IInputEventListener* listener )
+	{
+		mListener = listener;
+	}
+
+	IInputEventListener* WindowBase::GetEventListener()
+	{
+		return mListener;
+	}
+
 	const char* ProcyonKeyCodeToStr( ProcyonKeyCode kc )
 	{
 		if( (unsigned)kc >= PROCYON_KEY_CODE_COUNT )
 			kc = KEY_UNKNOWN;
-		
+
 		return KEY_CODE_STR_TABLE( ProcyonKeyCode )[ (unsigned)kc ];
 	}
 

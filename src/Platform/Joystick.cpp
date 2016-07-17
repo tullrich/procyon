@@ -23,14 +23,12 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Joystick.h"
-#include "Unix/UnixJoystick.h"
 
 namespace Procyon {
 
 	IJoystick* Joystick_Open( const std::string& devPath )
 	{
-		//TODO try catch here?
-		return new Unix::UnixJoystick( devPath );
+		return nullptr;
 	}
 
 } /* namespace Procyon */

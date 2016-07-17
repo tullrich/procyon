@@ -304,8 +304,9 @@ namespace Procyon {
     	{
     		// GL_QUADS is deprecated and my dev machine does not support GL_PRIMITIVE_RESTART...
     		int quadCount = rc.vertcount / 4;
-    		GLint indices[ quadCount ];
-    		GLint counts[ quadCount ];
+            assert( quadCount <= 2048 );
+    		GLint indices[ 2048 ];
+    		GLint counts[ 2048 ];
     		for ( int i = 0; i < quadCount; i++ )
     		{
     			indices[i] = i * 4;

@@ -24,7 +24,9 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "XmlMap.h"
 
-#include <tinyxml.h>
+#include <tinyxml2.h>
+
+using namespace tinyxml2;
 
 namespace Procyon {
 
@@ -37,14 +39,14 @@ namespace Procyon {
 		return indent;
 	}
 
-	static void print_attributes( TiXmlElement *element, int indent )
+	static void print_attributes( XMLElement *element, int indent )
 	{
 		char buf[1024];
 		char *msg = buf;
 
 		msg += sindent( msg, indent );
 
-		TiXmlAttribute* attrib = element->FirstAttribute();
+		const XMLAttribute* attrib = element->FirstAttribute();
 
 		while ( attrib )
 		{
@@ -54,47 +56,49 @@ namespace Procyon {
 		}
 	}
 
-	static void print_dom( TiXmlNode *node, int indent = 0 )
+	static void print_dom( XMLNode *node, int indent = 0 )
 	{
 		char buf[1024];
 		char *msg = buf;
 
 		msg += sindent( msg, indent );
 
-		int t = node->Type();
-		switch ( t )
-		{
-		case TiXmlNode::TINYXML_DOCUMENT:
+        if ( node->ToDocument() )
+        {
 			msg += sprintf( msg, "Document" );
-			break;
-		case TiXmlNode::TINYXML_ELEMENT:
+	    }
+        else if ( node->ToElement() )
+        {
 			msg += sprintf( msg, "Element [%s]", node->Value() );
-			break;
-		case TiXmlNode::TINYXML_COMMENT:
+        }
+        else if ( node->ToComment() )
+        {
 			msg += sprintf( msg, "Comment: [%s]", node->Value());
-			break;
-		case TiXmlNode::TINYXML_UNKNOWN:
+        }
+        else if ( node->ToUnknown() )
+        {
 			msg += sprintf( msg, "Unknown" );
-			break;
-		case TiXmlNode::TINYXML_TEXT:
+        }
+        else if ( node->ToText() )
+        {
 			msg += sprintf( msg, "Text: [%s]", node->ToText()->Value() );
-			break;
-		case TiXmlNode::TINYXML_DECLARATION:
+        }
+        else if ( node->ToDeclaration() )
+        {
 			msg += sprintf( msg, "Declaration" );
-			break;
-		default:
+        }
+        else
+        {
 			msg += sprintf( msg, "Really Unknown" );
-			break;
 		}
 
 		PROCYON_DEBUG( "XmlMap", "%s", buf );
 
-		if ( t == TiXmlNode::TINYXML_ELEMENT )
+		if ( node->ToElement() )
 		{
 			print_attributes( node->ToElement(), indent + 1 );
 		}
-
-		for ( TiXmlNode *child = node->FirstChild(); child != 0; child = child->NextSibling())
+		for ( XMLNode *child = node->FirstChild(); child != 0; child = child->NextSibling())
 		{
 			print_dom( child, indent + 1 );
 		}
@@ -111,8 +115,8 @@ namespace Procyon {
 	bool XmlMap::Load()
 	{
 		// Parse dom
-		TiXmlDocument doc( mFilePath );
-		if ( !doc.LoadFile() )
+		tinyxml2::XMLDocument doc;
+		if ( doc.LoadFile( mFilePath.c_str() ) != XML_SUCCESS )
 		{
 			return false;
 		}
@@ -120,12 +124,10 @@ namespace Procyon {
 		mTileSet.Clear();
 
 		// Walk dom
-		if ( doc.Type() == TiXmlNode::TINYXML_DOCUMENT )
+		// <Map>
+        XMLNode *map = NULL;
+		if ( map = doc.FirstChildElement( "Map" ) )
 		{
-			// <Map>
-			TiXmlNode *map = NULL;
-			if ( map = doc.FirstChildElement( "Map" ) )
-			{
 				// <TileSet>
 				TiXmlNode *tileSet = NULL;
 				if ( tileSet = map->FirstChildElement( "TileSet" ) )
@@ -143,49 +145,44 @@ namespace Procyon {
 					}
 				}
 
-				// <Tile>
-				TiXmlNode *tiles = NULL;
-				if ( tiles = map->FirstChildElement( "Tiles" ) )
+			// <Tile>
+            XMLNode *tiles = NULL;
+			if ( tiles = map->FirstChildElement( "Tiles" ) )
+			{
+				// ForEach <TileRow>
+                const XMLElement *tileRow;
+				for ( tileRow = tiles->FirstChildElement( "TileRow" ); tileRow; tileRow = tileRow->NextSiblingElement( "TileRow" ) )
 				{
-					// ForEach <TileRow>
-					TiXmlNode *tileRow = 0;
-					while( tileRow = tiles->IterateChildren( "TileRow", tileRow ) )
+					int x = 0;
+					if ( !tileRow->ToElement() ||
+							tileRow->ToElement()->QueryIntAttribute( "index", &x ) != XML_SUCCESS )
 					{
-						int x = 0;
-						if ( !tileRow->ToElement() ||
-							 tileRow->ToElement()->QueryIntAttribute( "index", &x ) != TIXML_SUCCESS )
+						goto error;
+					}
+
+					// ForEach <Tile>
+                    const XMLElement *tile;
+                    for ( tile = tileRow->FirstChildElement( "Tile" ); tile; tile = tile->NextSiblingElement( "Tile" ) )
+					{
+						int y = 0;
+						if ( !tile->ToElement() ||
+								tile->ToElement()->QueryIntAttribute( "index", &y) != XML_SUCCESS )
 						{
 							goto error;
 						}
 
-						// ForEach <Tile>
-						TiXmlNode *tile = 0;
-						while( tile = tileRow->IterateChildren( "Tile", tile ) )
-						{
-							int y = 0;
-							if ( !tile->ToElement() ||
-								 tile->ToElement()->QueryIntAttribute( "index", &y) != TIXML_SUCCESS )
-							{
-								goto error;
-							}
-
 							TileId t = (TileId)atoi( tile->ToElement()->GetText() );
 
-							if ( x >= 0 && x < WORLD_WIDTH &&
+						if ( x >= 0 && x < WORLD_WIDTH &&
 								 y >= 0 && y < WORLD_HEIGHT )
-							{
-								mTiles[ x ][ y ] = t;
-							}
-							else
-							{
-								goto error;
-							}
+						{
+							mTiles[ x ][ y ] = t;
+						}
+						else
+						{
+							goto error;
 						}
 					}
-				}
-				else
-				{
-					goto error;
 				}
 			}
 			else

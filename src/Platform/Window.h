@@ -30,8 +30,13 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "KeyCodes.h"
 
 namespace Procyon {
-	
+
 	class IImage;
+
+	namespace GL
+	{
+		class IGLContext;
+	}
 
 	const char* ProcyonKeyCodeToStr( ProcyonKeyCode kc );
 
@@ -40,6 +45,7 @@ namespace Procyon {
 		EVENT_UNKNOWN,
 		EVENT_KEY_DOWN,
 		EVENT_KEY_UP,
+		EVENT_TEXT,
 		EVENT_MOUSE_DOWN,
 		EVENT_MOUSE_UP,
 		EVENT_MOUSE_MOVE,
@@ -99,10 +105,13 @@ namespace Procyon {
 		{
 			struct // EVENT_KEY_DOWN and EVENT_KEY_UP
 			{
-				unsigned		keycode; // platform keycode
+				unsigned		scancode; // platform scancode
 				ProcyonKeyCode	keysym;
-				long 			unicode;
 				unsigned		modifiers;
+			};
+			struct // EVENT_TEXT
+			{
+				long 			unicode;
 			};
 			struct // EVENT_MOUSE_DOWN, EVENT_MOUSE_UP, and EVENT_MOUSE_MOVE
 			{
@@ -132,15 +141,37 @@ namespace Procyon {
 		}
 	};
 
+	class IInputEventListener
+	{
+	public:
+        virtual void HandleInputEvent( const InputEvent& ev ) = 0;
+	};
+
 	class IWindow
 	{
 	public:
+		virtual ~IWindow() { };
+
 		virtual bool IsOpen() = 0;
-		virtual bool Poll( InputEvent& ievent ) = 0;
+		virtual void SetEventListener( IInputEventListener* listener ) = 0;
+		virtual void PollEvents() = 0;
 		virtual void SetTitle( const std::string& title ) = 0;
 		virtual void SetIcon( const IImage& icon ) = 0;
+		virtual GL::IGLContext* GetGLContext() = 0;
 	};
 
+	class WindowBase : public IWindow
+	{
+	public:
+		WindowBase();
+
+		virtual void SetEventListener( IInputEventListener* listener );
+		IInputEventListener* GetEventListener();
+	protected:
+		IInputEventListener* mListener;
+	};
+
+	IWindow* Window_Create( const std::string& title, unsigned height, unsigned width );
 } /* namespace Procyon */
 
 #endif /* _WINDOW_H */

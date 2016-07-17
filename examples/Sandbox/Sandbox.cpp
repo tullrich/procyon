@@ -33,7 +33,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLMaterial.h"
 #include "Renderer.h"
 #include "RenderCore.h"
-#include "Sprite.h"
+#include "Sprite.h" 
 #include "LineShape.h"
 #include "RectShape.h"
 #include "RenderContext.h"
@@ -42,7 +42,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "CustomSprites.h"
 #include "Text.h"
 #include "XmlMap.h"
-#include "Vaser.h"
+#include "ProcyonVaser.h"
 
 #include "SandboxAssets.h"
 #include "../../editor/Grid.h"
@@ -239,6 +239,91 @@ void Sandbox::Render()
 		//SandboxAssets::sTestTexture->SetMinMagFilter( GL_LINEAR, GL_LINEAR );
 		//mRenderer->DrawTexture( SandboxAssets::sTestTexture, glm::vec2(), glm::vec2( 10.0f ), 0.0f );
 		//mRenderer->DrawTexture( SandboxAssets::sTestTexture, glm::vec2(), glm::vec2(00.0f, 200.0f), 0.0f );
+
+		float lerp = (sin( mCamera->GetPosition().x / 20.0f )+1.0f) / 2.0f;
+		//mRenderer->DrawAALine( glm::vec2(), glm::vec2(50.0f), 15.0f, lerp, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f ) );
+
+		//mRenderer->DrawPolyLine( sPoints, glm::vec4( 0.0f, 1.0f, 0.0f, 0.6f ), 20.f
+		//	, PolyLineJoinMode::BEVEL, PolyLineCapMode::BUTT, 250.0f );
+
+		//mRenderer->DrawPolyLine( sPoints2, glm::vec4( 0.0f, 1.0f, 0.0f, 0.6f ), 5.f
+		//	, PolyLineJoinMode::BEVEL, PolyLineCapMode::BUTT, 250.0f );
+
+
+		//VASEr::polyline( const Vec2*, Color, double W, int length, const polyline_opt*);
+
+
+		if( sPoints.size() >= 2 )
+		{
+			sOpts.cap = VASEr::PLC_round;
+			sOpts.feather = true;
+			sOpts.feathering = 5.0;
+			VASEr::VASErin::vertex_array_holder holder;
+			sTessOpts.holder = &holder;
+
+			const double weight = 15.0;
+			const VaseColor color = GlmToVaseColor( glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f ) );
+			//VASEr::segment( GlmToVaseVec2( sPoints[ 0 ] ), GlmToVaseVec2( sPoints[ 1 ] ), color, weight, &sOpts);
+
+			std::vector< VaseVec2 > stuff( sPoints.size() );
+			std::vector< VaseColor > stuffColor( sPoints.size() );
+			for (size_t i = 0; i < sPoints.size(); i++)
+			{
+				PROCYON_DEBUG( "PolyLine", "sPoints[ %i ] <%f, %f>", i, sPoints[ i ].x, sPoints[ i ].y );
+				VaseVec2& d = stuff[ i ];
+				d.x = sPoints[ i ].x;
+				d.y = sPoints[ i ].y;
+
+				VaseColor& c = stuffColor[ i ];
+				c.r = ( sPoints[ i ].x + 250.0f ) / 250.0f;
+				c.g = ( sPoints[ i ].y + 250.0f ) / 250.0f;
+				c.b = 0.0;
+				c.a = 0.6f;
+			}
+			//VASEr::polyline( stuff.data(), stuffColor.data(), weight, stuff.size(), &sOpts );
+
+			VASEr::polybezier_opt bazOpts;
+			bazOpts.poly = &sOpts;
+			VASEr::polybezier( stuff.data(), color, weight, stuff.size(), &bazOpts );
+
+			if ( holder.glmode == GL_TRIANGLES )
+			{
+				PROCYON_DEBUG( "PolyLine", "vertex_array_holder.vert %i mode: Triangles", holder.vert.size() );
+
+				assert( holder.vert.size()/2 == holder.color.size()/4 );
+				std::vector< ColorVertex > native( holder.vert.size()/2 );
+				for ( int i = 0; i < holder.vert.size()/2; i++ )
+				{
+					ColorVertex& vert = native[ i ];
+					vert.position[ 0 ] = holder.vert[ i * 2 ];
+					vert.position[ 1 ] = holder.vert[ i * 2 + 1 ];
+					vert.color[ 0 ] = holder.color[ i * 4 ];
+					vert.color[ 1 ] = holder.color[ i * 4 + 1 ];
+					vert.color[ 2 ] = holder.color[ i * 4 + 2 ];
+					vert.color[ 3 ] = holder.color[ i * 4 + 3 ];
+				}
+
+				RenderCommand cmd;
+		        cmd.op               = RENDER_OP_POLYGON;
+		        cmd.program          = NULL;
+		        cmd.flags            = RENDER_SCREEN_SPACE;
+		        cmd.colorprimmode    = PRIMITIVE_TRIANGLE;
+		        cmd.colorverts       = (ColorVertex*) native.data();
+		        cmd.colorvertcount   = native.size();
+		        mRenderer->GetRenderCore()->AddOrAppendCommand( cmd );
+			}
+			else
+			{
+				const char* mode = NULL;
+				switch( holder.glmode )
+				{
+					case GL_TRIANGLES: mode = "Triangles"; break;
+					case GL_TRIANGLE_STRIP: mode = "Triangle Strip"; break;
+					default: mode = "Other"; break;
+				}
+				PROCYON_DEBUG( "PolyLine", "Not Triangles: vertex_array_holder.vert %i mode: %s", holder.vert.size(), mode );
+			}
+		}
 
 		float lerp = (sin( mCamera->GetPosition().x / 20.0f )+1.0f) / 2.0f;
 		//mRenderer->DrawAALine( glm::vec2(), glm::vec2(50.0f), 15.0f, lerp, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f ) );

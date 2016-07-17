@@ -49,13 +49,13 @@ namespace Procyon {
 		Contact out;
 
 		// Convert to AABB vs. Point
-		Aabb scaledAabb( aabb2.mCenter, aabb1.mHalfExtent + aabb2.mHalfExtent ); 
+		Aabb scaledAabb( aabb2.mCenter, aabb1.mHalfExtent + aabb2.mHalfExtent );
 		glm::vec2 point( aabb1.mCenter );
 
 		// Find the contact normal via the major-axis
 		glm::vec2 centerDist = aabb1.mCenter - aabb2.mCenter;
 		if( abs( centerDist.x ) > abs( centerDist.y ) )
-		{	
+		{
 			out.normal = glm::vec2( (centerDist.x > 0) ? 1.0f : -1.0f, 0.0f );
 		}
 		else
@@ -200,7 +200,7 @@ namespace Procyon {
 		if ( mVelocity.y >= 0.0f )
 		{
 			mVelocity += glm::vec2( 0.0f, 225.0f );
-        	mJumpSnd->Play( true );
+        	//mJumpSnd->Play( true );
 		}
 	}
 

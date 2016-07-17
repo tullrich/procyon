@@ -141,6 +141,7 @@ Editor::Editor( QWidget *parent )
 	connect( mUi->sceneTree, SIGNAL( activated( const QModelIndex& ) )
 		, this, SLOT( OnObjectActivated( const QModelIndex& ) ) );
 
+
 	// Setup property editor
     mPropertyManager = new QtVariantPropertyManager( this );
     QtVariantEditorFactory *factory = new QtVariantEditorFactory( this );

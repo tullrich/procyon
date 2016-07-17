@@ -60,7 +60,7 @@ namespace Unix {
 	================
 	EvKeyCodeToProcyonKeyCode
 
-	Convert an evdev EV_KEY code to an ordinal in ProcyonKeyCode or -1 if the code indicates an 
+	Convert an evdev EV_KEY code to an ordinal in ProcyonKeyCode or -1 if the code indicates an
 	unsupported key. If this function does not return -1, the result may be safely cast to a ProcyonKeyCode.
 	================
 	*/
@@ -180,7 +180,7 @@ namespace Unix {
 	UnixJoystick::~UnixJoystick()
 	{
 		close( libevdev_get_fd( mDev ) );
-		if( mDev ) 
+		if( mDev )
 			libevdev_free( mDev );
 	}
 
@@ -243,7 +243,7 @@ namespace Unix {
 		// precompute values for deadzone correction
 		axis.deadzone.flatmin = (axis.max + axis.min) - 2 * axis.flat;
 		axis.deadzone.flatmax = (axis.max + axis.min) + 2 * axis.flat;
-		axis.deadzone.realign = 
+		axis.deadzone.realign =
 			(double)( axis.max - axis.min ) / (double)( (axis.max - axis.min) - 4 * axis.flat );
 
 		PROCYON_DEBUG( "Joystick", "AxisInfo: %s, Range: [%i, %i] Fuzz: %i Flat: %i Res: %i"
@@ -261,7 +261,7 @@ namespace Unix {
 		mInfo.busType 			= libevdev_get_id_bustype( mDev );
 		mInfo.version 			= libevdev_get_driver_version( mDev );
 
-		PROCYON_DEBUG( "Joystick", "Name '%s' Vendor %d Product %d BusType %d Firmware %d Version %d" 
+		PROCYON_DEBUG( "Joystick", "Name '%s' Vendor %d Product %d BusType %d Firmware %d Version %d"
 			, mInfo.name.c_str(), mInfo.vendorId, mInfo.productId, mInfo.busType
 			, mInfo.firmwareVersion, mInfo.version );
 
@@ -273,8 +273,8 @@ namespace Unix {
 
 		// Get the max number of supported haptic effects.
 		// see https://www.kernel.org/doc/Documentation/input/ff.txt
-		int numEffects; 
-		if ( ioctl( libevdev_get_fd( mDev ), EVIOCGEFFECTS, &numEffects ) == -1 ) 
+		int numEffects;
+		if ( ioctl( libevdev_get_fd( mDev ), EVIOCGEFFECTS, &numEffects ) == -1 )
 		{
 			PROCYON_ERROR( "Joystick", "Unable to query joystick max effect count.");
 			throw std::runtime_error( "UnixJoystick" );
@@ -294,9 +294,9 @@ namespace Unix {
 		if ( !effect.IsUploaded() )
 			return;
 
-		struct input_event play; 
+		struct input_event play;
 		play.type = EV_FF;
-		play.code =  effect.GetEffectId(); 
+		play.code =  effect.GetEffectId();
 		play.value = 1; // play: 1, stop: 0
 		write( libevdev_get_fd( mDev ), (const void*) &play, sizeof(play) );
 	}
@@ -306,9 +306,9 @@ namespace Unix {
 		if ( !effect.IsUploaded() )
 			return;
 
-		struct input_event play; 
+		struct input_event play;
 		play.type = EV_FF;
-		play.code =  effect.GetEffectId(); 
+		play.code =  effect.GetEffectId();
 		play.value = 0; // play: 1, stop: 0
 		write( libevdev_get_fd( mDev ), (const void*) &play, sizeof(play) );
 	}
@@ -365,9 +365,9 @@ namespace Unix {
 		}
 		corrected *= axis.deadzone.realign;
 
-		// 
+		//
 		axis.value 		= glm::clamp( corrected, axis.min, axis.max );
-		axis.normalized = 
+		axis.normalized =
 			glm::clamp( 2.0 * (double)(axis.value-axis.min) / (axis.max-axis.min) - 1.0
 				, -1.0, 1.0 );
 
@@ -425,7 +425,7 @@ namespace Unix {
 
 	bool UnixJoystick::Poll( JoystickInputEvent& je )
 	{
-		struct pollfd fds = 
+		struct pollfd fds =
 		{
 			.fd 		= libevdev_get_fd( mDev ),
 			.events 	= POLLIN,
@@ -434,7 +434,7 @@ namespace Unix {
 
 		if ( poll( &fds, 1, 0 ) > 0 || libevdev_has_event_pending( mDev ) )
 		{
-			unsigned int flags 
+			unsigned int flags
 				= ( !mSyncDrop ) ? LIBEVDEV_READ_FLAG_NORMAL : LIBEVDEV_READ_FLAG_SYNC;
 
 			struct input_event ev;
@@ -471,4 +471,12 @@ namespace Unix {
 	}
 
 } /* namespace Unix */
+
+
+IJoystick* Joystick_Open( const std::string& devPath )
+{
+	//TODO try catch here?
+	return new Unix::UnixJoystick( devPath );
+}
+
 } /* namespace Procyon */

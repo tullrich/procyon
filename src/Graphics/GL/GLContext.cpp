@@ -37,7 +37,7 @@ namespace GL {
             const void *userParam)
 	{
 
-	    PROCYON_ERROR("GL", "GL Error: %s ", message );
+	    PROCYON_ERROR( "GL", "GL Error: %s ", message );
 	}
 
 	void GLContextBase::SharedInit()
@@ -50,8 +50,8 @@ namespace GL {
 	    }
 
 	    //TODO: Check to see if this debug extension is even available.
-	    glEnable(GL_DEBUG_OUTPUT);
-	    glDebugMessageCallback(DebugCB, NULL);
+	    glEnable( GL_DEBUG_OUTPUT );
+	    glDebugMessageCallback( DebugCB, NULL );
 	}
 
 	void GLContextBase::InitGlew()
@@ -61,8 +61,9 @@ namespace GL {
 	    GLenum err = glewInit();
 	    if( err != GLEW_OK )
 	    {
-	        throw std::runtime_error( 
-	            reinterpret_cast< const char* >( glewGetErrorString( err ) ) );
+            const GLubyte* msg = glewGetErrorString( err );
+            PROCYON_ERROR( "GL", "Glew Error: %s ", msg );
+	        throw std::runtime_error( "Terminal" );
 	    }
 	}
 

@@ -2,8 +2,20 @@
 cmake_minimum_required( VERSION 2.6 )
 
 find_package( OpenGL REQUIRED )
-find_package( GLEW REQUIRED )
-find_package( Freetype REQUIRED )
+
+if ( PROCYON_VS )
+	set( GLEW_INCLUDE_DIR "${PROCYON_THIRDPARTY_ROOT}glew-1.13.0/include" )
+	set( GLEW_LIBRARIES "${PROCYON_THIRDPARTY_ROOT}glew-1.13.0/lib/Release/x64/glew32s.lib" )
+else()
+	find_package( GLEW REQUIRED )
+endif()
+
+if ( PROCYON_VS )
+	set( FREETYPE_INCLUDE_DIRS "${PROCYON_THIRDPARTY_ROOT}freetype-2.6.5/include" )
+	set( FREETYPE_LIBRARIES "${PROCYON_THIRDPARTY_ROOT}freetype-2.6.5/lib/vs110/x64/freetype.lib" )
+else()
+	find_package( Freetype REQUIRED )
+endif()
 
 set( PROCYON_GRAPHICS_SRC_FILES )
 add_subdirectory( GL/ )

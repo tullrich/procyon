@@ -1,8 +1,21 @@
 # CMakeLists.txt for audio module
 cmake_minimum_required( VERSION 2.6 )
 
-find_package( OpenAL REQUIRED )
-find_package( SndFile REQUIRED )
+# OpenAl audio library
+if ( PROCYON_VS )
+	set( OPENAL_INCLUDE_DIR "${PROCYON_THIRDPARTY_ROOT}openal-1.1/include" )
+	set( OPENAL_LIBRARY "${PROCYON_THIRDPARTY_ROOT}openal-1.1/lib/vs110/x64/OpenAL32.lib" )
+else()
+	find_package( OpenAL REQUIRED )
+endif()
+
+# SndFile audio file import library
+if ( PROCYON_VS )
+	set( SNDFILE_INCLUDE_DIRS "${PROCYON_THIRDPARTY_ROOT}libsndfile/include" )
+	set( SNDFILE_LIBRARIES "${PROCYON_THIRDPARTY_ROOT}libsndfile/lib/vs110/x64/libsndfile-1.lib" )
+else()
+	find_package( SndFile REQUIRED )
+endif()
 
 add_library(Procyon_Audio STATIC
 	AudioDevice.cpp

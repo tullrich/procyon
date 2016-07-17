@@ -3,19 +3,29 @@ cmake_minimum_required( VERSION 2.6 )
 
 # Logog Static Library
 # https://github.com/johnwbyrd/logog.git
-find_package( Logog REQUIRED )
+if ( PROCYON_VS )
+	set( LOGOG_INCLUDE_DIRS "${PROCYON_THIRDPARTY_ROOT}logog/include" )
+	set( LOGOG_LIBRARY "optimized;${PROCYON_THIRDPARTY_ROOT}logog/lib/vs110/x64/Release/logog.lib;debug;${PROCYON_THIRDPARTY_ROOT}logog/lib/vs110/x64/Debug/logogd.lib")
+else()
+	find_package( Logog REQUIRED )
+endif()
 
 # GLM Math Library
-find_package( GLM REQUIRED )
+if ( PROCYON_VS )
+	set( GLM_INCLUDE_DIRS "${PROCYON_THIRDPARTY_ROOT}glm/include" )
+	add_definitions("-DNOMINMAX")
+else()
+	find_package( GLM REQUIRED )
+endif()
 
 add_library(Procyon_Common STATIC
-	Reflection.cpp 
-	Ioc.cpp 
+	Reflection.cpp
+	Ioc.cpp
 	Image.cpp
 	Transformable.cpp
 )
 
-target_compile_options(Procyon_Common PUBLIC 
+target_compile_options(Procyon_Common PUBLIC
 	-std=c++0x
 	-g
 )

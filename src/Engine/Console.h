@@ -29,7 +29,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-	class InputEvent;
+	struct InputEvent;
 	class Renderer;
 	class Camera2D;
 

@@ -322,6 +322,7 @@ int curve4_div(double x1, double y1,
 		m_angle_tolerance, m_cusp_limit, m_distance_tolerance_square,
 		add_point, obj);
 	add_point(obj, x4, y4);
+    return 0;
 }
 
 #undef M_PI

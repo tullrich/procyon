@@ -38,20 +38,20 @@ namespace Unix {
 
 	class X11GLContext;
 
-	class X11Window : public IWindow
+	class X11Window : public WindowBase
 	{
 	public:
 						X11Window( const std::string& title, unsigned width, unsigned height );
 		virtual 		~X11Window();
 
 		virtual bool 	IsOpen();
-		virtual bool 	Poll( InputEvent& ievent );
+		virtual void 	PollEvents();
 		virtual void 	SetTitle( const std::string& title );
 		virtual void 	SetIcon( const IImage& icon );
 
 		Display* 		GetXDisplay();
 		xcb_window_t 	GetXWindow();
-		X11GLContext*	GetGLContext();
+		GL::IGLContext*	GetGLContext();
 
 	protected:
 
@@ -101,7 +101,7 @@ namespace Unix {
 		xcb_screen_t*		mScreen;
 		xcb_window_t		mWindow;
 
-		xcb_key_symbols_t*  mSymsTable; 
+		xcb_key_symbols_t*  mSymsTable;
 
 		X11GLContext* 		mContext;
 

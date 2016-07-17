@@ -583,7 +583,7 @@ namespace Procyon {
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;
-        cmd.program     	 = NULL;
+        cmd.program          = NULL;
         cmd.flags            = RENDER_SCREEN_SPACE;
         cmd.texture          = tex;
         cmd.instancecount    = 1;

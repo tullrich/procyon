@@ -33,13 +33,11 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-	class IWindow;
-
 	namespace GL {
 		class IGLContext;
 	}
 
-	class MainLoop
+	class MainLoop : public IInputEventListener
 	{
 	public:
 	    				MainLoop( const std::string& windowTitle, unsigned width, unsigned height );
@@ -50,10 +48,10 @@ namespace Procyon {
 	    virtual void    Cleanup() { };
 
 	protected:
-    	void 			HandleEvent( const InputEvent& ev );
+        virtual void 	HandleInputEvent( const InputEvent& ev );
     	double 			SecsSinceLaunch() const;
 	    void    		Frame();
-	    
+
 	    virtual void    Process( FrameTime t ) { };
 	    virtual void    Render() { };
 
