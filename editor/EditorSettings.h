@@ -42,13 +42,14 @@ public:
 	void Save();
 
     Q_PROPERTY(bool GridVisible READ GetGridVisible WRITE SetGridVisible MEMBER mGridVisible NOTIFY GridVisibilityChanged)
-    Q_PROPERTY(bool GridSize READ GetGridSize WRITE SetGridSize MEMBER mGridSize NOTIFY GridSizeChanged)
+    Q_PROPERTY(float GridSize READ GetGridSize WRITE SetGridSize MEMBER mGridSize NOTIFY GridSizeChanged)
+    Q_PROPERTY(int LogFontSize READ GetLogFontSize WRITE SetLogFontSize MEMBER mLogFontSize NOTIFY LogFontSizeChanged)
 
     bool GetGridVisible() const { return mGridVisible; }
-    void SetGridVisible( bool visible ) 
-    { 
+    void SetGridVisible( bool visible )
+    {
     	mGridVisible = visible;
-    	emit GridVisibilityChanged( mGridVisible ); 
+    	emit GridVisibilityChanged( mGridVisible );
     }
 
     float GetGridSize() const { return mGridSize; }
@@ -58,10 +59,17 @@ public:
     	emit GridSizeChanged( mGridSize );
     }
 
+	int GetLogFontSize() const { return mLogFontSize; }
+	void SetLogFontSize( int size )
+	{
+		mLogFontSize = size;
+    	emit LogFontSizeChanged( mLogFontSize );
+	}
 
 signals:
 	void GridVisibilityChanged( bool visibility );
 	void GridSizeChanged( float gridSize );
+	void LogFontSizeChanged( int gridSize );
 
 
 protected:
@@ -69,6 +77,8 @@ protected:
 
 	bool mGridVisible;
 	float mGridSize;
+
+	int mLogFontSize;
 };
 
 #endif /* _EDITOR_SETTINGS_H */

@@ -41,7 +41,7 @@ namespace Procyon {
 	    mHeight = abs( v );
 	    mWidth 	= abs( h );
 
-	    mProjection = 
+	    mProjection =
 	     	glm::mat3( 2.0f / h  				, 0.0f      				, 0.0f
                     ,  0.0f      				, 2.0f / v  				, 0.0f
                     ,  -( right + left ) / h    , -( top + bottom ) / v     , 1.0f    );
@@ -84,7 +84,6 @@ namespace Procyon {
 		mZoom += amount;
 	}
 
-
 	glm::vec2 Camera2D::ScreenToWorld( const glm::vec2& view ) const
 	{
 		return glm::vec2( glm::inverse( GetViewProjection() ) * glm::vec3( view, 1.0f ) );
@@ -124,17 +123,17 @@ namespace Procyon {
 	    float d    = far - near;
    		float S = 1 / ( tan( fov * 0.5f * M_PI / 180 ) );
 
-	    mProjection = 
+	    mProjection =
 			glm::mat4(  S       , 0.0f  , 0.0f 				    , 0.0f
 		              , 0.0f    , S 	, 0.0f 					, 0.0f
 		              , 0.0f  	, 0.0f  , -( far + near) / d 	, -1.0f
-		              , 0.0f    , 0.0f  , -2.0f * far * near / d, 0.0f   );  
+		              , 0.0f    , 0.0f  , -2.0f * far * near / d, 0.0f   );
 
 // return glm::mat4(   2.0f * near / h       , 0.0f                  , 0.0f, 0.0f
 //                 , 0.0f                  , 2.0f * near / v       , 0.0f, 0.0f
 //                 , ( right + left ) / h  , ( top + bottom ) / v  , -( far + near) / d, -1.0f
-//                 , 0.0f                  , 0.0f                  , -2.0f * far * near / d, 0.0f   
-//             );  
+//                 , 0.0f                  , 0.0f                  , -2.0f * far * near / d, 0.0f
+//             );
 	}*/
 
 } /* namespace Procyon */

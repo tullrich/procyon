@@ -35,6 +35,20 @@ namespace Procyon {
 	class Camera2D;
 	namespace GL { class GLTexture; }
 
+	enum class PolyLineJoinMode
+	{
+		MITER,
+		BEVEL,
+		ROUND,
+	};
+
+	enum class PolyLineCapMode
+	{
+		BUTT,
+		ROUND,
+		SQUARE,
+	};
+
 	class Renderer
 	{
 	public:
@@ -51,9 +65,14 @@ namespace Procyon {
 		void 				Draw( const Renderable* r );
         void                DrawWireframeRect( const Rect& rect, const glm::vec4& color );
 		void 				DrawLine( const glm::vec2& start, const glm::vec2& end, const glm::vec4& color );
+		void 				DrawAALine( const glm::vec2& start, const glm::vec2& end, float width, float feather, const glm::vec4& color );
+		void 				DrawAnchor( const glm::vec2* points, const glm::vec4& color, float width, PolyLineJoinMode joinMode, float miterLimit );
+		void 				DrawPolyLine( const std::vector< glm::vec2 >& points, const glm::vec4& color
+								, float width, PolyLineJoinMode joinMode, PolyLineCapMode capMode, float miterLimit = 1.0f );
 		void				DrawWorldLine( const glm::vec2& start, const glm::vec2& end, const glm::vec4& color );
 		void 				DrawTexture( const GL::GLTexture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, struct Rect textureRect = Rect() );
         void                DrawFullscreenTexture( const GL::GLTexture* tex );
+		void 				DrawRectShape( const glm::vec2& pos, const glm::vec2& dim, float orient, const glm::vec4& color );
 		void 				EndRender();
 
 
@@ -68,6 +87,7 @@ namespace Procyon {
 		RenderCore* 		mRenderCore;
 	};
 
+	extern bool sDebugLines;
 } /* namespace Procyon */
 
 #endif /* _RENDERER_H */

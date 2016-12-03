@@ -47,11 +47,11 @@ X11GLContext::~X11GLContext()
 
 bool X11GLContext::CreateX11Context()
 {
-    int attribList[] = { 
-        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT, 
+    int attribList[] = {
+        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
         GLX_SAMPLE_BUFFERS  , 1,            // <-- MSAA
         GLX_SAMPLES         , 4,
-        0 
+        0
     };
 
     Display* display = mWindow->GetXDisplay();
@@ -96,14 +96,13 @@ bool X11GLContext::CreateX11Context()
         return false;
     }
 
-
     XVisualInfo *vi = glXGetVisualFromFBConfig( display, mFBConfig );
     if ( vi )
     {
       int samp_buf, samples;
       glXGetFBConfigAttrib( display, mFBConfig, GLX_SAMPLE_BUFFERS, &samp_buf );
       glXGetFBConfigAttrib( display, mFBConfig, GLX_SAMPLES       , &samples  );
- 
+
       PROCYON_DEBUG( "X11", "Matching fbconfig visual ID 0x%2x: SAMPLE_BUFFERS = %d,"
               " SAMPLES = %d\n", vi->visualid, samp_buf, samples );
     }

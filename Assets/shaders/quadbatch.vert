@@ -13,6 +13,7 @@ in vec3		quadTint;
 out vec2 	uvcoords;
 out vec3 	tint;
 
+uniform vec2 screenDims;
 uniform mat3 screenSpaceTransform;
 
 void main()
@@ -26,5 +27,5 @@ void main()
 
 	vec2 worldPos = ( rotMat * vertPosition ) * quadSize + quadPos;
 
-	gl_Position = vec4( ( screenSpaceTransform * vec3( worldPos, 1.0 ) ).xy, 0.0f, 1.0 );
+	gl_Position = vec4( ( screenSpaceTransform * vec3( worldPos, 1.0f ) ).xy, 0.0f, 1.0f );
 }

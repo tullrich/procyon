@@ -23,14 +23,14 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "EditorSettings.h"
-#include "editor.h"
+#include "Editor.h"
 #include "RecentFileList.h"
 
 #include "Logging.h"
 
 #include <QSettings>
 
-EditorSettings *gSettings;
+static EditorSettings *gSettings;
 
 EditorSettings& EditorSettings::Get()
 {
@@ -43,6 +43,7 @@ EditorSettings::EditorSettings( Editor *parent )
 	, mEditor( parent )
 	, mGridVisible( true )
 	, mGridSize( 5.0f )
+	, mLogFontSize( 12 )
 {
 	Q_ASSERT( !gSettings );
 	gSettings = this;
@@ -66,6 +67,12 @@ void EditorSettings::Load()
     SetGridSize( settings.value( "grid_size", mGridSize ).toFloat() );
     settings.endGroup(); // Camera
 
+	settings.beginGroup( "Preferences" );
+		settings.beginGroup( "Log" );
+	    	SetLogFontSize( settings.value( "log_font_size", mLogFontSize ).toInt() );
+	    settings.endGroup(); // Log
+    settings.endGroup(); // Preferences
+
     PROCYON_DEBUG( "EditorSettings", "EditorSettings loaded: %s, Grid Size %f"
     	, (mGridVisible) ? "Grid Visibile" : "Grid Hidden"
     	, mGridSize );
@@ -77,16 +84,22 @@ void EditorSettings::Save()
 
     // Window settings
     settings.beginGroup( "Window" );
-    settings.setValue( "geometry", mEditor->saveGeometry() );
-    settings.setValue( "window_state", mEditor->saveState() );
-    settings.setValue( "recent_files", mEditor->GetRecent()->GetFiles() );
+    	settings.setValue( "geometry", mEditor->saveGeometry() );
+    	settings.setValue( "window_state", mEditor->saveState() );
+    	settings.setValue( "recent_files", mEditor->GetRecent()->GetFiles() );
     settings.endGroup(); // Window
 
     // Canvas settings
     settings.beginGroup( "Canvas" );
-    settings.setValue( "grid_visible", mGridVisible );
-    settings.setValue( "grid_size", mGridSize );
+    	settings.setValue( "grid_visible", mGridVisible );
+    	settings.setValue( "grid_size", mGridSize );
     settings.endGroup(); // Camera
+
+	settings.beginGroup( "Preferences" );
+		settings.beginGroup( "Log" );
+    		settings.setValue( "log_font_size", mLogFontSize );
+	    settings.endGroup(); // Log
+    settings.endGroup(); // Preferences
 
     PROCYON_DEBUG( "EditorSettings", "EditorSettings saved: %s, Grid Size %f"
     	, (mGridVisible) ? "Grid Visibile" : "Grid Hidden"

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Map>
-    <Camera x="247.04" y="65.8409" zoom="1.18434"/>
+    <Camera x="291" y="52.0937" zoom="1"/>
     <Tiles>
         <TileRow index="0">
-            <Tile index="0">0</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
+            <Tile index="0">2</Tile>
+            <Tile index="1">2</Tile>
+            <Tile index="2">2</Tile>
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
@@ -18,7 +18,7 @@
             <Tile index="0">2</Tile>
             <Tile index="1">2</Tile>
             <Tile index="2">2</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -27,10 +27,10 @@
             <Tile index="9">0</Tile>
         </TileRow>
         <TileRow index="2">
-            <Tile index="0">0</Tile>
+            <Tile index="0">2</Tile>
             <Tile index="1">2</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="2">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -39,7 +39,7 @@
             <Tile index="9">0</Tile>
         </TileRow>
         <TileRow index="3">
-            <Tile index="0">0</Tile>
+            <Tile index="0">2</Tile>
             <Tile index="1">2</Tile>
             <Tile index="2">2</Tile>
             <Tile index="3">2</Tile>
@@ -51,9 +51,9 @@
             <Tile index="9">0</Tile>
         </TileRow>
         <TileRow index="4">
-            <Tile index="0">0</Tile>
+            <Tile index="0">2</Tile>
             <Tile index="1">2</Tile>
-            <Tile index="2">0</Tile>
+            <Tile index="2">2</Tile>
             <Tile index="3">2</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
@@ -75,11 +75,11 @@
             <Tile index="9">0</Tile>
         </TileRow>
         <TileRow index="6">
-            <Tile index="0">0</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
+            <Tile index="0">2</Tile>
+            <Tile index="1">2</Tile>
+            <Tile index="2">2</Tile>
+            <Tile index="3">2</Tile>
+            <Tile index="4">2</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
@@ -87,10 +87,10 @@
             <Tile index="9">0</Tile>
         </TileRow>
         <TileRow index="7">
-            <Tile index="0">0</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
+            <Tile index="0">2</Tile>
+            <Tile index="1">2</Tile>
+            <Tile index="2">2</Tile>
+            <Tile index="3">2</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -99,10 +99,10 @@
             <Tile index="9">0</Tile>
         </TileRow>
         <TileRow index="8">
-            <Tile index="0">0</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
+            <Tile index="0">2</Tile>
+            <Tile index="1">2</Tile>
+            <Tile index="2">2</Tile>
+            <Tile index="3">2</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -112,9 +112,9 @@
         </TileRow>
         <TileRow index="9">
             <Tile index="0">0</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
+            <Tile index="1">2</Tile>
+            <Tile index="2">2</Tile>
+            <Tile index="3">2</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>

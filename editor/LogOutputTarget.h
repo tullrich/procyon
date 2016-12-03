@@ -30,7 +30,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "ProcyonCommon.h"
 
 namespace Procyon {
-	
+
 	class LogOutputTarget;
 
 	class LogOutputView : public QPlainTextEdit
@@ -44,10 +44,14 @@ namespace Procyon {
 	signals:
 		void AppendLog( const QString &html );
 
+	public slots:
+		void SetLogFontSize( int size );
+
 	protected:
 		LogOutputTarget* mTarget;
+		int mFontSize;
 	};
-	
+
 } /* namespace Procyon */
 
 #endif /* _LOG_OUTPUT_TARGET_H */

@@ -8,6 +8,18 @@ Major Features:
   ☐ Fixed size maps
     ☐ correct camera behaviors
   ☐ Paint + Grab + Selection tool
+  ☐ Smart_ptrs: implement myself
+  ☐ Editor preferences dialog
+  ☐ Better lines
+	☐ lineCap
+		☐ butt - Default. A flat edge is added to each end of the line
+		☐ round - A rounded end cap is added to each end of the line
+		☐ square - A square end cap is added to each end of the line
+  	☐ lineJoin
+		☐ bevel
+		☐ round
+		☐ miter - Creates a sharp corner (add miterLimit)
+	☐ Antialiasing
 
 Tweaks to Existing:
   ✔ Fix statusbar message and PROCYON_*() logging @done (15-12-20 14:27)

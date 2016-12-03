@@ -37,33 +37,69 @@ using namespace Procyon::GL;
 
 namespace Procyon {
 
-	World::World()
+	TileDef TileDef::Empty = { "Empty", nullptr, false };
+
+	TileId TileSet::AddTileDef( const TileDef& tile )
+	{
+		mTileDefs.emplace_back( tile );
+		return TileId( mTileDefs.size() );
+	}
+
+	bool TileSet::RemoveTileDef( TileId id )
+	{
+		if ( id > 0 && id <= mTileDefs.size() )
+		{
+			mTileDefs.erase( mTileDefs.begin() + int( id - 1 ) );
+			return true;
+		}
+		return false;
+	}
+
+	const TileDef& TileSet::GetTileDef( TileId id ) const
+	{
+		if ( id <= 0 )
+		{
+			return TileDef::Empty;
+		}
+		return mTileDefs[ id - 1 ];
+	}
+
+	void TileSet::Clear()
+	{
+		mTileDefs.clear();
+	}
+
+	World::World( const TileSet* tileset /*= nullptr*/ )
+		: mTileSet( tileset )
 	{
 		FOREACH_TILE_INDEX( mTiles )
 		{
-			mTiles[ x ][ y ] = TILE_EMPTY;
+			mTiles[ x ][ y ] = 0;
 		}
 	}
 
 	void World::LoadMap( const Map* map )
 	{
+		mTileSet = map->GetTileSet();;
 		FOREACH_TILE_INDEX( mTiles )
 		{
-			mTiles[ x ][ y ] = map->GetTileType( x, y );
+			mTiles[ x ][ y ] = map->GetTile( x, y );
 		}
 	}
 
 	void World::Render( Renderer *r )
 	{
-		static GLTexture* tex1 = new GLTexture( GL_TEXTURE_2D, "sprites/tile.png" );
+		if ( !mTileSet )
+			return;
 
 		FOREACH_TILE_INDEX( mTiles )
 		{
-			if ( mTiles[ x ][ y ] != TILE_EMPTY )
+			const TileDef& tt = mTileSet->GetTileDef( mTiles[ x ][ y ] );
+			if ( tt.texture )
 			{
 				glm::vec2 pos = glm::vec2( (float)x , (float)y ) * (float)TILE_PIXEL_SIZE + HALF_TILE_SIZE;
 				glm::vec2 dim( (float)TILE_PIXEL_SIZE );
-				r->DrawTexture( tex1, pos, dim, 0 );
+				r->DrawTexture( tt.texture, pos, dim, 0 );
 			}
 		}
 	}
@@ -94,7 +130,7 @@ namespace Procyon {
 		{
 			for ( int y = minY; y <= maxY; y++ )
 			{
-				if( mTiles[ x ][ y ] != TILE_EMPTY )
+				if( GetTileDef( glm::vec2( x, y ) ).collidable )
 				{
 					out.push_back( glm::ivec2( x, y ) );
 				}
@@ -129,30 +165,35 @@ namespace Procyon {
 		return false;
 	}
 
-	void World::SetTileType( const glm::ivec2& t, TileType type )
+	void World::SetTile( const glm::ivec2& t, TileId id )
 	{
 		if ( t.x < 0 || t.x >= WORLD_WIDTH ||
 			 t.y < 0 || t.y >= WORLD_HEIGHT )
 			return;
-		mTiles[ t.x ][ t.y ] = type;
+		mTiles[ t.x ][ t.y ] = id;
 	}
 
-	TileType World::GetTileType( const glm::ivec2& t ) const
+	TileId World::GetTile( const glm::ivec2& t ) const
 	{
 		return mTiles[ t.x ][ t.y ];
 	}
 
+	const TileDef& World::GetTileDef( const glm::ivec2& t ) const
+	{
+		return mTileSet->GetTileDef( mTiles[ t.x ][ t.y ] );
+	}
+
 	// Point in pixels
-	TileType World::PointToTile( const glm::vec2& point )
+	const TileDef& World::PointToTileDef( const glm::vec2& point ) const
 	{
 		int xidx = point.x / TILE_PIXEL_SIZE;
 		int yidx = point.y / TILE_PIXEL_SIZE;
 
 		if ( xidx < 0 || xidx >= WORLD_WIDTH ||
 			 yidx < 0 || yidx >= WORLD_HEIGHT )
-			return TILE_EMPTY;
+			return TileDef::Empty;
 
-		return mTiles[ xidx ][ yidx ];
+		return GetTileDef( glm::vec2( xidx, yidx ) );
 	}
 
 } /* namespace Procyon */

@@ -125,6 +125,7 @@ namespace Procyon {
 
     // open state of the console
     static bool				sConsoleOpen 		= false;
+	static std::string 		sLastInput;
 
     // console Renderables
     static Shape* 			sBackground			= NULL;
@@ -491,6 +492,11 @@ namespace Procyon {
             sDebugText = !sDebugText;
             Console_PrintLine( std::string( "text debugging " ) + ( ( sDebugText ) ? "enabled": "disabled" ), sSystemColor );
         }
+		else if ( cmd == "debug_lines")
+		{
+            sDebugLines = !sDebugLines;
+            Console_PrintLine( std::string( "line debugging " ) + ( ( sDebugLines ) ? "enabled": "disabled" ), sSystemColor );
+		}
         else
         {
             Console_PrintLine( "Unknown command!",  sErrorColor );
@@ -519,9 +525,14 @@ namespace Procyon {
                 if ( !sInputText->GetText().empty() )
                 {
                     Console_Execute( sInputText->GetText() );
+					sLastInput = sInputText->GetText();
                     sInputText->SetText( "" );
                 }
             }
+			else if ( ev.keysym == KEY_UP )
+			{
+				sInputText->SetText( sLastInput );
+			}
             else if ( ev.keysym == KEY_ESCAPE )
             {
                 // close on escape

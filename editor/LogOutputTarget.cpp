@@ -23,7 +23,10 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include <Qt>
+#include <QTextBlock>
+
 #include "LogOutputTarget.h"
+#include "EditorSettings.h"
 
 using namespace logog;
 
@@ -62,7 +65,7 @@ namespace Procyon {
 			case LOGOG_LEVEL_WARN2: 	return Qt::darkYellow;
 			case LOGOG_LEVEL_WARN3: 	return Qt::darkYellow;
 			case LOGOG_LEVEL_INFO: 		return Qt::darkGray;
-			case LOGOG_LEVEL_DEBUG: 	return Qt::darkGray;
+			case LOGOG_LEVEL_DEBUG: 	return Qt::blue;
 			case LOGOG_LEVEL_ALL: 		return Qt::darkGray;
 			case LOGOG_LEVEL_NONE:		// Intentional fall through
 			default:  					return Qt::darkGray;
@@ -83,7 +86,7 @@ namespace Procyon {
 
 			QColor c = ErrorLevelColor( topic.Level() );
 
-			m_sMessageBuffer.format( "<span style=\"color:rgb(%i,%i,%i)\">%s:</span> %s" 
+			m_sMessageBuffer.format( "<span class=\"msg\"><span style=\"color:rgb(%i,%i,%i);\">%s:</span> %s</span>"
 				, c.red(), c.green(), c.blue()
 				, ErrorLevelDescription( topic.Level() )
 				, topic.Message().c_str() );
@@ -122,15 +125,39 @@ namespace Procyon {
 	LogOutputView::LogOutputView( QWidget* parent )
 		: QPlainTextEdit( parent )
 		, mTarget( new LogOutputTarget( this ) )
+		, mFontSize( -1 )
 	{
+
+	    setObjectName(QStringLiteral("outputLogger"));
+	    setReadOnly(true);
+	    setMaximumBlockCount(200);
+
 		connect( this, SIGNAL( AppendLog( const QString& ) )
 			,    this, SLOT( appendHtml( const QString& ) )
 			, 	 Qt::AutoConnection ); // explicit default
+
+		SetLogFontSize( EditorSettings::Get().GetLogFontSize() );
+		connect( &EditorSettings::Get(), SIGNAL( LogFontSizeChanged( int ) )
+			, 	 this, SLOT( SetLogFontSize( int ) ) );
 	}
 
 	LogOutputView::~LogOutputView()
 	{
 		delete mTarget;
+	}
+
+	void LogOutputView::SetLogFontSize( int size )
+	{
+		if ( size == mFontSize )
+			return;
+
+		document()->setDefaultStyleSheet(
+			QString(".msg { font-size:%1px; }").arg( size )
+		);
+		mFontSize = size;
+
+		QTextDocument* doc = document();
+		doc->clear();
 	}
 
 } /* namespace Procyon */

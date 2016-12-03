@@ -31,7 +31,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-	namespace GL { 
+	namespace GL {
 		class GLTexture;
 		class GLProgram;
 		class GLBuffer;
@@ -48,13 +48,17 @@ namespace Procyon {
 	enum RenderCommandOp
 	{
 		RENDER_OP_QUAD,
-		RENDER_OP_PRIMITIVE, 
+		RENDER_OP_PRIMITIVE,
+		RENDER_OP_POLYGON,
+		RENDER_OP_AA_LINE
 	};
 
 	enum PrimitiveMode
 	{
 		PRIMITIVE_LINE,
+		PRIMITIVE_LINE_STRIP,
 		PRIMITIVE_TRIANGLE,
+		PRIMITIVE_TRIANGLE_STRIP,
 		PRIMITIVE_QUAD,
 	};
 
@@ -71,6 +75,18 @@ namespace Procyon {
 	struct PrimitiveVertex
 	{
 		float position[2];
+	};
+
+	struct ColorVertex
+	{
+		float position[2];
+		float color[4];
+	};
+
+	struct AALineVertex
+	{
+		float position[2];
+		float normal[2];
 	};
 
 	enum RenderFlags
@@ -110,6 +126,22 @@ namespace Procyon {
 				PrimitiveMode			primmode;
 				float					color[4]; // w: alpha
 			};
+
+			struct // RENDER_OP_POLYGON
+			{
+				const ColorVertex* 		colorverts;
+				int 					colorvertcount;
+				PrimitiveMode			colorprimmode;
+			};
+
+			struct// RENDER_OP_AA_LINE
+			{
+				const AALineVertex* 	lineverts;
+				int 					linevertcount;
+				float 					linewidth;
+				float 					feather;
+				float					linecolor[4]; // w: alpha
+			};
 		};
 
 	};
@@ -129,7 +161,7 @@ namespace Procyon {
 		int totalquads;
 		int totalprimitives;
 	};
-	
+
 	/*
 	================
 	Renderer
@@ -147,16 +179,18 @@ namespace Procyon {
 		bool 					RenderCommandsPending() const;
 
 		void 					Flush( const Camera2D& camera );
-		
+
 		void 					ResetStats();
 		const RenderFrameStats& GetFrameStats() const;
-		
+
 	protected:
 		bool 					PushData( const unsigned char* data, int size );
 		bool 					PushCommandData( const RenderCommand& cmd );
 
 		void 					RenderQuadBatch( const RenderCommand& rc, const Camera2D& camera );
 		void 					RenderPrimitive( const RenderCommand& rc, const Camera2D& camera );
+		void 					RenderPolygon( const RenderCommand& rc, const Camera2D& camera );
+		void 					RenderAntiAliasedLine( const RenderCommand& rc, const Camera2D& camera  );
 
 
 		// The buffer of render commands- cleared each frame.
@@ -175,8 +209,10 @@ namespace Procyon {
 
 		GL::GLProgram* 		mDefaultProg;
 		GL::GLProgram* 		mDefaultPrimitiveProg;
+		GL::GLProgram* 		mDefaultPolygonProg;
+		GL::GLProgram* 		mDefaultLineProg;
 	};
-	
+
 } /* namespace Procyon */
 
 #endif /* _RENDER_CORE_H */

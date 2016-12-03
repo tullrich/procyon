@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <QSurfaceFormat>
 #include <QGLFormat>
 
-#include "editor.h"
+#include "Editor.h"
 #include "ProcyonCommon.h"
 
 int main(int argc, char *argv[])
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     LOGOG_INITIALIZE();
     {
         logog::GetFilterDefault().Group( "Editor" );
-        logog::Filter filter; filter.Group(_LG("MapDocument"));
+        logog::Filter filter; filter.Group(_LG("TileSet"));
         logog::Cout err;
 
 		QGLFormat glFormat;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 		glFormat.setProfile( QGLFormat::CompatibilityProfile ); // Requires >=Qt-4.8.0
 		glFormat.setSampleBuffers( true );
 		glFormat.setSamples(4);
-		QGLFormat::setDefaultFormat( glFormat );
+		//QGLFormat::setDefaultFormat( glFormat );
 
 		QApplication app (argc, argv);
 

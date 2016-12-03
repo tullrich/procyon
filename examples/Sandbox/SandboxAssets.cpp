@@ -26,15 +26,18 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 class SandboxMap : public Map
 {
-    static int tiles[WORLD_HEIGHT * WORLD_WIDTH];
+    static TileId sTiles[WORLD_HEIGHT * WORLD_WIDTH];
+	static TileSet sTileSet;
 
-    virtual TileType GetTileType( int x, int y ) const
+    virtual TileId GetTile( int x, int y ) const
     {
-        return (TileType)tiles[ (WORLD_HEIGHT - 1 - y) * WORLD_WIDTH + x  ];
+        return sTiles[ (WORLD_HEIGHT - 1 - y) * WORLD_WIDTH + x  ];
     }
+
+	virtual const TileSet* GetTileSet() const { return &sTileSet; }
 };
 
-int SandboxMap::tiles[]
+TileId SandboxMap::sTiles[]
     = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 2, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -46,12 +49,14 @@ int SandboxMap::tiles[]
         0, 0, 0, 0, 0, 0, 0, 2, 2, 2,
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 
+TileSet SandboxMap::sTileSet;
 
 FontFace*       SandboxAssets::sMainFont        = NULL;
 Map*            SandboxAssets::sMap             = NULL;
 IImage*         SandboxAssets::sWindowIcon      = NULL;
 GLTexture*      SandboxAssets::sPlayerTexture   = NULL;
 GLTexture*      SandboxAssets::sTileTexture     = NULL;
+GLTexture*      SandboxAssets::sTestTexture     = NULL;
 SoundBuffer*    SandboxAssets::sJumpSound       = NULL;
 
 void SandboxAssets::Load()
@@ -62,6 +67,7 @@ void SandboxAssets::Load()
     sWindowIcon     = new FileImage( "sprites/tile.png" );
     sPlayerTexture  = new GLTexture( GL_TEXTURE_2D, "sprites/raccoon.jpg" );
     sTileTexture    = new GLTexture( GL_TEXTURE_2D, "sprites/tile.png" );
+    sTestTexture    = new GLTexture( GL_TEXTURE_2D, "tinyTest.png" );
     sJumpSound      = new SoundBuffer( "audio/jump.wav" );
 }
 
@@ -72,5 +78,6 @@ void SandboxAssets::Destroy()
     delete sWindowIcon;
     delete sPlayerTexture;
     delete sTileTexture;
+    delete sTestTexture;
     delete sJumpSound;
 }

@@ -45,7 +45,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 using namespace Procyon;
 
 ProcyonCanvas::ProcyonCanvas(QWidget* Parent)
-	: QOpenGLWidget(Parent)
+	: QGLWidget(Parent)
     , mRenderer( NULL )
     , mGhostTile( NULL )
     , mActiveDocument( NULL )
@@ -59,10 +59,14 @@ ProcyonCanvas::ProcyonCanvas(QWidget* Parent)
     setMouseTracking( true );
 
     // Enable msaa
-    QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
-    fmt.setSamples( 4 );
+    QGLFormat fmt = QGLFormat::defaultFormat();
+    //fmt.setSamples( 4 );
+	//fmt.setSwapInterval( 0 );
+	//fmt.setSwapBehavior( QGLFormat::DoubleBuffer );
 
     setFormat( fmt );
+
+	glInit();
 }
 
 ProcyonCanvas::~ProcyonCanvas()
@@ -88,7 +92,7 @@ float ProcyonCanvas::GetGridSize() const
 // Reset the camera transform back to the origin.
 void ProcyonCanvas::ResetCamera()
 {
-    mCamera->SetPosition( 0.0f, 0.0f );
+    mCamera->SetPosition( glm::vec2( (float)TILE_PIXEL_SIZE * 5.0f ) );
     mCamera->SetZoom( 1.0f );
 
     emit CameraChanged( mCamera );
@@ -96,16 +100,15 @@ void ProcyonCanvas::ResetCamera()
 
 void ProcyonCanvas::PauseRendering()
 {
-    disconnect(mTimer, SIGNAL(timeout()), this, SLOT(update()));
+    disconnect(mTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
     mTimer->stop();
 }
 
 void ProcyonCanvas::StartRendering()
 {
-    connect(mTimer, SIGNAL(timeout()), this, SLOT(update()));
-    mTimer->start(1000 / 30);
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
+    mTimer->start( 1000 / 60 );
 }
-
 
 void ProcyonCanvas::OnActiveDocumentChanged( MapDocument *doc )
 {
@@ -170,9 +173,8 @@ void ProcyonCanvas::initializeGL()
 
     // Setup the viewport camera
     mCamera     = new Procyon::Camera2D();
-    mCamera->SetPosition( 0.0f, 0.0f );
     mCamera->OrthographicProj( -(float)1280.0f/2.0f, (float)1280.0f/2.0f, -(float)1280.0f/2.0f, (float)1280.0f/2.0f );
-    emit CameraChanged( mCamera );
+    ResetCamera();
 
     // Create the viewport grid
     mGrid       = new Grid( (float)TILE_PIXEL_SIZE );
@@ -209,11 +211,12 @@ void ProcyonCanvas::paintGL()
     Console_Process( ft );
 
     //TODO: Clear the screen
-    int hex = 0x99CCFF;
+	int hex = 0x999999;
     glClearColor( ((hex >> 16)&0xff)/255.0f, ((hex >> 8)&0xff)/255.0f, (hex&0xff)/255.0f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     //TODO: Enable some required gl settings
+	glViewport( 0, 0, mCamera->GetWidth(), mCamera->GetHeight() );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
     glEnable( GL_MULTISAMPLE );
@@ -225,12 +228,18 @@ void ProcyonCanvas::paintGL()
         {
             mRenderer->ResetCameras( *mCamera );
 
+			int hex2 = 0x99CCFF;
+			mRenderer->DrawRectShape( glm::vec2( TILE_PIXEL_SIZE * 5.0f ), glm::vec2( TILE_PIXEL_SIZE * 10.5f ), 0.0f
+				, glm::vec4( ((hex2 >> 16)&0xff)/255.0f, ((hex2 >> 8)&0xff)/255.0f, (hex2&0xff)/255.0f, 1.0f ) );
+
             mActiveDocument->GetWorld()->Render( mRenderer );
+
+			mActiveDocument->GetRootSceneObject()->Render( mRenderer );
 
             mGrid->Render( mRenderer );
 
-            mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(32.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) );
-            mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 32.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f) );
+            //mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(32.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) );
+            //mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 32.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f) );
 
             mRenderer->Draw( mGhostTile );
         }
@@ -245,7 +254,10 @@ void ProcyonCanvas::resizeGL( int w, int h )
     if ( !mActiveDocument )
         return;
 
-    mCamera->OrthographicProj( -(float)w/2.0f, (float)w/2.0f, -(float)h/2.0f, (float)h/2.0f );
+	float add = 0.0f;
+    mCamera->OrthographicProj(
+		  -(float)w/2.0f + add, (float)w/2.0f + add
+		, -(float)h/2.0f + add, (float)h/2.0f + add);
     emit CameraChanged( mCamera );
 }
 
@@ -265,7 +277,7 @@ void ProcyonCanvas::keyPressEvent( QKeyEvent* event )
     }
     else
     {
-        const float kCameraSpeed = 0.5f;
+        const float kCameraSpeed = 10.0f;
 
         // Move the camera
         switch( ev.keysym )
@@ -281,6 +293,10 @@ void ProcyonCanvas::keyPressEvent( QKeyEvent* event )
 
 void ProcyonCanvas::Zoom( float amount )
 {
+	PROCYON_INFO( "Editor", "<%f, %f> -> <%f, %f>"
+		, mCamera->GetWidth(),  mCamera->GetHeight()
+		, mCamera->GetWidth() / 0.77f, mCamera->GetHeight() / 0.77f );
+
    // Apply zoom amount
     if ( mCamera->GetZoom() - amount <= MIN_ZOOM )
     {
@@ -344,10 +360,10 @@ void ProcyonCanvas::mouseReleaseEvent( QMouseEvent* event )
     switch ( event->button() )
     {
         case Qt::LeftButton:
-            mActiveDocument->GetWorld()->SetTileType( POINT_TO_TILE( scr.x, scr.y ), TILE_1 );
+            mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 1 );
             break;
         case Qt::RightButton:
-            mActiveDocument->GetWorld()->SetTileType( POINT_TO_TILE( scr.x, scr.y ), TILE_EMPTY );
+            mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 2 );
             break;
     }
     mActiveDocument->SetModified();
@@ -387,7 +403,8 @@ void ProcyonCanvas::OnMouseDrag( QMouseEvent* event )
     mMouseLast = ndc;
 
     // Move the camera
-    MoveCamera( -delta.x * 0.75f, -delta.y * 0.75f );
+    MoveCamera( -delta.x, -delta.y);
+	updateGL();
 }
 
 void ProcyonCanvas::OnMouseMove( QMouseEvent* event )
@@ -402,12 +419,12 @@ void ProcyonCanvas::wheelEvent( QWheelEvent* event )
     // Rotation delta in 1/8 degrees.
     // positive indicates forward from the user, negative is towards the user.
     QPoint angleDelta = event->angleDelta();
-    float yScroll = (float)angleDelta.y() / 188.0f;
-    yScroll /= 32.0f;
+    float xScroll = (float)angleDelta.x() / 32.0f;
+    float yScroll = (float)angleDelta.y() / 32.0f;
 
     if ( mActiveDocument )
     {
-        Zoom( yScroll );
+    	MoveCamera( xScroll, yScroll );
     }
 
     event->accept();

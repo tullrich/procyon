@@ -52,7 +52,7 @@ static unsigned short indices[] =
 namespace Procyon {
 
 	static unsigned char 	gVertexAttribData[ MAX_VERTEX_ATTRIB_BYTES ];
-	static int 				gVertexDataWriteOffset 		= 0;
+	static int				gVertexDataWriteOffset 		= 0;
 
 	bool operator==( const RenderCommand& rc1, const RenderCommand& rc2 )
 	{
@@ -66,9 +66,11 @@ namespace Procyon {
 	{
 		switch ( pm )
 		{
-			case PRIMITIVE_LINE: 		return GL_LINES;
-			case PRIMITIVE_TRIANGLE: 	return GL_TRIANGLES;
-			case PRIMITIVE_QUAD: 		return GL_TRIANGLE_STRIP;
+			case PRIMITIVE_LINE: 			return GL_LINES;
+			case PRIMITIVE_LINE_STRIP: 		return GL_LINE_STRIP;
+			case PRIMITIVE_TRIANGLE: 		return GL_TRIANGLES;
+			case PRIMITIVE_TRIANGLE_STRIP: 	return GL_TRIANGLE_STRIP;
+			case PRIMITIVE_QUAD: 			return GL_TRIANGLE_STRIP;
 		}
 		return GL_INVALID_ENUM;
 	}
@@ -85,12 +87,17 @@ namespace Procyon {
    		mDefaultProg    = new GLProgram( "shaders/quadbatch.vert", "shaders/quadbatch.frag" );
    		mDefaultPrimitiveProg
    						= new GLProgram( "shaders/primitive.vert", "shaders/primitive.frag" );
+   		mDefaultPolygonProg
+   						= new GLProgram( "shaders/polygon.vert", "shaders/polygon.frag" );
+		mDefaultLineProg = new GLProgram( "shaders/line.vert", "shaders/line.frag" );
 
 		ResetStats();
 	}
 
 	RenderCore::~RenderCore()
 	{
+		delete mDefaultPolygonProg;
+		delete mDefaultLineProg;
 		delete mDefaultPrimitiveProg;
 		delete mDefaultProg;
 		delete mOffBuffer;
@@ -119,9 +126,13 @@ namespace Procyon {
 		switch ( rc.op )
 		{
 			case RENDER_OP_QUAD:
-				return PushData( (const unsigned char*)rc.quaddata, rc.instancecount * sizeof(BatchedQuad) );
+				return PushData( (const unsigned char*)rc.quaddata, rc.instancecount * sizeof( BatchedQuad ) );
 			case RENDER_OP_PRIMITIVE:
-				return PushData( (const unsigned char*)rc.verts, rc.vertcount * sizeof(PrimitiveVertex) );
+				return PushData( (const unsigned char*)rc.verts, rc.vertcount * sizeof( PrimitiveVertex ) );
+			case RENDER_OP_POLYGON:
+				return PushData( (const unsigned char*)rc.colorverts, rc.colorvertcount * sizeof( ColorVertex ) );
+			case RENDER_OP_AA_LINE:
+				return PushData( (const unsigned char*)rc.lineverts, rc.linevertcount * sizeof( AALineVertex ) );
 		}
 
 		return false;
@@ -183,8 +194,13 @@ namespace Procyon {
 			glUniformMatrix3fv( sstLoc, 1, false, glm::value_ptr( vp ) );
 		}
 
+		// Bind the screen dimensions
+	    GLint dimsLoc = program->GetUniformLocation( "screenDims" );
+		glm::vec2 screenDims = glm::vec2( camera.GetWidth(), camera.GetHeight() );
+		glUniform2f( dimsLoc, screenDims.x, screenDims.y );
+
 		// Bind the texture
-	    GLint texLoc = program->GetAttributeLocation( "tex" );
+	    GLint texLoc = program->GetUniformLocation( "tex" );
 		glUniform1i( texLoc, 0 );
 		glActiveTexture( GL_TEXTURE0 );
 		rc.texture->Bind();
@@ -257,12 +273,12 @@ namespace Procyon {
 		const GLProgram* program = ( rc.program ) ? rc.program : mDefaultPrimitiveProg;
 		program->Bind();
 
-		GLint mvMat = program->GetUniformLocation( "modelViewMat" );
+		GLint mvMatLoc = program->GetUniformLocation( "modelViewMat" );
 		GLint projLoc = program->GetUniformLocation( "projectionMat" );
 		if ( rc.flags & RENDER_SCREEN_SPACE )
 		{
 			glm::mat3 identity;
-			glUniformMatrix3fv( mvMat, 1, false, glm::value_ptr( identity ) );
+			glUniformMatrix3fv( mvMatLoc, 1, false, glm::value_ptr( identity ) );
 
 			glm::mat3 p = camera.GetProjection();
 			glUniformMatrix3fv( projLoc, 1, false, glm::value_ptr( p ) );
@@ -270,7 +286,7 @@ namespace Procyon {
 		else
 		{
 			glm::mat3 mv = camera.GetView();
-			glUniformMatrix3fv( mvMat, 1, false, glm::value_ptr( mv ) );
+			glUniformMatrix3fv( mvMatLoc, 1, false, glm::value_ptr( mv ) );
 
 			glm::mat3 p = camera.GetProjection();
 			glUniformMatrix3fv( projLoc, 1, false, glm::value_ptr( p ) );
@@ -307,6 +323,87 @@ namespace Procyon {
 		mFrameStats.totalprimitives++;
 	}
 
+	void RenderCore::RenderPolygon( const RenderCommand& rc, const Camera2D& camera  )
+	{
+		const GLProgram* program = ( rc.program ) ? rc.program : mDefaultPolygonProg;
+		program->Bind();
+
+		GLint mvMatLoc = program->GetUniformLocation( "u_mv_matrix" );
+		GLint projLoc = program->GetUniformLocation( "u_p_matrix" );
+		if ( rc.flags & RENDER_SCREEN_SPACE )
+		{
+			glm::mat3 identity;
+			glUniformMatrix3fv( mvMatLoc, 1, false, glm::value_ptr( identity ) );
+
+			glm::mat3 p = camera.GetProjection();
+			glUniformMatrix3fv( projLoc, 1, false, glm::value_ptr( p ) );
+		}
+		else
+		{
+			glm::mat3 mv = camera.GetView();
+			glUniformMatrix3fv( mvMatLoc, 1, false, glm::value_ptr( mv ) );
+
+			glm::mat3 p = camera.GetProjection();
+			glUniformMatrix3fv( projLoc, 1, false, glm::value_ptr( p ) );
+		}
+
+		mBuffer->Bind( GL_ARRAY_BUFFER );
+	    GLint vertPosLoc = program->GetAttributeLocation( "vertPosition" );
+    	glVertexAttribPointer( vertPosLoc, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)(long)rc.offset );
+	    glEnableVertexAttribArray( vertPosLoc );
+	    GLint colorLoc = program->GetAttributeLocation( "vertColor" );
+    	glVertexAttribPointer( colorLoc, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)(sizeof(float) * 2 + rc.offset) );
+	    glEnableVertexAttribArray( colorLoc );
+
+    	glDrawArrays( GL_TRIANGLES, 0, rc.colorvertcount );
+
+		mFrameStats.batches++;
+	}
+
+	void RenderCore::RenderAntiAliasedLine( const RenderCommand& rc, const Camera2D& camera  )
+	{
+		const GLProgram* program = ( rc.program ) ? rc.program : mDefaultLineProg;
+		program->Bind();
+
+		GLint widthLoc = program->GetUniformLocation( "u_linewidth" );
+		GLint mvLoc = program->GetUniformLocation( "u_mv_matrix" );
+		GLint projLoc = program->GetUniformLocation( "u_p_matrix" );
+		GLint colorLoc = program->GetUniformLocation( "color" );
+		GLint featherLoc = program->GetUniformLocation( "feather" );
+
+		if ( rc.flags & RENDER_SCREEN_SPACE )
+		{
+			glm::mat3 identity;
+			glUniformMatrix3fv( mvLoc, 1, false, glm::value_ptr( identity ) );
+
+			glm::mat3 p = camera.GetProjection();
+			glUniformMatrix3fv( projLoc, 1, false, glm::value_ptr( p ) );
+		}
+		else
+		{
+			glm::mat3 mv = camera.GetView();
+			glUniformMatrix3fv( mvLoc, 1, false, glm::value_ptr( mv ) );
+
+			glm::mat3 p = camera.GetProjection();
+			glUniformMatrix3fv( projLoc, 1, false, glm::value_ptr( p ) );
+		}
+		glUniform1fv( widthLoc, 1, &rc.linewidth );
+		glUniform1fv( featherLoc, 1, &rc.feather );
+		glUniform4fv( colorLoc, 1, rc.linecolor );
+
+		mBuffer->Bind( GL_ARRAY_BUFFER );
+	    GLint vertPosLoc = program->GetAttributeLocation( "vertPosition" );
+    	glVertexAttribPointer( vertPosLoc, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (const void*)(long)rc.offset );
+	    glEnableVertexAttribArray( vertPosLoc );
+	    GLint normloc = program->GetAttributeLocation( "vertNormal" );
+    	glVertexAttribPointer( normloc, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (const void*)(sizeof(float) * 2 + rc.offset) );
+	    glEnableVertexAttribArray( normloc );
+
+    	glDrawArrays( GL_TRIANGLE_STRIP, 0, rc.vertcount );
+
+		mFrameStats.batches++;
+	}
+
 	bool RenderCore::RenderCommandsPending() const
 	{
 		return mRenderCommandCount != 0;
@@ -338,6 +435,16 @@ namespace Procyon {
 				case RENDER_OP_PRIMITIVE:
 				{
 					RenderPrimitive( rc, camera );
+					break;
+				}
+				case RENDER_OP_POLYGON:
+				{
+					RenderPolygon( rc, camera );
+					break;
+				}
+				case RENDER_OP_AA_LINE:
+				{
+					RenderAntiAliasedLine( rc, camera );
 					break;
 				}
 			}

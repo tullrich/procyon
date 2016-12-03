@@ -94,7 +94,7 @@ namespace Procyon {
 			print_attributes( node->ToElement(), indent + 1 );
 		}
 
-		for ( TiXmlNode *child = node->FirstChild(); child != 0; child = child->NextSibling()) 
+		for ( TiXmlNode *child = node->FirstChild(); child != 0; child = child->NextSibling())
 		{
 			print_dom( child, indent + 1 );
 		}
@@ -105,7 +105,7 @@ namespace Procyon {
 	{
 		for ( int x = 0; x < WORLD_WIDTH; x++ )
 			for ( int y = 0; y < WORLD_HEIGHT; y++ )
-				mTiles[ x ][ y ] = TILE_EMPTY;
+				mTiles[ x ][ y ] = 0;
 	}
 
 	bool XmlMap::Load()
@@ -117,6 +117,8 @@ namespace Procyon {
 			return false;
 		}
 
+		mTileSet.Clear();
+
 		// Walk dom
 		if ( doc.Type() == TiXmlNode::TINYXML_DOCUMENT )
 		{
@@ -124,6 +126,23 @@ namespace Procyon {
 			TiXmlNode *map = NULL;
 			if ( map = doc.FirstChildElement( "Map" ) )
 			{
+				// <TileSet>
+				TiXmlNode *tileSet = NULL;
+				if ( tileSet = map->FirstChildElement( "TileSet" ) )
+				{
+					TiXmlNode *tileDef = 0;
+					while( tileDef = tileSet->IterateChildren( "TileDef", tileDef ) )
+					{
+						TileDef def;
+						if ( !tileDef->ToElement() )
+						{
+							goto error;
+						}
+
+						const char* filepath = tileDef->ToElement()->Attribute("filepath");
+					}
+				}
+
 				// <Tile>
 				TiXmlNode *tiles = NULL;
 				if ( tiles = map->FirstChildElement( "Tiles" ) )
@@ -150,11 +169,10 @@ namespace Procyon {
 								goto error;
 							}
 
-							TileType t = (TileType)atoi( tile->ToElement()->GetText() );
+							TileId t = (TileId)atoi( tile->ToElement()->GetText() );
 
 							if ( x >= 0 && x < WORLD_WIDTH &&
-								 y >= 0 && y < WORLD_HEIGHT &&
-								 t >= 0 && t < TileType::TILE_TYPE_COUNT )
+								 y >= 0 && y < WORLD_HEIGHT )
 							{
 								mTiles[ x ][ y ] = t;
 							}
@@ -183,11 +201,12 @@ namespace Procyon {
 		return true; // success
 
 error:
+		mTileSet.Clear();
 		PROCYON_WARN( "XmlMap", "Malformed map xml" );
 		return false; // error
 	}
 
-	TileType XmlMap::GetTileType( int x, int y ) const
+	TileId XmlMap::GetTile( int x, int y ) const
 	{
 		return mTiles[ x ][ y ];
 	}

@@ -41,6 +41,7 @@ public:
     static IImage*      sWindowIcon;
     static GLTexture*   sPlayerTexture;
     static GLTexture*   sTileTexture;
+    static GLTexture*   sTestTexture;
     static SoundBuffer* sJumpSound;
 
 	static void Load();

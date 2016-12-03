@@ -52,40 +52,57 @@ namespace Procyon {
 	class Contact;
 	namespace GL { class GLTexture; }
 
-	enum TileType
+	typedef int TileId;
+
+	struct TileDef
 	{
-		TILE_EMPTY,
-		TILE_FILLED,
-		TILE_1,
-		TILE_TYPE_COUNT
+		std::string filepath;
+		GL::GLTexture* texture;
+		bool collidable;
+
+		static TileDef Empty;
+	};
+
+	class TileSet
+	{
+	public:
+		TileId AddTileDef( const TileDef& tile );
+		bool RemoveTileDef( TileId id );
+		const TileDef& GetTileDef( TileId id ) const;
+		void Clear();
+		int Size() const { return (int)mTileDefs.size() + 1; }
+	protected:
+		std::vector< TileDef > mTileDefs;
 	};
 
 	class Map
 	{
 	public:
-		virtual TileType GetTileType( int x, int y ) const = 0;
+		virtual TileId GetTile( int x, int y ) const = 0;
+		virtual const TileSet* GetTileSet() const = 0;
 	};
-	
+
 	class World
 	{
 	public:
-					World();
+							World( const TileSet* tileset = nullptr );
 
-		void  		LoadMap( const Map* map );
-		void 		Render( Renderer *r );
+		void  				LoadMap( const Map* map );
+		void 				Render( Renderer *r );
 
-		void 		TileIntersection( const Aabb& bounds, std::vector<glm::ivec2>& out );
-		bool 		IsInternalCollision( const glm::ivec2& gridCoords, const Contact& c );
+		void 				TileIntersection( const Aabb& bounds, std::vector<glm::ivec2>& out );
+		bool 				IsInternalCollision( const glm::ivec2& gridCoords, const Contact& c );
 
-		void 		SetTileType( const glm::ivec2& t, TileType type );
-		TileType 	GetTileType( const glm::ivec2& t ) const;
-
-		TileType	PointToTile( const glm::vec2& point );
+		void 			 	SetTile( const glm::ivec2& t, TileId type );
+		TileId	 			GetTile( const glm::ivec2& t ) const;
+		const TileDef&	 	GetTileDef( const glm::ivec2& t ) const;
+		const TileDef&		PointToTileDef( const glm::vec2& point ) const;
 
 	protected:
-		TileType 	mTiles[ WORLD_WIDTH ][ WORLD_HEIGHT ];
+		const TileSet* 	mTileSet;
+		TileId	 		mTiles[ WORLD_WIDTH ][ WORLD_HEIGHT ];
 	};
-	
+
 } /* namespace Procyon */
 
 #endif /* _WORLD_H */

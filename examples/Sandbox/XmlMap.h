@@ -29,7 +29,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "World.h"
 
 namespace Procyon {
-	
+
 	class XmlMap : public Map
 	{
 	public:
@@ -39,14 +39,15 @@ namespace Procyon {
 
 		bool Load();
 
-		virtual TileType GetTileType( int x, int y ) const;
+		virtual TileId GetTile( int x, int y ) const;
+		virtual const TileSet* GetTileSet() const { return &mTileSet; }
 
 	protected:
 		std::string mFilePath;
-		
-		TileType 	mTiles[ WORLD_WIDTH ][ WORLD_HEIGHT ];
+		TileSet 	mTileSet;
+		TileId	 	mTiles[ WORLD_WIDTH ][ WORLD_HEIGHT ];
 	};
-	
+
 } /* namespace Procyon */
 
 #endif /* XML_MAP_H */

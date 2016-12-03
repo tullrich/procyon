@@ -1,6 +1,6 @@
 # CMakeLists.txt for Procyon Editor
 cmake_minimum_required( VERSION 2.6 )
-	
+
 # Find QT5 (Widgets includes QT5 Base and other modules).
 find_package( Qt5Widgets REQUIRED )
 find_package( Qt5X11Extras REQUIRED )
@@ -22,15 +22,18 @@ set( CMAKE_INCLUDE_CURRENT_DIR ON )
 add_definitions( ${Qt5Widgets_DEFINITIONS} )
 
 # Add QT5 includes (also includes other modules)
-include_directories( 
+include_directories(
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5X11Extras_INCLUDE_DIRS}
 	)
 
+add_subdirectory( QPropertyBrowser )
+include_directories( ${QPROPERTYBROWSER_INCLUDE_DIR} )
+
 # Create the Editor.exe
-add_executable(Editor 
+add_executable(Editor
 	main.cpp
-	editor.cpp 
+	Editor.cpp
 	ProcyonCanvas.cpp
 	ProcyonQtUtil.cpp
 	Grid.cpp
@@ -39,13 +42,17 @@ add_executable(Editor
 	MapDocument.cpp
 	EditorSettings.cpp
 	RecentFileList.cpp
+	SceneObject.cpp
+	PrefsDialog.cpp
 	editor_resources.qrc
 )
 
 # Link against Qt5 and Procyon targets.
 target_link_libraries(Editor
-	Procyon_lib 
-	${Qt5Widgets_LIBRARIES} 
+	Procyon_lib
+	${Qt5Widgets_LIBRARIES}
 	${Qt5X11Extras_LIBRARIES}
 	${Qt5OpenGL_LIBRARIES}
+	${Qt5OpenGL_LIBRARIES}
+	${QPROPERTYBROWSER_LIBRARIES}
 	)

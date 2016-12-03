@@ -42,13 +42,21 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "CustomSprites.h"
 #include "Text.h"
 #include "XmlMap.h"
+#include "Vaser.h"
 
 #include "SandboxAssets.h"
 #include "../../editor/Grid.h"
 
 World*              world;
-bool                LRInput[2];
+bool                LRInput[ 2 ];
+glm::vec2 			sMouseLoc;
+bool 				sMouseDown;
 Text*               fps;
+std::vector< glm::highp_vec2 > sPoints;
+std::vector< glm::highp_vec2 > sPoints2;
+
+VASEr::polyline_opt sOpts;
+VASEr::tessellator_opt sTessOpts;
 
 Sandbox::Sandbox()
     : MainLoop( "Sandbox", 500, 500 )
@@ -95,13 +103,19 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
     // Create the camera
     mCamera = new Camera2D();
-    mCamera->SetPosition( 160.0f, 160.0f );
+    //mCamera->SetPosition( 160.0f, 160.0f );
     mCamera->OrthographicProj( -160.0f, 160.0f, -160.0, 160.0f );
 
     mGrid = new Grid( (float)TILE_PIXEL_SIZE );
 
     // Create the player
     mPlayer   = new Player( world );
+
+	memset( &sOpts, 0, sizeof( VASEr::polyline_opt ) );
+	memset( &sTessOpts, 0, sizeof( VASEr::tessellator_opt ) );
+
+	sOpts.tess = &sTessOpts;
+	sTessOpts.tessellate_only = true;
 
     // Create the optional joystick device (hardcoded for now)
     try
@@ -161,7 +175,7 @@ void Sandbox::Process( FrameTime t )
     mPlayer->Process( t );
 
     const float kCameraLerpSpeed = 1.0f;
-    mCamera->SetPosition( mCamera->GetPosition() * (1.0f - kCameraLerpSpeed) + mPlayer->GetPosition() * kCameraLerpSpeed );
+    mCamera->SetPosition( glm::round( mCamera->GetPosition() * (1.0f - kCameraLerpSpeed) + mPlayer->GetPosition() * kCameraLerpSpeed ) );
 
     Console_Process( t );
 
@@ -172,6 +186,31 @@ void Sandbox::Process( FrameTime t )
     builder << "fps " << (int)mAvgFPS << " batches " << stats.batches << " quads " << stats.totalquads;
     builder << " [min " << stats.batchmin << " max " << stats.batchmax << "]";
     fps->SetText( builder.str() );
+
+	static const float screen_x = 500.0f;
+	static const int maxSamples = 200;
+	static const float x_scale = screen_x / (float)maxSamples;
+
+	static float accum = 0.0f;
+	static int tick = 0;
+	static float sampleHz = 1.0f / 15.0f;
+	accum += t.dt;
+	while ( accum >= sampleHz )
+	{
+		accum -= sampleHz;
+		float x = tick % maxSamples * x_scale - screen_x / 2.0f;
+		float y = sin( tick * sampleHz ) * 100.0f;
+
+		if ( sPoints2.size() != maxSamples )
+		{
+			sPoints2.push_back( glm::vec2( x, y ) );
+		}
+		else
+		{
+			sPoints2[ tick % maxSamples ] = glm::vec2( x, y );
+		}
+		tick++;
+	}
 }
 
 void Sandbox::Render()
@@ -184,6 +223,7 @@ void Sandbox::Render()
 
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_BLEND );
+	glDisable( GL_MULTISAMPLE );
 
     mRenderer->BeginRender();
     {
@@ -191,11 +231,99 @@ void Sandbox::Render()
 
         world->Render( mRenderer );
 
-        //mGrid->Render( mRenderer );
-
         mRenderer->Draw( mPlayer->GetRenderable() );
 
+        mGrid->Render( mRenderer );
+
         mRenderer->Draw( fps );
+		//SandboxAssets::sTestTexture->SetMinMagFilter( GL_LINEAR, GL_LINEAR );
+		//mRenderer->DrawTexture( SandboxAssets::sTestTexture, glm::vec2(), glm::vec2( 10.0f ), 0.0f );
+		//mRenderer->DrawTexture( SandboxAssets::sTestTexture, glm::vec2(), glm::vec2(00.0f, 200.0f), 0.0f );
+
+		float lerp = (sin( mCamera->GetPosition().x / 20.0f )+1.0f) / 2.0f;
+		//mRenderer->DrawAALine( glm::vec2(), glm::vec2(50.0f), 15.0f, lerp, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f ) );
+
+		//mRenderer->DrawPolyLine( sPoints, glm::vec4( 0.0f, 1.0f, 0.0f, 0.6f ), 20.f
+		//	, PolyLineJoinMode::BEVEL, PolyLineCapMode::BUTT, 250.0f );
+
+		//mRenderer->DrawPolyLine( sPoints2, glm::vec4( 0.0f, 1.0f, 0.0f, 0.6f ), 5.f
+		//	, PolyLineJoinMode::BEVEL, PolyLineCapMode::BUTT, 250.0f );
+
+
+		//VASEr::polyline( const Vec2*, Color, double W, int length, const polyline_opt*);
+
+
+		if( sPoints.size() >= 2 )
+		{
+			sOpts.cap = VASEr::PLC_round;
+			sOpts.feather = true;
+			sOpts.feathering = 5.0;
+			VASEr::VASErin::vertex_array_holder holder;
+			sTessOpts.holder = &holder;
+
+			const double weight = 15.0;
+			const VaseColor color = GlmToVaseColor( glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f ) );
+			//VASEr::segment( GlmToVaseVec2( sPoints[ 0 ] ), GlmToVaseVec2( sPoints[ 1 ] ), color, weight, &sOpts);
+
+			std::vector< VaseVec2 > stuff( sPoints.size() );
+			std::vector< VaseColor > stuffColor( sPoints.size() );
+			for (size_t i = 0; i < sPoints.size(); i++)
+			{
+				PROCYON_DEBUG( "PolyLine", "sPoints[ %i ] <%f, %f>", i, sPoints[ i ].x, sPoints[ i ].y );
+				VaseVec2& d = stuff[ i ];
+				d.x = sPoints[ i ].x;
+				d.y = sPoints[ i ].y;
+
+				VaseColor& c = stuffColor[ i ];
+				c.r = ( sPoints[ i ].x + 250.0f ) / 250.0f;
+				c.g = ( sPoints[ i ].y + 250.0f ) / 250.0f;
+				c.b = 0.0;
+				c.a = 0.6f;
+			}
+			//VASEr::polyline( stuff.data(), stuffColor.data(), weight, stuff.size(), &sOpts );
+
+			VASEr::polybezier_opt bazOpts;
+			bazOpts.poly = &sOpts;
+			VASEr::polybezier( stuff.data(), color, weight, stuff.size(), &bazOpts );
+
+			if ( holder.glmode == GL_TRIANGLES )
+			{
+				PROCYON_DEBUG( "PolyLine", "vertex_array_holder.vert %i mode: Triangles", holder.vert.size() );
+
+				assert( holder.vert.size()/2 == holder.color.size()/4 );
+				std::vector< ColorVertex > native( holder.vert.size()/2 );
+				for ( int i = 0; i < holder.vert.size()/2; i++ )
+				{
+					ColorVertex& vert = native[ i ];
+					vert.position[ 0 ] = holder.vert[ i * 2 ];
+					vert.position[ 1 ] = holder.vert[ i * 2 + 1 ];
+					vert.color[ 0 ] = holder.color[ i * 4 ];
+					vert.color[ 1 ] = holder.color[ i * 4 + 1 ];
+					vert.color[ 2 ] = holder.color[ i * 4 + 2 ];
+					vert.color[ 3 ] = holder.color[ i * 4 + 3 ];
+				}
+
+				RenderCommand cmd;
+		        cmd.op               = RENDER_OP_POLYGON;
+		        cmd.program          = NULL;
+		        cmd.flags            = RENDER_SCREEN_SPACE;
+		        cmd.colorprimmode    = PRIMITIVE_TRIANGLE;
+		        cmd.colorverts       = (ColorVertex*) native.data();
+		        cmd.colorvertcount   = native.size();
+		        mRenderer->GetRenderCore()->AddOrAppendCommand( cmd );
+			}
+			else
+			{
+				const char* mode = NULL;
+				switch( holder.glmode )
+				{
+					case GL_TRIANGLES: mode = "Triangles"; break;
+					case GL_TRIANGLE_STRIP: mode = "Triangle Strip"; break;
+					default: mode = "Other"; break;
+				}
+				PROCYON_DEBUG( "PolyLine", "Not Triangles: vertex_array_holder.vert %i mode: %s", holder.vert.size(), mode );
+			}
+		}
 
         Console_Render( mRenderer );
     }
@@ -258,18 +386,45 @@ void Sandbox::OnMouseDown( const InputEvent& ev )
     {
         mCamera->ZoomIn( 0.1f );
     }
+	else if ( ev.mousebutton == MOUSE_BTN_LEFT )
+	{
+		sPoints.push_back( sMouseLoc );
+		sMouseDown = true;
+	}
 }
 
-void Sandbox::OnMouseUp( const InputEvent& ev ) { }
+void Sandbox::OnMouseUp( const InputEvent& ev )
+{
+	if ( ev.mousebutton == MOUSE_BTN_LEFT )
+	{
+		sMouseDown = false;
+	}
+}
 
-void Sandbox::OnMouseMoved( const InputEvent& ev ) { }
+void Sandbox::OnMouseMoved( const InputEvent& ev )
+{
+	sMouseLoc = glm::vec2( glm::inverse( mCamera->GetProjection() )
+		* glm::vec3( ev.mousex * 2.0f - 1.0f, -ev.mousey * 2.0f + 1.0f, 1.0f ) );
+
+	if ( sMouseDown && sPoints.size() > 0 )
+	{
+		sPoints[ sPoints.size() - 1 ] = sMouseLoc;
+	}
+}
 
 void Sandbox::OnWindowChanged( const InputEvent& ev )
 {
+	PROCYON_DEBUG( "Sandbox", "OnWindowChanged <%i, %i>", ev.width, ev.height );
     glViewport( 0, 0, ev.width, ev.height );
     mCamera->OrthographicProj( -ev.width / 2.0f, ev.width / 2.0f
         , -ev.height / 2.0f, ev.height / 2.0f );
-    //mCamera->OrthographicProj( -0.5f, 0.5f, -0.5f, 0.5f );
+	PROCYON_DEBUG( "Sandbox", "mCamera <%f, %f>", mCamera->GetWidth(), mCamera->GetHeight() );
+	glm::mat3 proj = mCamera->GetProjection();
+	PROCYON_DEBUG( "Sandbox", "GetProjection \n\t[%f, %f, %f]\n\t[%f, %f, %f]\n\t[%f, %f, %f]"
+		, proj[0][0], proj[0][1], proj[0][2]
+		, proj[1][0], proj[1][1], proj[1][2]
+		, proj[2][0], proj[2][1], proj[2][2] );
+
 }
 
 Map* Sandbox::LoadMap( std::string filePath )

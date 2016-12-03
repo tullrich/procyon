@@ -51,18 +51,17 @@ void Grid::Render( Renderer* r )
 
 	const float gridAdvance = mGridSize * ((r->GetCamera().GetZoom() < 0.75f) ? mMajorFrequency : 1.0f);
 
-	Rect rect = r->GetCamera().GetScreenRect();
+	//Rect rect = r->GetCamera().GetScreenRect();
+	Rect rect( 0.0f, 32.0f * 10.0f, 32.0f * 10.0f, 32.0f * 10.0f );
 
 	// Draw horizontal lines
 	float yCursor = rect.GetBottomLeft().y - fmod( rect.GetBottomLeft().y, gridAdvance );
 	while ( yCursor <= rect.GetTopLeft().y )
 	{
 		float alpha = (((int)(yCursor / mGridSize)) % mMajorFrequency) ? 0.15f : 0.3f;
-
-		r->DrawWorldLine( glm::vec2( rect.GetTopLeft().x, yCursor ) + glm::vec2( 0.5f, 0.5f )
-			, glm::vec2( rect.GetTopLeft().x + rect.GetWidth(), yCursor ) + glm::vec2( 0.5f, 0.5f )
-			, glm::vec4( glm::vec3( 0.0f ), alpha )  );
-
+		r->DrawWorldLine( glm::vec2( rect.GetTopLeft().x, yCursor )
+			, glm::vec2( rect.GetTopLeft().x + rect.GetWidth(), yCursor )
+			, glm::vec4( glm::vec3( 0.0f ), 0.3f ) );
 		yCursor += gridAdvance;
 	}
 
@@ -71,11 +70,9 @@ void Grid::Render( Renderer* r )
 	while ( xCursor <= rect.GetTopRight().x )
 	{
 		float alpha = (((int)(xCursor / mGridSize)) % mMajorFrequency) ? 0.15f : 0.3f;
-
-		r->DrawWorldLine( glm::vec2( xCursor, rect.GetTopLeft().y ) + glm::vec2( 0.5f, 0.5f )
-			, glm::vec2( xCursor, rect.GetTopLeft().y - rect.GetHeight() ) + glm::vec2( 0.5f, 0.5f )
-			, glm::vec4( glm::vec3( 0.0f ), alpha )  );
-
+		r->DrawWorldLine( glm::vec2( xCursor, rect.GetTopLeft().y )
+			, glm::vec2( xCursor, rect.GetTopLeft().y - rect.GetHeight() )
+			, glm::vec4( glm::vec3( 0.0f ), 0.3f ) );
 		xCursor += gridAdvance;
 	}
 }

@@ -1,20 +1,42 @@
 #include "MapDocument.h"
+#include "SceneObject.h"
 #include "World.h"
+#include "GLTexture.h"
 #include "Camera.h"
 #include "ProcyonQtUtil.h"
+#include "EditorAssets.h"
 
 #include <QFile>
 #include <QXmlStreamWriter>
 
 MapDocument::MapDocument()
-	: mWorld( new Procyon::World() )
+	: mTileSet( new Procyon::TileSet() )
+	, mWorld( new Procyon::World( mTileSet ) )
+	, mRoot( new SceneObject( "Root", this ) )
 	, mModified( false )
 {
+	SceneObject* obj1 = new SceneObject( "Object1", mRoot );
+	mRoot->AddChild( obj1  );
+	mRoot->AddChild( new SceneObject( "Object2", mRoot ) );
+	mRoot->AddChild( new SceneObject( "Object3", mRoot ) );
+	obj1->AddChild( new SceneObject( "Object4", obj1 ) );
+	obj1->AddChild( new SceneObject( "Object5", obj1 ) );
+
+	Procyon::TileDef td;
+	td.filepath = "sprites/tile.png";
+	td.texture = EditorAssets::sTileTexture;
+	td.collidable = true;
+	mTileSet->AddTileDef( td );
+
+	td.filepath = "sprites/uv_map.png";
+	td.texture = new Procyon::GL::GLTexture( GL_TEXTURE_2D, "sprites/uv_map.png" );
+	mTileSet->AddTileDef( td );
 }
 
 MapDocument::~MapDocument()
 {
 	delete mWorld;
+	delete mTileSet;
 }
 
 QString MapDocument::GetTabString() const
@@ -27,7 +49,7 @@ QString MapDocument::GetTabString() const
 
 void MapDocument::SetFilePath( const QFileInfo& filepath )
 {
-	 mFilePath = filepath; 
+	 mFilePath = filepath;
 	 emit FilePathChanged( mFilePath );
 }
 
@@ -40,23 +62,32 @@ void MapDocument::SetModified( bool modified /* = true */)
 	}
 }
 
-bool MapDocument::Save( const QString& filename ) 
+bool MapDocument::Save( const QString& filename )
 {
 	emit DocumentPreparingToSave();
 
 	QFile file( filename );
 
-	if ( !file.open(QIODevice::WriteOnly | QIODevice::Text) )
+	if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
 	{
         PROCYON_WARN( "MapDocument", "Unable to open file '%s' for saving.", filename.toUtf8() );
         return false;
 	}
 
 	QXmlStreamWriter writer( &file );
-    writer.setAutoFormatting(true);
+    writer.setAutoFormatting( true );
     writer.writeStartDocument();
 
-    writer.writeStartElement("Map");
+    writer.writeStartElement( "Map" );
+
+		writer.writeStartElement( "TileSets" );
+		/*for ( int i = 0; i < mTileSets.size(); i++ )
+		{
+			writer.writeStartElement( "TileSet" );
+			writer.writeAttribute( "filepath", mTileSets.at( i ) );
+			writer.writeEndElement(); // TileSet
+		}*/
+		writer.writeEndElement(); // TileSets
 
 	    writer.writeStartElement("Camera");
 	    	writer.writeAttribute( "x", QString::number( mCameraState.center.x ) );
@@ -73,7 +104,7 @@ bool MapDocument::Save( const QString& filename )
 	    	{
 		    	writer.writeStartElement( "Tile" );
 		    	writer.writeAttribute( "index", QString::number( h ) );
-		    	writer.writeCharacters( QString::number( mWorld->GetTileType( glm::ivec2( w, h ) ) ) );
+		    	writer.writeCharacters( QString::number( int( mWorld->GetTile( glm::ivec2( w, h ) ) ) ) );
 	    		writer.writeEndElement(); // Tile
 		    }
 	    	writer.writeEndElement(); // TileRow
@@ -84,13 +115,13 @@ bool MapDocument::Save( const QString& filename )
 
     writer.writeEndDocument();
 
-    if (writer.hasError())
+    if ( writer.hasError() )
 	{
     	PROCYON_WARN( "MapDocument", "Saving map '%s' failed with QXmlStreamWriter error"
     		, filename.toUtf8() );
     	return false;
     }
-	else if (file.error() != QFile::NoError)
+	else if ( file.error() != QFile::NoError )
 	{
     	PROCYON_WARN( "MapDocument", "Saving map '%s' failed with QFile error: %s"
     		, filename.toUtf8(), file.errorString().toUtf8() );
@@ -133,7 +164,22 @@ bool MapDocument::Load( const QString& filename )
 
 		if( reader.isStartElement() )
 		{
-			if ( reader.name() == "Camera" )
+			if ( reader.name() == "TileSet")
+			{
+				reader.readNextStartElement();
+				// parse tiles
+				while ( reader.name() == "TileType" )
+				{
+					QString w = reader.attributes().value("filepath").toString();
+					if ( !w.isEmpty() )
+					{
+						//mTileSets.push_back( w );
+					}
+
+					reader.readNextStartElement();
+				}
+			}
+			else if ( reader.name() == "Camera" )
 			{
 				// parse camera
 				mCameraState.center.x = reader.attributes().value("x").toFloat();
@@ -156,7 +202,7 @@ bool MapDocument::Load( const QString& filename )
 						int tileType = reader.readElementText().toInt();
 						PROCYON_DEBUG( "Editor", "\tTile [%i %i] = %i", w, h, tileType );
 
-						mWorld->SetTileType( glm::ivec2( w, h ), (Procyon::TileType)tileType );
+						mWorld->SetTile( glm::ivec2( w, h ), (Procyon::TileId)tileType );
 
 						//reader.skipCurrentElement();
 						reader.readNextStartElement();
@@ -194,4 +240,9 @@ void MapDocument::SaveCameraState( const Procyon::Camera2D *camera )
 {
     mCameraState.center = camera->GetPosition();
     mCameraState.zoom = camera->GetZoom();
+}
+
+const Procyon::TileDef& MapDocument::GetTileDef( int idx ) const
+{
+	return mTileSet->GetTileDef( (Procyon::TileId)idx );
 }
