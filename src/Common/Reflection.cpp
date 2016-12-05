@@ -68,7 +68,7 @@ void InitReflectionTables()
 {
 	PROCYON_INFO( "Reflection", "Initializing all reflection tables (found %i/%i)."
 		, gAutoRegisteredClassCount, MAX_REFLECTED_CLASSES );
-	for( int i = 0; i < gAutoRegisteredClassCount; i++ )
+	for( unsigned int i = 0; i < gAutoRegisteredClassCount; i++ )
 	{
 		( *gAutoRegisteredClasses[ i ].mRegistrationFunction )( i );
 	}
@@ -86,7 +86,7 @@ void DestroyReflectionTables()
 {
 	PROCYON_INFO( "Reflection", "Destroying all reflection tables (found %i/%i)."
 		, gAutoRegisteredClassCount, MAX_REFLECTED_CLASSES );
-	for( int i = 0; i < gAutoRegisteredClassCount; i++ )
+	for( unsigned int i = 0; i < gAutoRegisteredClassCount; i++ )
 	{
 		(*gAutoRegisteredClasses[i].mDestructionFunction)();
 	}

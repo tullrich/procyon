@@ -107,12 +107,12 @@ namespace Procyon {
 	void World::TileIntersection( const Aabb& bounds, std::vector<glm::ivec2>& out )
 	{
 		glm::vec2 min = bounds.GetMin();
-		int minX = min.x / TILE_PIXEL_SIZE;
-		int minY = min.y / TILE_PIXEL_SIZE;
+		int minX = int( min.x ) / TILE_PIXEL_SIZE;
+		int minY = int( min.y ) / TILE_PIXEL_SIZE;
 
 		glm::vec2 max = bounds.GetMax();
-		int maxX = max.x / TILE_PIXEL_SIZE;
-		int maxY = max.y / TILE_PIXEL_SIZE;
+		int maxX = int( max.x ) / TILE_PIXEL_SIZE;
+		int maxY = int( max.y ) / TILE_PIXEL_SIZE;
 
 		if ( maxX < 0 || minX >= WORLD_WIDTH ||
 			 maxY < 0 || minY >= WORLD_HEIGHT )
@@ -186,8 +186,8 @@ namespace Procyon {
 	// Point in pixels
 	const TileDef& World::PointToTileDef( const glm::vec2& point ) const
 	{
-		int xidx = point.x / TILE_PIXEL_SIZE;
-		int yidx = point.y / TILE_PIXEL_SIZE;
+		int xidx = int( point.x ) / TILE_PIXEL_SIZE;
+		int yidx = int( point.y ) / TILE_PIXEL_SIZE;
 
 		if ( xidx < 0 || xidx >= WORLD_WIDTH ||
 			 yidx < 0 || yidx >= WORLD_HEIGHT )

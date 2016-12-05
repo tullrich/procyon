@@ -29,8 +29,9 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-	struct Contact
+	class Contact
 	{
+	public:
 		glm::vec2 	normal;
 		float 		distance;
 
@@ -45,7 +46,7 @@ namespace Procyon {
 		{
 		}
 	};
-	
+
 } /* namespace Procyon */
 
 #endif /* _CONTACT_H */

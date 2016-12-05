@@ -64,7 +64,7 @@ namespace Procyon {
 			return false; // return failure
 		}
 
-		int size = info.frames * info.channels;
+		int size = (int)info.frames * info.channels;
 		mBuffer = new short[ size ];
 		sf_count_t read = sf_readf_short( snd, mBuffer, info.frames );
 
@@ -83,7 +83,7 @@ namespace Procyon {
 			return false; // return failure
 		}
 
-		mInfo.frames 		= info.frames;
+		mInfo.frames 		= (int)info.frames;
 		mInfo.samplerate 	= info.samplerate;
 		mInfo.channels 		= info.channels;
 		mSize 				= size;

@@ -23,6 +23,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "XmlMap.h"
+#include "GLTexture.h"
 
 #include <tinyxml2.h>
 
@@ -128,22 +129,27 @@ namespace Procyon {
         XMLNode *map = NULL;
 		if ( map = doc.FirstChildElement( "Map" ) )
 		{
-				// <TileSet>
-				TiXmlNode *tileSet = NULL;
-				if ( tileSet = map->FirstChildElement( "TileSet" ) )
+			// <TileSet>
+            XMLNode *tileSet = NULL;
+			if ( tileSet = map->FirstChildElement( "TileSets" ) )
+			{
+                XMLNode *tileDef = 0;
+                for ( tileDef = tileSet->FirstChildElement( "TileSet" ); tileDef; tileDef = tileDef->NextSiblingElement( "TileSet" ) )
 				{
-					TiXmlNode *tileDef = 0;
-					while( tileDef = tileSet->IterateChildren( "TileDef", tileDef ) )
+					TileDef def;
+					if ( !tileDef->ToElement() )
 					{
-						TileDef def;
-						if ( !tileDef->ToElement() )
-						{
-							goto error;
-						}
-
-						const char* filepath = tileDef->ToElement()->Attribute("filepath");
+						goto error;
 					}
+
+					const char* filepath = tileDef->ToElement()->Attribute("filepath");
+
+                    def.collidable = true;
+                    def.filepath = filepath;
+                    def.texture = new GL::GLTexture( GL_TEXTURE_2D, filepath );
+                    mTileSet.AddTileDef( def );
 				}
+			}
 
 			// <Tile>
             XMLNode *tiles = NULL;

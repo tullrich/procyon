@@ -46,9 +46,9 @@ static void DumpFace( FT_Face face, int size )
 {
     /* face: global metrics, unhinted & manually scaled */
     const int units_per_EM = face->units_per_EM;
-    const int newlinegap = glm::round((size * face->height) / (float)units_per_EM);
-    const int ascender = glm::round((size * face->ascender) / (float)units_per_EM);
-    const int descender = glm::round((size * face->descender) / (float)units_per_EM);
+    const int newlinegap = ( int )( glm::round((size * face->height) / (float)units_per_EM ) );
+    const int ascender = ( int )( glm::round((size * face->ascender) / (float)units_per_EM ) );
+    const int descender = ( int )( glm::round((size * face->descender) / (float)units_per_EM ) );
     PROCYON_DEBUG( "FontFace", "face: height %i ascender %i descender %i"
         , newlinegap
         , ascender
@@ -79,9 +79,9 @@ static void DumpGlyph( FT_Bitmap& bitmap )
         , bitmap.rows, bitmap.width, bitmap.pitch, bitmap.pixel_mode );
 
     unsigned char *buf = (unsigned char *)malloc( bitmap.width + 1 );
-    for ( int r = 0; r < bitmap.rows; ++r )
+    for ( unsigned r = 0; r < bitmap.rows; ++r )
     {
-        int c = 0;
+        unsigned c = 0;
         for ( c = 0; c <  bitmap.width; ++c  )
         {
             if ( bitmap.buffer[ r * bitmap.pitch + c ] > 0 )
@@ -163,7 +163,7 @@ namespace Procyon {
             Glyph& glyph = glyphs[ code - 32 ];
             glyph.size = glm::vec2(face->glyph->bitmap.width, face->glyph->bitmap.rows );
             glyph.center = (glyph.size / 2.0f - glm::vec2(-face->glyph->bitmap_left, glyph.size.y - face->glyph->bitmap_top));
-            glyph.advance = face->glyph->advance.x >> 6;
+            glyph.advance = ( float )( face->glyph->advance.x >> 6 );
 
             //PROCYON_DEBUG( "FontFace", "Codepoint '%c' advance %f width %f height %f left %f top %f"
             //    , code, glyph.advance, glyph.size.x, glyph.size.y, glyph.center.x, glyph.center.y );
@@ -340,7 +340,7 @@ namespace Procyon {
 	int FontFace::GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const
 	{
         if ( !FT_HAS_KERNING( (*mFace) ) )
-            return 0.0f;
+            return 0;
 
         FT_Set_Pixel_Sizes( *mFace, 0, fontsize );
 
@@ -351,7 +351,7 @@ namespace Procyon {
         if ( FT_Get_Kerning( *mFace, idx1, idx2, FT_KERNING_DEFAULT, &kern  ) != FT_Err_Ok )
         {
             PROCYON_DEBUG( "FontFace", "Kern Error" );
-            return 0.0f;
+            return 0;
         }
 
 		return kern.x >> 6;

@@ -215,7 +215,7 @@ namespace Procyon {
         sPromptText->SetColor( sPromptColor );
         sPromptText->SetPosition( TEXT_PADDING, HeightForRow(-1) );
 
-        const int promptSize = (int)sPromptText->GetTextDimensions().x + PROMPT_PADDING;
+        const int promptSize = ( int )( sPromptText->GetTextDimensions().x + PROMPT_PADDING );
 
         sInputText = new Text( "", sConsoleFont, CONSOLE_FONT_HEIGHT );
         sInputText->SetColor( glm::vec3( 1.0f, 1.0f, 1.0f ) );
@@ -341,7 +341,7 @@ namespace Procyon {
             , glm::clamp( sConsoleCamera->GetHeight() - CONSOLE_Y_RES - heightDelta, 0.0f, CONSOLE_Y_RES ) );
 
         // oscilate the blink timer, > 0 represents visible
-        sBlinkTimer = sin( t.tsl * M_PI * 2.0f / CURSOR_BLINK_PERIOD );
+        sBlinkTimer = sinf( t.tsl * ( float )M_PI * 2.0f / CURSOR_BLINK_PERIOD );
     }
 
     /*

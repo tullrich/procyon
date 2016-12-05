@@ -27,7 +27,7 @@ typedef unsigned int (WINAPI * __logog_pThreadFn )(void *);
 	( (WaitForSingleObject(( thread ),INFINITE)!=WAIT_OBJECT_0) \
 				|| !CloseHandle(thread) \
 				)
-#define LOGOG_THREAD_SELF (LOGOG_THREAD)GetCurrentThreadId()
+#define LOGOG_THREAD_SELF (LOGOG_THREAD)UlongToHandle(GetCurrentThreadId())
 
 #endif // defined(LOGOG_FLAVOR_WINDOWS)
 

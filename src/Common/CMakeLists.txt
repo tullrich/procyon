@@ -13,7 +13,6 @@ endif()
 # GLM Math Library
 if ( PROCYON_VS )
 	set( GLM_INCLUDE_DIRS "${PROCYON_THIRDPARTY_ROOT}glm/include" )
-	add_definitions("-DNOMINMAX")
 else()
 	find_package( GLM REQUIRED )
 endif()
@@ -25,10 +24,12 @@ add_library(Procyon_Common STATIC
 	Transformable.cpp
 )
 
-target_compile_options(Procyon_Common PUBLIC
-	-std=c++0x
-	-g
-)
+if ( NOT PROCYON_VS )
+	target_compile_options(Procyon_Common PUBLIC
+		-std=c++0x
+		-g
+	)
+endif()
 
 target_include_directories(Procyon_Common PUBLIC
 	${LOGOG_INCLUDE_DIRS}

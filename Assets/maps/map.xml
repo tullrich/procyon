@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Map>
 	<TileSets>
-		<TileSet filepath="test.png"/>
+		<TileSet filepath="sprites/tile.png"/>
+		<TileSet filepath="sprites/tile.png"/>
 	</TileSets>
     <Camera x="203" y="100.781" zoom="1"/>
     <Tiles>
