@@ -86,7 +86,7 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
     mWindow->SetIcon( *SandboxAssets::sWindowIcon );
 
-    fps = new Text( SandboxAssets::sMainFont, 16 );
+    fps = new Text( SandboxAssets::sMainFont, 11 );
 
     world = new World();
 
@@ -161,7 +161,7 @@ void Sandbox::Process( FrameTime t )
         }
 
         double stickValue = mJoyStick->GetAxisValue( AXIS_LEFT_STICK_X );
-        mPlayer->SetLeftRightInput( stickValue );
+        mPlayer->SetLeftRightInput( (float) stickValue );
     }
 
     if ( LRInput[0] )
@@ -181,7 +181,7 @@ void Sandbox::Process( FrameTime t )
 
     const RenderFrameStats& stats = mRenderer->GetRenderCore()->GetFrameStats();
     std::stringstream builder;
-    fps->SetPosition( int(6.0f-mCamera->GetWidth() / 2.0f), int(-mCamera->GetHeight() / 2.0f) );
+    fps->SetPosition( glm::floor( 6.0f-mCamera->GetWidth() / 2.0f ), glm::floor( -mCamera->GetHeight() / 2.0f ) );
     //fps->SetPosition( 6.0f-mCamera->GetWidth() / 2.0f, 6.0f-mCamera->GetHeight() / 2.0f );
     builder << "fps " << (int)mAvgFPS << " batches " << stats.batches << " quads " << stats.totalquads;
     builder << " [min " << stats.batchmin << " max " << stats.batchmax << "]";
@@ -284,7 +284,7 @@ void Sandbox::Render()
 
 			VASEr::polybezier_opt bazOpts;
 			bazOpts.poly = &sOpts;
-			VASEr::polybezier( stuff.data(), color, weight, stuff.size(), &bazOpts );
+			VASEr::polybezier( stuff.data(), color, weight, (int) stuff.size(), &bazOpts );
 
 			if ( holder.glmode == GL_TRIANGLES )
 			{
@@ -309,7 +309,7 @@ void Sandbox::Render()
 		        cmd.flags            = RENDER_SCREEN_SPACE;
 		        cmd.colorprimmode    = PRIMITIVE_TRIANGLE;
 		        cmd.colorverts       = (ColorVertex*) native.data();
-		        cmd.colorvertcount   = native.size();
+		        cmd.colorvertcount   = (int) native.size();
 		        mRenderer->GetRenderCore()->AddOrAppendCommand( cmd );
 			}
 			else
