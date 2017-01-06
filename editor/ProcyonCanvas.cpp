@@ -61,7 +61,7 @@ ProcyonCanvas::ProcyonCanvas(QWidget* Parent)
     // Enable msaa
     QGLFormat fmt = QGLFormat::defaultFormat();
     //fmt.setSamples( 4 );
-	//fmt.setSwapInterval( 0 );
+	fmt.setSwapInterval( 0 );
 	//fmt.setSwapBehavior( QGLFormat::DoubleBuffer );
 
     setFormat( fmt );
@@ -107,7 +107,7 @@ void ProcyonCanvas::PauseRendering()
 void ProcyonCanvas::StartRendering()
 {
     connect(mTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
-    mTimer->start( 1000 / 60 );
+    mTimer->start( 0 );
 }
 
 void ProcyonCanvas::OnActiveDocumentChanged( MapDocument *doc )
@@ -202,8 +202,8 @@ void ProcyonCanvas::paintGL()
     // Setup dt
     float elapsedSecs = mElapsed.elapsed() / 1000.0f;
     FrameTime ft = {
-        .dt = elapsedSecs - mLastDt.tsl,
-        .tsl = elapsedSecs
+        elapsedSecs - mLastDt.tsl,
+        elapsedSecs
     };
     mLastDt = ft;
 
@@ -211,7 +211,7 @@ void ProcyonCanvas::paintGL()
     Console_Process( ft );
 
     //TODO: Clear the screen
-	int hex = 0x999999;
+	int hex = 0xc797979;
     glClearColor( ((hex >> 16)&0xff)/255.0f, ((hex >> 8)&0xff)/255.0f, (hex&0xff)/255.0f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -228,7 +228,7 @@ void ProcyonCanvas::paintGL()
         {
             mRenderer->ResetCameras( *mCamera );
 
-			int hex2 = 0x99CCFF;
+			int hex2 = 0xc797979;//0x99CCFF;
 			mRenderer->DrawRectShape( glm::vec2( TILE_PIXEL_SIZE * 5.0f ), glm::vec2( TILE_PIXEL_SIZE * 10.5f ), 0.0f
 				, glm::vec4( ((hex2 >> 16)&0xff)/255.0f, ((hex2 >> 8)&0xff)/255.0f, (hex2&0xff)/255.0f, 1.0f ) );
 
@@ -353,13 +353,13 @@ void ProcyonCanvas::mousePressEvent( QMouseEvent* event )
 
 void ProcyonCanvas::mouseReleaseEvent( QMouseEvent* event )
 {
-    glm::vec2 scr = WindowToWorld( event->pos() );
+    /*glm::vec2 scr = WindowToWorld( event->pos() );
     PROCYON_DEBUG( "ProcyonCanvas", "Mouse Release Event <%f, %f>", scr.x, scr.y );
 
     if ( !mActiveDocument )
         return;
 
-    switch ( event->button() )
+   switch ( event->button() )
     {
         case Qt::LeftButton:
             mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 1 );
@@ -368,7 +368,7 @@ void ProcyonCanvas::mouseReleaseEvent( QMouseEvent* event )
             mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 2 );
             break;
     }
-    mActiveDocument->SetModified();
+    mActiveDocument->SetModified();*/
 }
 
 // Called when the mouse is moved over this widget *only* while a mouse button is pressed
@@ -376,7 +376,7 @@ void ProcyonCanvas::mouseReleaseEvent( QMouseEvent* event )
 void ProcyonCanvas::mouseMoveEvent( QMouseEvent* event )
 {
     // If the mouse left is pressed, dragging is attempted
-    if ( event->buttons() & Qt::LeftButton )
+    if ( event->buttons() )
     {
         // Prevent misdrags on click by providing a bit of leeway.
         float distFromStart = ( event->pos() - mDragStart ).manhattanLength();
@@ -397,15 +397,31 @@ void ProcyonCanvas::OnMouseDrag( QMouseEvent* event )
     if ( !mActiveDocument )
         return;
 
-    // Compute delta from last known mouse pos
-    glm::vec2 ndc = WindowToScreen( event->pos() );
-    glm::vec2 delta = mCamera->ScreenDirToWorldDir( ndc - mMouseLast );
+    glm::vec2 scr = WindowToWorld( event->pos() );
+    if ( event->buttons() & Qt::LeftButton )
+    {
+        // Compute delta from last known mouse pos
+        glm::vec2 ndc = WindowToScreen( event->pos() );
+        glm::vec2 delta = mCamera->ScreenDirToWorldDir( ndc - mMouseLast );
+        MoveCamera( -delta.x, -delta.y );
 
-    // Store mouse pos for next time
-    mMouseLast = ndc;
+        // Store mouse pos for next time
+        mMouseLast = ndc;
 
-    // Move the camera
-    MoveCamera( -delta.x, -delta.y);
+    }
+    else if ( event->buttons() & Qt::RightButton )
+    {
+        PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
+        mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 1 );
+        mActiveDocument->SetModified();
+    }
+    else if ( event->buttons() & Qt::MiddleButton ) // Move the camera
+    {
+        PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
+        mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 2 );
+        mActiveDocument->SetModified();
+    }
+
 	updateGL();
 }
 

@@ -517,7 +517,7 @@ namespace Procyon {
     */
     bool Console_HandleEvent( const InputEvent& ev )
     {
-        if ( ev.type == EVENT_KEY_DOWN )
+        if ( ev.type == EVENT_KEY_DOWN || ev.type == EVENT_KEY_REPEAT )
         {
             if ( ev.keysym == KEY_RETURN )
             {

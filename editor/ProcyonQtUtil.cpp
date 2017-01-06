@@ -156,10 +156,10 @@ Procyon::InputEvent ProcyonQtUtil::TranslateKeyEvent( const QKeyEvent* qtevent )
 		|| 	qtevent->type() == QEvent::Type::KeyPress );
 
 	InputEvent ev( EVENT_KEY_DOWN );
-    ev.keycode = qtevent->nativeScanCode();
+    ev.scancode = qtevent->nativeScanCode();
     ev.keysym = ProcyonQtUtil::TranslateKeyCode( qtevent->key() );
-    ev.unicode = qtevent->text().at( 0 ).unicode();
     ev.modifiers = 0;// NYI
+    //ev.unicode = qtevent->text().at( 0 ).unicode();
 
     return ev;
 }

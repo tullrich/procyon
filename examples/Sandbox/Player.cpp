@@ -200,7 +200,7 @@ namespace Procyon {
 		if ( mVelocity.y >= 0.0f )
 		{
 			mVelocity += glm::vec2( 0.0f, 225.0f );
-        	//mJumpSnd->Play( true );
+        	mJumpSnd->Play( true );
 		}
 	}
 

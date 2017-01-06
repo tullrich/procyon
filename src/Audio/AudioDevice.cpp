@@ -30,47 +30,66 @@ namespace Procyon {
 		: mDevice( NULL )
 		, mContext( NULL )
 	{ 
+        // create device
 		mDevice = alcOpenDevice(NULL);
-		if ( mDevice )
+		if ( !mDevice )
 		{
-			 // create context
-			mContext = alcCreateContext( mDevice, NULL );
-			if ( mContext )
-			{
-				// set active context
-				alcMakeContextCurrent( mContext ); 
-			}
+            PROCYON_ERROR( "OpenAL", "Unable to open device" );
+            return;
 		}
+
+        // create context
+        mContext = alcCreateContext( mDevice, NULL );
+        if ( !mContext )
+        {
+            PROCYON_ERROR( "OpenAL", "Unable to create context" );
+            return;
+        }
+
+        // set active context
+        if ( alcMakeContextCurrent( mContext ) != AL_TRUE )
+        {
+            PROCYON_ERROR( "OpenAL", "Unable to make context current" );
+            return;
+        }
 
 		SetListenerPosition( glm::vec3() );
 		SetListenerOrientation( glm::quat() );
-
-		// alGetError(void)
 	}
 
 	AudioDevice::~AudioDevice()
 	{
 		alcMakeContextCurrent( NULL );
-		alcDestroyContext( mContext );
-		alcCloseDevice( mDevice );
+
+        if ( mContext )
+        {
+            alcDestroyContext( mContext );
+        }
+        if ( mDevice )
+        {
+            if ( alcCloseDevice( mDevice ) != AL_TRUE )
+            {
+                PROCYON_ERROR( "OpenAL", "Unable to close device" );
+            }
+        }
 	}
 
 	void AudioDevice::SetListenerGain( float gain )
 	{
 		// single float
-		alListenerf( AL_GAIN, glm::max( gain, 0.0f ) );
+        PROCYON_AL_CHECKED( alListenerf( AL_GAIN, glm::max( gain, 0.0f ) ) );
 	}
 
 	void AudioDevice::SetListenerPosition( const glm::vec3& position )
 	{
 		// 3 floats
-		alListenerfv( AL_POSITION, glm::value_ptr( position ) );
+        PROCYON_AL_CHECKED( alListenerfv( AL_POSITION, glm::value_ptr( position ) ) );
 	}
 
 	void AudioDevice::SetListenerVelocity( const glm::vec3& velocity )
 	{
 		// 3 floats
-		alListenerfv( AL_VELOCITY, glm::value_ptr( velocity ) );
+        PROCYON_AL_CHECKED( alListenerfv( AL_VELOCITY, glm::value_ptr( velocity ) ) );
 	}
 
 	void AudioDevice::SetListenerOrientation( const glm::quat& orient )
@@ -81,7 +100,7 @@ namespace Procyon {
 			glm::vec3( 0.0f, 0.0f, -1.0f ) * orient, 
 			glm::vec3( 0.0f, 1.0f, 0.0f ) * orient 
 		};
-		alListenerfv( AL_ORIENTATION, glm::value_ptr( atUp[0] ) );
+        PROCYON_AL_CHECKED( alListenerfv( AL_ORIENTATION, glm::value_ptr( atUp[0] ) ) );
 	}
 
 } /* namespace Procyon */

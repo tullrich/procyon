@@ -61,7 +61,7 @@ namespace GL {
 
 	void GLTexture::Bind() const
 	{
-		glBindTexture( GL_TEXTURE_2D, mTextureId );
+		glBindTexture( mTarget, mTextureId );
 	}
 
 	void GLTexture::SetData( GLenum target, const IImage& img, int mipLevel /* = 0 */ )
@@ -75,7 +75,7 @@ namespace GL {
 			default: throw std::runtime_error("Unsupported GL image format.");
 		}
 
-		glBindTexture( target, mTextureId );
+        Bind();
 
 	    glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	    glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -87,6 +87,8 @@ namespace GL {
 
 	    mTarget = target;
 	    mDimensions = glm::vec2( img.Width(), img.Height() );
+
+        glBindTexture( mTarget, 0 );
 	}
 
 	int	GLTexture::Width() const

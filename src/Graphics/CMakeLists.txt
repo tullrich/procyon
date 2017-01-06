@@ -1,6 +1,4 @@
-# CMakeLists.txt for Platformlib
-cmake_minimum_required( VERSION 2.6 )
-
+# CMakeLists.txt for Procyon_Graphics
 find_package( OpenGL REQUIRED )
 
 if ( PROCYON_VS )

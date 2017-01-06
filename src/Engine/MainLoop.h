@@ -55,8 +55,9 @@ namespace Procyon {
 	    virtual void    Process( FrameTime t ) { };
 	    virtual void    Render() { };
 
-	    // input
-	    virtual void    OnKeyDown( const InputEvent& ev ) { };
+	    // 
+	    virtual void    OnKeyDown( const InputEvent& ev ) {};
+	    virtual void    OnKeyRepeat( const InputEvent& ev ) { };
 	    virtual void    OnKeyUp( const InputEvent& ev ) { };
 	    virtual void    OnMouseDown( const InputEvent& ev ) { };
 	    virtual void    OnMouseUp( const InputEvent& ev ) { };

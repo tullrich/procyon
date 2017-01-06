@@ -214,12 +214,17 @@ namespace Win32 {
 			}
 			case GLFW_REPEAT:
 			{
-				break;
+                InputEvent ievent( EVENT_KEY_REPEAT );
+                ievent.scancode = ( unsigned )scancode;
+                ievent.keysym = TranslateGLFWKey( key, mods );
+                ievent.modifiers = TranslateGLFWModifiers( mods );
+                listener->HandleInputEvent( ievent );
+                break;
 			}
 		}
 	}
 
-	static void GLFWUnicodeCallback( GLFWwindow* window, unsigned int codepoint, int mods )
+	static void GLFWUnicodeCallback( GLFWwindow* window, unsigned int codepoint )
 	{
 		Win32Window* procyonWin = reinterpret_cast< Win32Window* >( glfwGetWindowUserPointer( window ) );
 		if ( !procyonWin )
@@ -244,12 +249,15 @@ namespace Win32 {
 		if ( !listener )
 			return;
 
+        int width, height;
+        glfwGetWindowSize( window, &width, &height );
+
 		InputEvent ievent( EVENT_MOUSE_MOVE );
 		ievent.mousebutton 		= MOUSE_BTN_UNKNOWN;
-		ievent.rawx 			= (int)xpos;
-		ievent.rawy 			= (int)ypos;
-		ievent.mousex			= (float)xpos;
-		ievent.mousey 			= (float)ypos;
+		ievent.rawx 			= ( int )xpos;
+		ievent.rawy 			= ( int )ypos;
+		ievent.mousex			= ( float )xpos / ( float )width;
+		ievent.mousey 			= ( float )ypos / ( float )height;
 		listener->HandleInputEvent( ievent );
 	}
 
@@ -263,12 +271,22 @@ namespace Win32 {
 		if ( !listener )
 			return;
 
+        int width, height;
+        glfwGetWindowSize( window, &width, &height );
+
+        double cursorX, cursorY;
+        glfwGetCursorPos( window, &cursorX, &cursorY );
+
 		switch ( action )
 		{
 			case GLFW_PRESS:
 			{
 				InputEvent ievent( EVENT_MOUSE_DOWN );
 		        ievent.mousebutton = TranslateGLFWMouseButton( button );
+                ievent.rawx = ( int )cursorX;
+                ievent.rawy = ( int )cursorY;
+                ievent.mousex = ( float )cursorX / ( float )width;
+                ievent.mousey = ( float )cursorY / ( float )height;
 				listener->HandleInputEvent( ievent );
 				break;
 			}
@@ -276,6 +294,10 @@ namespace Win32 {
 			{
 				InputEvent ievent( EVENT_MOUSE_UP );
 		        ievent.mousebutton = TranslateGLFWMouseButton( button );
+                ievent.rawx = ( int )cursorX;
+                ievent.rawy = ( int )cursorY;
+                ievent.mousex = ( float )cursorX / ( float )width;
+                ievent.mousey = ( float )cursorY / ( float )height;
                 listener->HandleInputEvent( ievent );
 				break;
 			}
@@ -360,7 +382,7 @@ namespace Win32 {
 
 		glfwSetWindowUserPointer( mWindow, this );
 		glfwSetKeyCallback( mWindow, GLFWKeyCallback );
-        glfwSetCharModsCallback( mWindow, GLFWUnicodeCallback );
+        glfwSetCharCallback( mWindow, GLFWUnicodeCallback );
 		glfwSetCursorPosCallback( mWindow, GLFWCursorPositionCallback );
 		glfwSetMouseButtonCallback( mWindow, GLFWMouseButtonCallback );
 		glfwSetScrollCallback( mWindow, GLFWScrollCallback );

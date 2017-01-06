@@ -30,7 +30,7 @@ int main( int argc, char *argv[] )
 	LOGOG_INITIALIZE();
 	{
 		logog::Cout err;
-        logog::GetFilterDefault().Group( "Sandbox" );
+        logog::GetFilterDefault().Group( "OpenAL" );
 
         Sandbox sb;
         sb.Initialize( argc, argv );

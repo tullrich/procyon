@@ -99,7 +99,7 @@ namespace Procyon {
 		mutable FontSizeTable 			mCache;
 
 
-    	FT_Face* 						mFace;
+    	FT_Face 						mFace;
 	};
 
 	FontFace* 		CreateFontFace( const std::string& fontpath );

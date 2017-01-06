@@ -254,7 +254,7 @@ namespace Procyon {
     }
 
 	FontFace::FontFace( const std::string& filepath, unsigned int fontsize )
-		: mFace( new FT_Face )
+		: mFace( NULL )
 	{
 		PROCYON_DEBUG( "FontFace", "Allocating new FontFace '%s'.", filepath.c_str() );
 
@@ -264,12 +264,14 @@ namespace Procyon {
 			if ( (error = FT_Init_FreeType( &sFreeType ) ) != FT_Err_Ok )
 			{
 				PROCYON_ERROR( "FontFace", "FT_Init_FreeType error" );
+                return;
 			}
 		}
 
-		if( ( error = FT_New_Face( sFreeType, filepath.c_str(), 0, mFace ) ) != FT_Err_Ok )
+		if( ( error = FT_New_Face( sFreeType, filepath.c_str(), 0, &mFace ) ) != FT_Err_Ok )
 		{
 			PROCYON_ERROR( "FontFace", "FT_New_Face error" );
+            return;
 		}
 
 		EnsureCached( fontsize );
@@ -284,7 +286,7 @@ namespace Procyon {
 			delete fs;
 		}
 
-		FT_Done_Face( *mFace );
+		FT_Done_Face( mFace );
 		delete mFace;
 	}
 
@@ -294,7 +296,7 @@ namespace Procyon {
 
 		if ( search == mCache.end() )
 		{
-			mCache[ fontsize ] = new CachedFontSize( fontsize, *mFace );
+			mCache[ fontsize ] = new CachedFontSize( fontsize, mFace );
 		}
 	}
 
@@ -339,16 +341,16 @@ namespace Procyon {
 
 	int FontFace::GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const
 	{
-        if ( !FT_HAS_KERNING( (*mFace) ) )
+        if ( !mFace || !FT_HAS_KERNING( mFace ) )
             return 0;
 
-        FT_Set_Pixel_Sizes( *mFace, 0, fontsize );
+        FT_Set_Pixel_Sizes( mFace, 0, fontsize );
 
-        FT_UInt idx1 = FT_Get_Char_Index( *mFace, cb1 );
-        FT_UInt idx2 = FT_Get_Char_Index( *mFace, cb2 );
+        FT_UInt idx1 = FT_Get_Char_Index( mFace, cb1 );
+        FT_UInt idx2 = FT_Get_Char_Index( mFace, cb2 );
 
         FT_Vector kern;
-        if ( FT_Get_Kerning( *mFace, idx1, idx2, FT_KERNING_DEFAULT, &kern  ) != FT_Err_Ok )
+        if ( FT_Get_Kerning( mFace, idx1, idx2, FT_KERNING_DEFAULT, &kern  ) != FT_Err_Ok )
         {
             PROCYON_DEBUG( "FontFace", "Kern Error" );
             return 0;

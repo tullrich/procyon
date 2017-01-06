@@ -78,6 +78,10 @@ namespace Procyon {
             Console_Toggle();
             return;
         }
+        if ( ev.type == EVENT_TEXT && ev.unicode == '`' )
+        {
+            return; // consume text `
+        }
 
         if ( Console_IsOpen() )
         {
@@ -91,19 +95,31 @@ namespace Procyon {
         switch( ev.type )
         {
             case EVENT_KEY_DOWN:
-                PROCYON_DEBUG( "RawInput", "Got KeyDown: %s, Unicode: %c Ctrl: %s Meta: %s"
-                    , ProcyonKeyCodeToStr( ev.keysym ), ev.unicode
+                PROCYON_DEBUG( "RawInput", "Got KeyDown: %s, Ctrl: %s, Meta: %s"
+                    , ProcyonKeyCodeToStr( ev.keysym )
                     , (ev.modifiers & MODIFIER_CTRL) ? "true" : "false"
                     , (ev.modifiers & MODIFIER_META) ? "true" : "false");
 
                 OnKeyDown( ev );
                 break;
+            case EVENT_KEY_REPEAT:
+                PROCYON_DEBUG( "RawInput", "Got KeyRepeat: %s, Ctrl: %s, Meta: %s"
+                    , ProcyonKeyCodeToStr( ev.keysym )
+                    , ( ev.modifiers & MODIFIER_CTRL ) ? "true" : "false"
+                    , ( ev.modifiers & MODIFIER_META ) ? "true" : "false" );
+
+                OnKeyRepeat( ev );
+                break;
             case EVENT_KEY_UP:
-                PROCYON_DEBUG( "RawInput", "Got KeyUp: %s, Unicode: %c Ctrl: %s Meta: %s"
-                    , ProcyonKeyCodeToStr( ev.keysym ), ev.unicode
+                PROCYON_DEBUG( "RawInput", "Got KeyUp: %s, Ctrl: %s, Meta: %s"
+                    , ProcyonKeyCodeToStr( ev.keysym )
                     , (ev.modifiers & MODIFIER_CTRL) ? "true" : "false"
                     , (ev.modifiers & MODIFIER_META) ? "true" : "false");
                 OnKeyUp( ev );
+                break;
+            case EVENT_TEXT:
+                PROCYON_DEBUG( "RawInput", "Got Text: Unicode: %c"
+                    , ev.unicode );
                 break;
             case EVENT_MOUSE_DOWN:
                 PROCYON_DEBUG( "RawInput", "Got MouseDown X: %f, Y: %f", ev.mousex, ev.mousey );
@@ -155,7 +171,7 @@ namespace Procyon {
         // framerate limit
         if ( processRenderTime < TARGET_HZ )
         {
-            int sleepmicros = ( TARGET_HZ - processRenderTime ) * 1.0e6;
+            int sleepmicros = (int)( ( TARGET_HZ - processRenderTime ) * 1.0e6 );
             PROCYON_DEBUG( "MainLoop", "Sleeping for %i", sleepmicros );
 			std::this_thread::sleep_for( std::chrono::microseconds( sleepmicros ) );
         }

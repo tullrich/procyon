@@ -44,6 +44,7 @@ namespace Procyon {
 	{
 		EVENT_UNKNOWN,
 		EVENT_KEY_DOWN,
+        EVENT_KEY_REPEAT,
 		EVENT_KEY_UP,
 		EVENT_TEXT,
 		EVENT_MOUSE_DOWN,
@@ -103,7 +104,7 @@ namespace Procyon {
 
 		union
 		{
-			struct // EVENT_KEY_DOWN and EVENT_KEY_UP
+			struct // EVENT_KEY_DOWN, EVENT_KEY_REPEAT, and EVENT_KEY_UP
 			{
 				unsigned		scancode; // platform scancode
 				ProcyonKeyCode	keysym;

@@ -29,12 +29,19 @@ Tweaks to Existing:
   ☐ Multi document open
   ☐ Change window title on tab change
   ☐ Scroll bars on canvas
-  ☐ Commit to git
+  ✔ Commit to git @done(2017-01-01 03:15pm) @project(Tweaks to Existing)
 
 Bugs:
   ✔ Make Console look better, it seems fuzzy @done(2016-01-07 04:14pm) @project(Bugs)
   ☐ Console visuals are slightly off due to font changes
   ☐ Saving over an open file allows it to be open twice (QFileSystemWatcher)
+
+Windows Port:
+  ✔ Crash on mouse down. Something with the spline render. @done(2017-01-01 03:11pm) @project(Windows Port)
+  ✔ Control characters not key flooding (hold backspace) @done(2017-01-01 01:51pm) @project(Windows Port)
+  ✔ No audio @done(2017-01-01 02:31pm) @project(Windows Port)
+  ✔ Weird font rendering @done(2017-01-01 02:31pm) @project(Windows Port)
+  ☐ add INPUT_EVENT_REPEAT to nix build
 
 Stretch:
   ☐ Fibers/Coroutines

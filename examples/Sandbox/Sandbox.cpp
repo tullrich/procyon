@@ -59,7 +59,7 @@ VASEr::polyline_opt sOpts;
 VASEr::tessellator_opt sTessOpts;
 
 Sandbox::Sandbox()
-    : MainLoop( "Sandbox", 500, 500 )
+    : MainLoop( "Sandbox", SANDBOX_WINDOW_WIDTH, SANDBOX_WINDOW_HEIGHT )
     , mJoyStick( NULL )
     , mPlayer( NULL )
     , mRenderer( NULL )
@@ -103,8 +103,9 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
     // Create the camera
     mCamera = new Camera2D();
-    //mCamera->SetPosition( 160.0f, 160.0f );
-    mCamera->OrthographicProj( -160.0f, 160.0f, -160.0, 160.0f );
+    mCamera->OrthographicProj( 
+          -SANDBOX_WINDOW_WIDTH / 2.0f, SANDBOX_WINDOW_WIDTH / 2.0f
+        , -SANDBOX_WINDOW_HEIGHT / 2.0f, SANDBOX_WINDOW_HEIGHT / 2.0f );
 
     mGrid = new Grid( (float)TILE_PIXEL_SIZE );
 
@@ -253,7 +254,7 @@ void Sandbox::Render()
 		//VASEr::polyline( const Vec2*, Color, double W, int length, const polyline_opt*);
 
 
-		if( sPoints.size() >= 2 )
+		if( sPoints.size() >= 4 )
 		{
 			sOpts.cap = VASEr::PLC_round;
 			sOpts.feather = true;

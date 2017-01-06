@@ -30,13 +30,13 @@ namespace Procyon {
 	SoundBuffer::SoundBuffer()
 		: mBufferId( AL_NONE )
 	{
-		alGenBuffers( 1, &mBufferId );
+        PROCYON_AL_CHECKED( alGenBuffers( 1, &mBufferId ) );
 	}
 
 	SoundBuffer::SoundBuffer( const std::string& filepath )
 		: mBufferId( AL_NONE )
 	{
-		alGenBuffers( 1, &mBufferId );
+        PROCYON_AL_CHECKED( alGenBuffers( 1, &mBufferId ) );
 		
 		SoundFile snd( filepath, true );
 		SetData( snd );
@@ -44,7 +44,7 @@ namespace Procyon {
 
 	SoundBuffer::~SoundBuffer()
 	{
-		alDeleteBuffers( 1, &mBufferId );
+        PROCYON_AL_CHECKED( alDeleteBuffers( 1, &mBufferId ) );
 	}
 
 	void SoundBuffer::SetData( const SoundFile& snd )
@@ -65,7 +65,7 @@ namespace Procyon {
 				return;
 			}
 		}
-		alBufferData( mBufferId, format, snd.GetBuffer(), snd.GetByteSize(), snd.GetSampleRate() );
+        PROCYON_AL_CHECKED( alBufferData( mBufferId, format, snd.GetBuffer(), snd.GetByteSize(), snd.GetSampleRate() ) );
 	}
 
 	ALuint SoundBuffer::GetHandle() const
@@ -75,18 +75,18 @@ namespace Procyon {
 
 	void SoundBuffer::SetSampleRate( int samplerate )
 	{
-		alBufferi( mBufferId, AL_FREQUENCY, samplerate ); 
+        PROCYON_AL_CHECKED( alBufferi( mBufferId, AL_FREQUENCY, samplerate ) );
 	}
 
 	void SoundBuffer::SetChannelCount( int channels )
 	{
-		alBufferi( mBufferId, AL_CHANNELS, glm::max( channels, 1 ) ); 
+        PROCYON_AL_CHECKED( alBufferi( mBufferId, AL_CHANNELS, glm::max( channels, 1 ) ) );
 	}
 
 	int SoundBuffer::GetSize() const
 	{
 		int size = 0;
-		alGetBufferi( mBufferId, AL_SIZE, &size );
+		PROCYON_AL_CHECKED( alGetBufferi( mBufferId, AL_SIZE, &size ) );
 		return size;
 	}
 

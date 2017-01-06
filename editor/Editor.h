@@ -115,7 +115,7 @@ protected:
 	QMenu* mSceneTreeItemMenu;
 
     // The active document (the one in the currently viewable tab)
-    MapDocument*    mActiveDocument;;
+    MapDocument*    mActiveDocument;
 
     // The working set of map documents
     QList< MapDocument* > mDocuments;

@@ -29,4 +29,15 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "AL/al.h"
 #include "AL/alc.h"
 
+#define PROCYON_AL_CHECKED( expr )                                  \
+        do {                                                        \
+            expr;                                                   \
+            ALCenum error = alGetError();                           \
+            if ( error != AL_NO_ERROR ) {                           \
+                const ALchar* errStr = alGetString( error );        \
+                PROCYON_DEBUG( "OpenAL", "Call '%s;' returned error code: %s",                 \
+                    #expr, errStr);                                 \
+            }                                                       \
+        } while( false );
+
 #endif /* SYMBOL */

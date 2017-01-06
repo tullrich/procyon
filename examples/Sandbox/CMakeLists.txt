@@ -20,6 +20,6 @@ include_directories(
 )
 
 target_link_libraries(Sandbox
-	${PROCYON_LINKER_INPUT}
+	Procyon_lib
 	${TinyXML_LIBRARIES}
 )

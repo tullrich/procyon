@@ -1,6 +1,4 @@
 # CMakeLists.txt for audio module
-cmake_minimum_required( VERSION 2.6 )
-
 # OpenAl audio library
 if ( PROCYON_VS )
 	set( OPENAL_INCLUDE_DIR "${PROCYON_THIRDPARTY_ROOT}openal-1.1/include" )

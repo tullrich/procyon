@@ -34,18 +34,17 @@ int main(int argc, char *argv[])
 	int ret;
     LOGOG_INITIALIZE();
     {
-        logog::GetFilterDefault().Group( "Editor" );
-        logog::Filter filter; filter.Group(_LG("TileSet"));
+        logog::GetFilterDefault().Group( "ProcyonCanvas" );
         logog::Cout err;
 
 		QGLFormat glFormat;
 		glFormat.setVersion( 3, 3 );
 		glFormat.setProfile( QGLFormat::CompatibilityProfile ); // Requires >=Qt-4.8.0
 		glFormat.setSampleBuffers( true );
-		glFormat.setSamples(4);
+		glFormat.setSamples( 4 );
 		//QGLFormat::setDefaultFormat( glFormat );
 
-		QApplication app (argc, argv);
+		QApplication app( argc, argv  );
 
 		Editor *ef = new Editor();
 	    ef->show();

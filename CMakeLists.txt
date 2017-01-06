@@ -66,11 +66,8 @@ add_subdirectory( src/Engine )
 add_subdirectory( src/Audio )
 
 # Procyon lib
-add_library(Procyon_lib STATIC)
-
-target_link_libraries(Procyon_lib
-	${PROCYON_LINKER_INPUT}
-)
+add_library( Procyon_lib INTERFACE )
+target_link_libraries( Procyon_lib INTERFACE ${PROCYON_LINKER_INPUT} )
 
 # optional tests
 if ( test )

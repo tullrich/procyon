@@ -29,6 +29,9 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtTreePropertyBrowser>
 #include <QMetaProperty>
 #include <QOpenGLContext>
+#include <QGraphicsView>
+#include <QAbstractScrollArea>
+#include <QScrollBar>
 
 #include "Camera.h"
 
@@ -64,6 +67,10 @@ Editor::Editor( QWidget *parent )
 {
     mUi->setupUi( this );
 
+	QIcon icon;
+	icon.addFile( QStringLiteral(":/resources/appico.ico") );
+    setWindowIcon( icon );
+
     // Init tab bar
     mTabBar = new QTabBar( mUi->centralwidget );
     mTabBar->setMovable( true );
@@ -77,11 +84,42 @@ Editor::Editor( QWidget *parent )
     connect( mTabBar, &QTabBar::tabBarDoubleClicked, [this]( int tab ) { if ( tab == -1 ) NewDocument(); } );
 
     // Init central canvas
-    mCanvas = new ProcyonCanvas( mUi->centralwidget );
-    mUi->centralwidget->layout()->addWidget( mCanvas );
+    QAbstractScrollArea* scrollArea = new QAbstractScrollArea( mUi->centralwidget );
+    QVBoxLayout* scrollAreaLayout = new QVBoxLayout( scrollArea->viewport() );
+    scrollAreaLayout->setContentsMargins( 0, 0, 0, 0 );
+
+    // set black background
+    QPalette pal = palette();
+    pal.setColor( QPalette::Background, Qt::red );
+    scrollArea->viewport()->setAutoFillBackground( true );
+    scrollArea->viewport()->setPalette( pal );
+
+    scrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarPolicy::ScrollBarAlwaysOn );
+    scrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarPolicy::ScrollBarAlwaysOn );
+    mUi->centralwidget->layout()->addWidget( scrollArea );
+    scrollArea->verticalScrollBar()->setPageStep( 10 );
+    scrollArea->horizontalScrollBar()->setPageStep( 10 );
+    scrollArea->verticalScrollBar()->setRange( 0, 100 );
+    scrollArea->horizontalScrollBar()->setRange( 0, 100 );
+
+    mCanvas = new ProcyonCanvas( scrollArea->viewport() );
+    connect( scrollArea->horizontalScrollBar(), &QScrollBar::valueChanged, [ this ]( int value ) {
+        PROCYON_DEBUG("ProcyonCanvas", "scrolllled");
+        //mCanvas->move( value, 0 );
+        mActiveDocument->GetRootSceneObject()->setProperty( "Position", QPoint( value, 0 ) );
+    } );
+    scrollAreaLayout->addWidget( mCanvas );
+
     connect( this, SIGNAL( ActiveDocumentChanged(MapDocument*) ), mCanvas, SLOT( OnActiveDocumentChanged(MapDocument*) ) );
     connect( mCanvas, SIGNAL( CameraChanged( const Procyon::Camera2D* ) )
            , this, SLOT( CanvasCameraChanged( const Procyon::Camera2D* ) ) );
+
+    // QGraphicsView
+    /*QGraphicsScene* scene = new QGraphicsScene( 0, 0, 1000.0f, 1000.0f );
+    QGraphicsView* view = new QGraphicsView( scene, mUi->centralwidget );
+    view->setViewport( new QGLWidget() );
+    scene->addText( "Hello, world!" );
+    mUi->centralwidget->layout()->addWidget( view );*/
 
     // Init simple menu actions
     connect( mUi->actionNew, SIGNAL( triggered() ), this, SLOT( NewDocument() ) );

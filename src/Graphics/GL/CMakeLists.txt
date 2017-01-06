@@ -1,6 +1,4 @@
-# CMakeLists.txt for Unix PlatformLib implementation
-cmake_minimum_required( VERSION 2.6 )
-
+# CMakeLists.txt GL source files
 set( PROCYON_GRAPHICS_SRC_FILES
 	${PROCYON_PLATFORM_SRC_FILES}
 	${CMAKE_CURRENT_SOURCE_DIR}/GLTexture.cpp
