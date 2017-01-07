@@ -287,7 +287,6 @@ namespace Procyon {
 		}
 
 		FT_Done_Face( mFace );
-		delete mFace;
 	}
 
 	void FontFace::EnsureCached( unsigned int fontsize ) const
