@@ -59,7 +59,9 @@ public:
     void    PauseRendering();
     void    StartRendering();
 
-    Procyon::Rect GetCameraBounds() const { return mCameraBounds; }
+    Procyon::Rect   GetMapBounds() const { return mMapBounds; }
+    glm::vec2       GetCameraPosition() const;
+    Procyon::Rect   GetCameraViewport() const;
 
 signals:
     void    CameraChanged( const Procyon::Camera2D* camera );
@@ -75,6 +77,9 @@ public slots:
 
     void    SaveCameraState();
 
+    void    MoveCamera( float xMove, float yMove );
+    void    SetCamera( float xPos, float yPos );
+
 protected:
     virtual void    initializeGL();
     virtual void    paintGL();
@@ -84,7 +89,6 @@ protected:
     glm::vec2       WindowToWorld( const QPointF& point );
     glm::vec2       WindowToScreen( const QPointF& point );
     void            Zoom( float amount );
-    void            MoveCamera( float xMove, float yMove );
 
     // Input handlers
     virtual void    mousePressEvent( QMouseEvent* event );
@@ -126,8 +130,8 @@ protected:
 
     Procyon::Sprite*    mGhostTile;
 
-	// The camera bounding region
-	Procyon::Rect		mCameraBounds;
+	// The map bounding region
+	Procyon::Rect		mMapBounds;
 
 };
 

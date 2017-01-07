@@ -131,6 +131,9 @@ protected:
 
 	// Tile sets list widget
 	QListWidget* mTileSetsView;
+
+	// Viewport scroll area
+	QAbstractScrollArea* mScrollArea;
 };
 
 #endif /* _EDITOR_H */

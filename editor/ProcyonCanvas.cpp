@@ -110,6 +110,16 @@ void ProcyonCanvas::StartRendering()
     mTimer->start( 1000 / 60 );
 }
 
+glm::vec2 ProcyonCanvas::GetCameraPosition() const
+{ 
+    return mCamera->GetPosition();
+}
+
+Procyon::Rect ProcyonCanvas::GetCameraViewport() const
+{
+    return mCamera->GetScreenRect();
+}
+
 void ProcyonCanvas::OnActiveDocumentChanged( MapDocument *doc )
 {
     if ( mActiveDocument )
@@ -125,6 +135,9 @@ void ProcyonCanvas::OnActiveDocumentChanged( MapDocument *doc )
     mActiveDocument = doc;
     connect( mActiveDocument, SIGNAL( DocumentPreparingToSave() )
         , this, SLOT( SaveCameraState() ) );
+
+	mMapBounds = Rect( 0, mActiveDocument->GetSize().y * TILE_PIXEL_SIZE,
+		mActiveDocument->GetSize().x * TILE_PIXEL_SIZE, mActiveDocument->GetSize().y * TILE_PIXEL_SIZE );
 
     // Restore previous state
     if ( mCamera )
@@ -228,7 +241,7 @@ void ProcyonCanvas::paintGL()
         {
             mRenderer->ResetCameras( *mCamera );
 
-			int hex2 = 0xc797979;//0x99CCFF;
+			int hex2 = 0xcccccc;
 			mRenderer->DrawRectShape( glm::vec2( TILE_PIXEL_SIZE * 5.0f ), glm::vec2( TILE_PIXEL_SIZE * 10.5f ), 0.0f
 				, glm::vec4( ((hex2 >> 16)&0xff)/255.0f, ((hex2 >> 8)&0xff)/255.0f, (hex2&0xff)/255.0f, 1.0f ) );
 
@@ -316,12 +329,21 @@ void ProcyonCanvas::Zoom( float amount )
     emit CameraChanged( mCamera );
 }
 
-void ProcyonCanvas::MoveCamera( float xMove, float yMove )
+void ProcyonCanvas::SetCamera( float xPos, float yPos )
 {
-    mCamera->Move( xMove, yMove );
+    glm::vec2 newPos;
+    newPos.x = glm::clamp( xPos, 0.0f, ( float )( mActiveDocument->GetWorld()->GetSize().x * TILE_PIXEL_SIZE ) );
+    newPos.y = glm::clamp( yPos, 0.0f, ( float )( mActiveDocument->GetWorld()->GetSize().y * TILE_PIXEL_SIZE ) );
+
+    mCamera->SetPosition( newPos );
 
     // Notify
     emit CameraChanged( mCamera );
+}
+
+void ProcyonCanvas::MoveCamera( float xMove, float yMove )
+{
+    SetCamera( xMove + mCamera->GetPosition().x, yMove + mCamera->GetPosition().y );
 }
 
 // Convert a point from window to screen coordinates. ( screen is normalized [-1, 1] )
