@@ -29,15 +29,17 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "RectShape.h"
 #include "Contact.h"
 
-#define FOREACH_TILE_INDEX( tiles )  				\
-	for ( int x = 0; x < WORLD_WIDTH; x++ )			\
-		for ( int y = 0; y < WORLD_HEIGHT; y++ )	\
+#define TILE_INDEX( tx, ty ) ( ( tx ) * mSize.y + ( ty ) )
+
+#define FOREACH_TILE_INDEX( tiles ) 			\
+	for ( int x = 0; x < mSize.x; x++ )			\
+		for ( int y = 0; y < mSize.y; y++ )		\
 
 using namespace Procyon::GL;
 
 namespace Procyon {
 
-	TileDef TileDef::Empty = { "Empty", nullptr, false };
+	TileDef TileDef::Empty;
 
 	TileId TileSet::AddTileDef( const TileDef& tile )
 	{
@@ -69,21 +71,23 @@ namespace Procyon {
 		mTileDefs.clear();
 	}
 
-	World::World( const TileSet* tileset /*= nullptr*/ )
-		: mTileSet( tileset )
+	void World::NewWorld( const glm::ivec2& size, const TileSet* tileset )
 	{
-		FOREACH_TILE_INDEX( mTiles )
-		{
-			mTiles[ x ][ y ] = 0;
-		}
+		mTileSet = tileset;
+		mSize = size;
+		mTiles.clear();
+		mTiles.resize( size.x * size.y, 0 ); // clear to empty
 	}
 
 	void World::LoadMap( const Map* map )
 	{
-		mTileSet = map->GetTileSet();;
+		mTileSet = map->GetTileSet();
+		mSize = map->GetSize();
+		mTiles.clear();
+		mTiles.resize( mSize.x * mSize.y, 0 ); // clear to empty
 		FOREACH_TILE_INDEX( mTiles )
 		{
-			mTiles[ x ][ y ] = map->GetTile( x, y );
+			mTiles[ TILE_INDEX( x, y) ] = map->GetTile( x, y );
 		}
 	}
 
@@ -94,7 +98,7 @@ namespace Procyon {
 
 		FOREACH_TILE_INDEX( mTiles )
 		{
-			const TileDef& tt = mTileSet->GetTileDef( mTiles[ x ][ y ] );
+			const TileDef& tt = mTileSet->GetTileDef( mTiles[ TILE_INDEX( x, y ) ] );
 			if ( tt.texture )
 			{
 				glm::vec2 pos = glm::vec2( (float)x , (float)y ) * (float)TILE_PIXEL_SIZE + HALF_TILE_SIZE;
@@ -104,7 +108,7 @@ namespace Procyon {
 		}
 	}
 
-	void World::TileIntersection( const Aabb& bounds, std::vector<glm::ivec2>& out )
+	void World::TileIntersection( const Aabb& bounds, std::vector< glm::ivec2 >& out )
 	{
 		glm::vec2 min = bounds.GetMin();
 		int minX = int( min.x ) / TILE_PIXEL_SIZE;
@@ -114,15 +118,14 @@ namespace Procyon {
 		int maxX = int( max.x ) / TILE_PIXEL_SIZE;
 		int maxY = int( max.y ) / TILE_PIXEL_SIZE;
 
-		if ( maxX < 0 || minX >= WORLD_WIDTH ||
-			 maxY < 0 || minY >= WORLD_HEIGHT )
+		if ( maxX < 0 || minX >= mSize.x ||
+			 maxY < 0 || minY >= mSize.y )
 			return;
 
-		maxX = glm::clamp( maxX, 0, WORLD_WIDTH - 1 );
-		minY = glm::clamp( minY, 0, WORLD_HEIGHT - 1 );
-		maxX = glm::clamp( maxX, 0, WORLD_WIDTH - 1 );
-		maxY = glm::clamp( maxY, 0, WORLD_HEIGHT - 1 );
-
+		maxX = glm::clamp( maxX, 0, mSize.x - 1 );
+		minY = glm::clamp( minY, 0, mSize.y - 1 );
+		maxX = glm::clamp( maxX, 0, mSize.x - 1 );
+		maxY = glm::clamp( maxY, 0, mSize.y - 1 );
 
 		PROCYON_DEBUG( "World", "IsInternalCollision <%i, %i> max <%i, %i>", minX, minY, maxX, maxY );
 
@@ -140,25 +143,25 @@ namespace Procyon {
 
 	bool World::IsInternalCollision( const glm::ivec2& gridCoords, const Contact& c )
 	{
-		if ( c.normal.x > 0.0f && gridCoords.x + 1 < WORLD_WIDTH )
+		if ( c.normal.x > 0.0f && gridCoords.x + 1 < mSize.x )
 		{
-			if ( mTiles[ gridCoords.x + 1 ][ gridCoords.y ] )
+			if ( mTiles[ TILE_INDEX( gridCoords.x + 1, gridCoords.y ) ] )
 				return true;
 		}
 		else if ( c.normal.x < 0.0f && gridCoords.x - 1 >= 0 )
 		{
-			if ( mTiles[ gridCoords.x - 1 ][ gridCoords.y ] )
+			if ( mTiles[ TILE_INDEX( gridCoords.x - 1, gridCoords.y ) ] )
 				return true;
 		}
 
-		if ( c.normal.y > 0.0f && gridCoords.y + 1 < WORLD_HEIGHT )
+		if ( c.normal.y > 0.0f && gridCoords.y + 1 < mSize.y )
 		{
-			if ( mTiles[ gridCoords.x ][ gridCoords.y + 1] )
+			if ( mTiles[ TILE_INDEX( gridCoords.x, gridCoords.y + 1 ) ] )
 				return true;
 		}
 		else if( c.normal.y < 0.0f && gridCoords.y - 1 >= 0 )
 		{
-			if ( mTiles[ gridCoords.x ][ gridCoords.y - 1 ] )
+			if ( mTiles[ TILE_INDEX( gridCoords.x, gridCoords.y - 1 ) ] )
 				return true;
 		}
 
@@ -167,20 +170,20 @@ namespace Procyon {
 
 	void World::SetTile( const glm::ivec2& t, TileId id )
 	{
-		if ( t.x < 0 || t.x >= WORLD_WIDTH ||
-			 t.y < 0 || t.y >= WORLD_HEIGHT )
+		if ( t.x < 0 || t.x >= mSize.x ||
+			 t.y < 0 || t.y >= mSize.y )
 			return;
-		mTiles[ t.x ][ t.y ] = id;
+		mTiles[ TILE_INDEX( t.x, t.y ) ] = id;
 	}
 
 	TileId World::GetTile( const glm::ivec2& t ) const
 	{
-		return mTiles[ t.x ][ t.y ];
+		return mTiles[ TILE_INDEX( t.x, t.y ) ];
 	}
 
 	const TileDef& World::GetTileDef( const glm::ivec2& t ) const
 	{
-		return mTileSet->GetTileDef( mTiles[ t.x ][ t.y ] );
+		return mTileSet->GetTileDef( mTiles[ TILE_INDEX( t.x, t.y ) ] );
 	}
 
 	// Point in pixels
@@ -189,8 +192,8 @@ namespace Procyon {
 		int xidx = int( point.x ) / TILE_PIXEL_SIZE;
 		int yidx = int( point.y ) / TILE_PIXEL_SIZE;
 
-		if ( xidx < 0 || xidx >= WORLD_WIDTH ||
-			 yidx < 0 || yidx >= WORLD_HEIGHT )
+		if ( xidx < 0 || xidx >= mSize.x ||
+			 yidx < 0 || yidx >= mSize.y )
 			return TileDef::Empty;
 
 		return GetTileDef( glm::vec2( xidx, yidx ) );

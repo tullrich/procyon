@@ -57,6 +57,7 @@ add_executable(Editor WIN32
 	RecentFileList.cpp
 	SceneObject.cpp
 	PrefsDialog.cpp
+	NewMapDialog.cpp
 	editor_resources.qrc
 	${PROCYON_PLATFORM_SOURCES}
 )

@@ -29,6 +29,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace tinyxml2;
 
+#define TILE_INDEX( tx, ty ) ( ( tx ) * mSize.y + ( ty ) )
+
 namespace Procyon {
 
 	static int sindent( char *buf, int indent, char c = ' ' )
@@ -42,7 +44,7 @@ namespace Procyon {
 
 	static void print_attributes( XMLElement *element, int indent )
 	{
-		char buf[1024];
+		char buf[ 1024 ];
 		char *msg = buf;
 
 		msg += sindent( msg, indent );
@@ -108,9 +110,6 @@ namespace Procyon {
 	XmlMap::XmlMap( const std::string& filePath )
 		: mFilePath( filePath )
 	{
-		for ( int x = 0; x < WORLD_WIDTH; x++ )
-			for ( int y = 0; y < WORLD_HEIGHT; y++ )
-				mTiles[ x ][ y ] = 0;
 	}
 
 	bool XmlMap::Load()
@@ -121,7 +120,6 @@ namespace Procyon {
 		{
 			return false;
 		}
-
 		mTileSet.Clear();
 
 		// Walk dom
@@ -131,10 +129,10 @@ namespace Procyon {
 		{
 			// <TileSet>
             XMLNode *tileSet = NULL;
-			if ( tileSet = map->FirstChildElement( "TileSets" ) )
+			if ( tileSet = map->FirstChildElement( "TileSet" ) )
 			{
                 XMLNode *tileDef = 0;
-                for ( tileDef = tileSet->FirstChildElement( "TileSet" ); tileDef; tileDef = tileDef->NextSiblingElement( "TileSet" ) )
+                for ( tileDef = tileSet->FirstChildElement( "TileDef" ); tileDef; tileDef = tileDef->NextSiblingElement( "TileDef" ) )
 				{
 					TileDef def;
 					if ( !tileDef->ToElement() )
@@ -143,10 +141,12 @@ namespace Procyon {
 					}
 
 					const char* filepath = tileDef->ToElement()->Attribute("filepath");
-
-                    def.collidable = true;
-                    def.filepath = filepath;
-                    def.texture = new GL::GLTexture( GL_TEXTURE_2D, filepath );
+                    if ( filepath )
+                    {
+                        def.filepath = filepath;
+                        def.texture = new GL::GLTexture( GL_TEXTURE_2D, filepath );
+                        def.collidable = true;
+                    }
                     mTileSet.AddTileDef( def );
 				}
 			}
@@ -155,6 +155,15 @@ namespace Procyon {
             XMLNode *tiles = NULL;
 			if ( tiles = map->FirstChildElement( "Tiles" ) )
 			{
+                if ( tiles->ToElement()->QueryIntAttribute( "width", &mSize.x ) != XML_SUCCESS
+                    || tiles->ToElement()->QueryIntAttribute( "height", &mSize.y ) != XML_SUCCESS
+                    || mSize.x <= 0
+                    || mSize.y <= 0 )
+                {
+                    goto error;
+                }
+                mTiles.resize( mSize.x * mSize.y, 0 );
+
 				// ForEach <TileRow>
                 const XMLElement *tileRow;
 				for ( tileRow = tiles->FirstChildElement( "TileRow" ); tileRow; tileRow = tileRow->NextSiblingElement( "TileRow" ) )
@@ -179,14 +188,10 @@ namespace Procyon {
 
 							TileId t = (TileId)atoi( tile->ToElement()->GetText() );
 
-						if ( x >= 0 && x < WORLD_WIDTH &&
-								 y >= 0 && y < WORLD_HEIGHT )
+						if ( x >= 0 && x < mSize.x &&
+							 y >= 0 && y < mSize.y )
 						{
-							mTiles[ x ][ y ] = t;
-						}
-						else
-						{
-							goto error;
+							mTiles[ TILE_INDEX( x, y ) ] = t;
 						}
 					}
 				}
@@ -204,6 +209,8 @@ namespace Procyon {
 		return true; // success
 
 error:
+        mSize = glm::ivec2();
+        mTiles.clear();
 		mTileSet.Clear();
 		PROCYON_WARN( "XmlMap", "Malformed map xml" );
 		return false; // error
@@ -211,7 +218,7 @@ error:
 
 	TileId XmlMap::GetTile( int x, int y ) const
 	{
-		return mTiles[ x ][ y ];
+		return mTiles[ TILE_INDEX( x, y ) ];
 	}
 
 } /* namespace Procyon */

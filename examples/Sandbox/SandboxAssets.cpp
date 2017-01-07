@@ -24,9 +24,13 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "SandboxAssets.h"
 
+#define WORLD_HEIGHT 10
+#define WORLD_WIDTH 10
+
 class SandboxMap : public Map
 {
-    static TileId sTiles[WORLD_HEIGHT * WORLD_WIDTH];
+public:
+    static TileId sTiles[ WORLD_HEIGHT * WORLD_WIDTH ];
 	static TileSet sTileSet;
 
     virtual TileId GetTile( int x, int y ) const
@@ -35,19 +39,20 @@ class SandboxMap : public Map
     }
 
 	virtual const TileSet* GetTileSet() const { return &sTileSet; }
+    virtual glm::ivec2 GetSize() const { return glm::ivec2( WORLD_WIDTH, WORLD_HEIGHT ); }
 };
 
 TileId SandboxMap::sTiles[]
     = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 2, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 2, 2, 2, 2, 0, 0,
-        0, 0, 0, 2, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 1, 1, 1, 0, 0,
+        0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 2, 2, 2, 2, 2, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
-        0, 0, 0, 0, 0, 0, 0, 2, 2, 2,
-        2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+        0, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+        0, 0, 0, 0, 0, 0, 0, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
 TileSet SandboxMap::sTileSet;
 
@@ -63,12 +68,18 @@ void SandboxAssets::Load()
 {
 	sMainFont 		= CreateFontFace( "fonts/arial.ttf" );
 	//sMainFont 		= CreateFontFace( "fonts/Economica-Regular.ttf" );
-	sMap 			= new SandboxMap();
     sWindowIcon     = new FileImage( "sprites/tile.png" );
     sPlayerTexture  = new GLTexture( GL_TEXTURE_2D, "sprites/raccoon.jpg" );
     sTileTexture    = new GLTexture( GL_TEXTURE_2D, "sprites/tile.png" );
     sTestTexture    = new GLTexture( GL_TEXTURE_2D, "tinyTest.png" );
     sJumpSound      = new SoundBuffer( "audio/jump.wav" );
+
+    TileDef def;
+    def.filepath    = "sprites/tile.png";
+    def.texture     = sTileTexture;
+    def.collidable  = true;
+    SandboxMap::sTileSet.AddTileDef( def );
+    sMap = new SandboxMap();
 }
 
 void SandboxAssets::Destroy()

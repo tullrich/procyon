@@ -234,7 +234,7 @@ void Sandbox::Render()
 
         mRenderer->Draw( mPlayer->GetRenderable() );
 
-        mGrid->Render( mRenderer );
+        mGrid->Render( mRenderer, world->GetSize() );
 
         mRenderer->Draw( fps );
 		//SandboxAssets::sTestTexture->SetMinMagFilter( GL_LINEAR, GL_LINEAR );
@@ -434,7 +434,7 @@ Map* Sandbox::LoadMap( std::string filePath )
     if ( !map->Load() )
     {
         delete map;
-        return NULL;
+        return nullptr;
     }
     return map;
 }

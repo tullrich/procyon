@@ -22,34 +22,32 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
-#ifndef XML_MAP_H
-#define XML_MAP_H
 
+#ifndef _NEW_MAP_DIALOG_H
+#define _NEW_MAP_DIALOG_H
+
+#include <QDialog>
 #include "ProcyonCommon.h"
-#include "World.h"
 
-namespace Procyon {
+class QAbstractButton;
+namespace Ui {
+	class NewMapDialog;
+}
 
-	class XmlMap : public Map
-	{
-	public:
-		XmlMap( const std::string& filePath );
+class NewMapDialog : public QDialog
+{
+	Q_OBJECT
+public:
+	NewMapDialog( QWidget *parent = 0 );
+	virtual ~NewMapDialog();
 
-		const std::string& GetFilePath() const { return mFilePath; }
+	glm::ivec2 GetMapSize() const;
+public slots:
+	void UpdatePixelDimensionsLabel();
 
-		bool Load();
+protected:
+	// Designer layout
+    Ui::NewMapDialog* 	mUi;
+};
 
-		virtual TileId GetTile( int x, int y ) const;
-		virtual const TileSet* GetTileSet() const { return &mTileSet; }
-        virtual glm::ivec2 GetSize() const { return mSize; }
-
-	protected:
-		std::string             mFilePath;
-		TileSet 	            mTileSet;
-        glm::ivec2              mSize;
-        std::vector< TileId >   mTiles;
-	};
-
-} /* namespace Procyon */
-
-#endif /* XML_MAP_H */
+#endif /* _NEW_MAP_DIALOG_H */

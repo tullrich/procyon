@@ -27,9 +27,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ProcyonCommon.h"
 
-#define WORLD_HEIGHT 10
-#define WORLD_WIDTH 10
-
 #define PIXELS_PER_METER 32.0f
 #define PixelsToMeters( pixels ) 						\
 			(float)pixels / (float)PIXELS_PER_METER
@@ -57,8 +54,8 @@ namespace Procyon {
 	struct TileDef
 	{
 		std::string filepath;
-		GL::GLTexture* texture;
-		bool collidable;
+		GL::GLTexture* texture = nullptr;
+		bool collidable = false;
 
 		static TileDef Empty;
 	};
@@ -80,13 +77,13 @@ namespace Procyon {
 	public:
 		virtual TileId GetTile( int x, int y ) const = 0;
 		virtual const TileSet* GetTileSet() const = 0;
+        virtual glm::ivec2 GetSize() const = 0;
 	};
 
 	class World
 	{
 	public:
-							World( const TileSet* tileset = nullptr );
-
+		void 				NewWorld( const glm::ivec2& size, const TileSet* tileset );
 		void  				LoadMap( const Map* map );
 		void 				Render( Renderer *r );
 
@@ -97,10 +94,12 @@ namespace Procyon {
 		TileId	 			GetTile( const glm::ivec2& t ) const;
 		const TileDef&	 	GetTileDef( const glm::ivec2& t ) const;
 		const TileDef&		PointToTileDef( const glm::vec2& point ) const;
+		const glm::ivec2& 	GetSize() const { return mSize; }
 
 	protected:
-		const TileSet* 	mTileSet;
-		TileId	 		mTiles[ WORLD_WIDTH ][ WORLD_HEIGHT ];
+		const TileSet* 			mTileSet = nullptr;
+		glm::ivec2 				mSize;
+		std::vector< TileId >	mTiles;
 	};
 
 } /* namespace Procyon */
