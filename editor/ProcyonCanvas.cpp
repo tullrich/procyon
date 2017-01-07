@@ -107,7 +107,7 @@ void ProcyonCanvas::PauseRendering()
 void ProcyonCanvas::StartRendering()
 {
     connect(mTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
-    mTimer->start( 0 );
+    mTimer->start( 1000 / 60 );
 }
 
 void ProcyonCanvas::OnActiveDocumentChanged( MapDocument *doc )
