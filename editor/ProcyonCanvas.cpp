@@ -201,7 +201,7 @@ void ProcyonCanvas::paintGL()
 {
     // Setup dt
     float elapsedSecs = mElapsed.elapsed() / 1000.0f;
-    FrameTime ft = {
+    Procyon::FrameTime ft = {
         elapsedSecs - mLastDt.tsl,
         elapsedSecs
     };
@@ -236,7 +236,7 @@ void ProcyonCanvas::paintGL()
 
 			mActiveDocument->GetRootSceneObject()->Render( mRenderer );
 
-            mGrid->Render( mRenderer );
+            mGrid->Render( mRenderer, mActiveDocument->GetWorld()->GetSize() );
 
             //mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(32.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) );
             //mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 32.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f) );

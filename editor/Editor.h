@@ -68,7 +68,7 @@ protected slots:
     void TabMoved( int from, int to );
 	void OpenPreferences();
 
-    void NewDocument();
+    void NewDocument( bool dialog = true );
     void OpenDocument( QString filePath = QString() );
     bool SaveDocument( MapDocument *doc = NULL );
     bool SaveDocumentAs( MapDocument *doc = NULL );

@@ -51,7 +51,7 @@ public:
 	void 	SetMajorLineFrequency( int frequency );
 
 	// Render the grid using debug lines.
-	void 	Render( Procyon::Renderer* r );
+	void 	Render( Procyon::Renderer* r, const glm::ivec2& size );
 
 protected:
 

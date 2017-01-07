@@ -44,7 +44,7 @@ void Grid::SetMajorLineFrequency(int frequency)
 	mMajorFrequency = frequency;
 }
 
-void Grid::Render( Renderer* r )
+void Grid::Render( Renderer* r, const glm::ivec2& size )
 {
 	if ( !mEnabled )
 		return;
@@ -52,7 +52,7 @@ void Grid::Render( Renderer* r )
 	const float gridAdvance = mGridSize * ((r->GetCamera().GetZoom() < 0.75f) ? mMajorFrequency : 1.0f);
 
 	//Rect rect = r->GetCamera().GetScreenRect();
-	Rect rect( 0.0f, 32.0f * 10.0f, 32.0f * 10.0f, 32.0f * 10.0f );
+	Rect rect( 0.0f, 32.0f * (float)size.y, 32.0f * ( float )size.x, 32.0f * ( float )size.y );
 
 	// Draw horizontal lines
 	float yCursor = rect.GetBottomLeft().y - fmod( rect.GetBottomLeft().y, gridAdvance );

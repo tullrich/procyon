@@ -53,66 +53,69 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #define BIT( bit ) (0x01<<bit)
 
-struct FrameTime
-{
-    float   dt;     // delta time
-    float   tsl;    // time since launch
-};
+namespace Procyon {
 
-struct Rect
-{
-	glm::vec2 topleft; 		// top-left coords
-	glm::vec2 dimensions; 	// width and height
-
-	Rect()
-		: dimensions( 1.0f )
+	struct FrameTime
 	{
-	}
+	    float   dt;     // delta time
+	    float   tsl;    // time since launch
+	};
 
-	Rect( const glm::vec2& tl, const glm::vec2& dims )
-		: topleft( tl )
-		, dimensions( dims )
+	struct Rect
 	{
-	}
+		glm::vec2 topleft; 		// top-left coords
+		glm::vec2 dimensions; 	// width and height
 
-	Rect( float x, float y, float width, float height )
-		: topleft( x, y )
-		, dimensions( width, height )
-	{
-	}
+		Rect()
+			: dimensions( 1.0f )
+		{
+		}
 
-	glm::mat3 GetTransform() const
-	{
-		return glm::scale( 
-			glm::translate( glm::mat3(), topleft ), glm::vec2( dimensions.x, dimensions.y) );
-	}
+		Rect( const glm::vec2& tl, const glm::vec2& dims )
+			: topleft( tl )
+			, dimensions( dims )
+		{
+		}
 
-	glm::vec2 	GetDimensions() const { return dimensions; }
-	float 		GetWidth() const { return dimensions.x; }
-	float 		GetHeight() const { return dimensions.y; }
+		Rect( float x, float y, float width, float height )
+			: topleft( x, y )
+			, dimensions( width, height )
+		{
+		}
+
+		glm::mat3 GetTransform() const
+		{
+			return glm::scale(
+				glm::translate( glm::mat3(), topleft ), glm::vec2( dimensions.x, dimensions.y) );
+		}
+
+		glm::vec2 	GetDimensions() const { return dimensions; }
+		float 		GetWidth() const { return dimensions.x; }
+		float 		GetHeight() const { return dimensions.y; }
 
 
-	// Returns the top left corner of this Rect
-	glm::vec2 	GetTopLeft() const { return topleft; }
+		// Returns the top left corner of this Rect
+		glm::vec2 	GetTopLeft() const { return topleft; }
 
-	// Returns the bottom left corner of this Rect
-	glm::vec2 	GetBottomLeft() const
-	{ 
-		return topleft + glm::vec2( 0.0f, -dimensions.y );
-	}
+		// Returns the bottom left corner of this Rect
+		glm::vec2 	GetBottomLeft() const
+		{
+			return topleft + glm::vec2( 0.0f, -dimensions.y );
+		}
 
-	// Returns the top right corner of this Rect
-	glm::vec2 	GetTopRight() const
-	{
-		return topleft + glm::vec2( dimensions.x, 0.0f );
-	}
+		// Returns the top right corner of this Rect
+		glm::vec2 	GetTopRight() const
+		{
+			return topleft + glm::vec2( dimensions.x, 0.0f );
+		}
 
-	glm::vec2 	GetBottomRight() const
-	{
-		return topleft + glm::vec2( dimensions.x, -dimensions.y ); 
-	}
+		glm::vec2 	GetBottomRight() const
+		{
+			return topleft + glm::vec2( dimensions.x, -dimensions.y );
+		}
 
-};
+	};
+} /* namespace Procyon */
 
 #include "Aabb.h"
 

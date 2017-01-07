@@ -59,6 +59,8 @@ public:
     void    PauseRendering();
     void    StartRendering();
 
+    Procyon::Rect GetCameraBounds() const { return mCameraBounds; }
+
 signals:
     void    CameraChanged( const Procyon::Camera2D* camera );
 
@@ -114,7 +116,7 @@ protected:
     QElapsedTimer 		mElapsed;
 
     // Last frame dt information used to compute this frames dt.
-    FrameTime           mLastDt;
+    Procyon::FrameTime  mLastDt;
 
     // Last known window space mouse position used for scene drag.
     glm::vec2           mMouseLast;
@@ -123,6 +125,9 @@ protected:
     QPoint              mDragStart;
 
     Procyon::Sprite*    mGhostTile;
+
+	// The camera bounding region
+	Procyon::Rect		mCameraBounds;
 
 };
 

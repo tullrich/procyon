@@ -246,12 +246,15 @@ public:
 	void SetModified( bool modified = true );
 	bool Save( const QString& filename );
 	bool Load( const QString& filename );
+    void NewWorld( int sizeX, int sizeY );
 
 	void RestoreCameraState( Procyon::Camera2D *camera ) const;
 	void SaveCameraState( const Procyon::Camera2D *camera );
 
 	int GetTileDefCount() const { return mTileSet->Size(); }
 	const Procyon::TileDef& GetTileDef( int idx ) const;
+
+	glm::ivec2 GetSize() const;
 
 	SceneObject* GetRootSceneObject() { return mRoot; }
 signals:

@@ -44,6 +44,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "EditorSettings.h"
 #include "RecentFileList.h"
 #include "PrefsDialog.h"
+#include "NewMapDialog.h"
 
 #include <thread>
 #include <chrono>
@@ -59,11 +60,12 @@ Editor::Editor( QWidget *parent )
     : QMainWindow( parent )
     , mSettings( new EditorSettings( this ) )
     , mUi( new Ui::Editor )
-    , mCanvas( NULL )
-    , mCameraLabel( NULL )
-    , mTabBar( NULL )
-    , mActiveDocument( NULL )
-    , mRecentFiles( NULL )
+    , mCanvas( nullptr )
+    , mCameraLabel( nullptr )
+    , mTabBar( nullptr )
+    , mActiveDocument( nullptr )
+    , mRecentFiles( nullptr )
+    , mScrollArea( nullptr )
 {
     mUi->setupUi( this );
 
@@ -198,7 +200,7 @@ Editor::Editor( QWidget *parent )
     SetupOutputLog();
 
     // Create initial document
-    NewDocument();
+    NewDocument( false );
 }
 
 Editor::~Editor()
@@ -268,9 +270,23 @@ void Editor::OpenPreferences()
 	prefsDialog->exec();
 }
 
-void Editor::NewDocument()
+void Editor::NewDocument( bool dialog /* = false */ )
 {
-    AddDocument( new MapDocument() );
+    glm::ivec2 mapSize( 10, 10 );
+    if ( dialog )
+    {
+        NewMapDialog* newMapDialog = new NewMapDialog( this );
+        if ( !newMapDialog->exec() )
+        {
+            return;
+        }
+
+        mapSize = newMapDialog->GetMapSize();
+    }
+
+    MapDocument* doc = new MapDocument();
+    doc->NewWorld( mapSize.x, mapSize.y );
+    AddDocument( doc );
     ShowStatusMessage( "New document created" );
 }
 
@@ -373,7 +389,7 @@ bool Editor::SaveDocument( MapDocument *doc /* = NULL */ )
         }
     }
 
-    return SaveDocumentAs();
+    return SaveDocumentAs( doc );
 }
 
 bool Editor::SaveDocumentAs( MapDocument *doc /* = NULL */ )
@@ -448,7 +464,7 @@ bool Editor::CloseDocument( MapDocument *doc /* = NULL */, bool forceDiscard /* 
 
     if ( mDocuments.size() == 0 )
     {
-        NewDocument();
+        NewDocument( false );
     }
     else if ( doc == mActiveDocument )
     {

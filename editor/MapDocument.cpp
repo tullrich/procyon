@@ -11,7 +11,7 @@
 
 MapDocument::MapDocument()
 	: mTileSet( new Procyon::TileSet() )
-	, mWorld( new Procyon::World( mTileSet ) )
+	, mWorld( new Procyon::World )
 	, mRoot( new SceneObject( "Root", this ) )
 	, mModified( false )
 {
@@ -80,14 +80,14 @@ bool MapDocument::Save( const QString& filename )
 
     writer.writeStartElement( "Map" );
 
-		writer.writeStartElement( "TileSets" );
-		/*for ( int i = 0; i < mTileSets.size(); i++ )
+		writer.writeStartElement( "TileSet" );
+		for ( int i = 1; i < mTileSet->Size(); i++ )
 		{
-			writer.writeStartElement( "TileSet" );
-			writer.writeAttribute( "filepath", mTileSets.at( i ) );
-			writer.writeEndElement(); // TileSet
-		}*/
-		writer.writeEndElement(); // TileSets
+			writer.writeStartElement( "TileDef" );
+			writer.writeAttribute( "filepath", mTileSet->GetTileDef( i ).filepath.c_str() );
+			writer.writeEndElement(); // TileDef
+		}
+		writer.writeEndElement(); // TileSet
 
 	    writer.writeStartElement("Camera");
 	    	writer.writeAttribute( "x", QString::number( mCameraState.center.x ) );
@@ -96,11 +96,13 @@ bool MapDocument::Save( const QString& filename )
 	    writer.writeEndElement(); // camera
 
 	    writer.writeStartElement("Tiles");
-	    for ( int w = 0; w < WORLD_WIDTH; ++w )
+        writer.writeAttribute( "width", QString::number( mWorld->GetSize().x ) );
+        writer.writeAttribute( "height", QString::number( mWorld->GetSize().y ) );
+	    for ( int w = 0; w < mWorld->GetSize().x; ++w )
 	    {
 	    	writer.writeStartElement( "TileRow" );
 	    	writer.writeAttribute( "index", QString::number( w ) );
-	    	for ( int h = 0; h < WORLD_HEIGHT; ++h )
+	    	for ( int h = 0; h < mWorld->GetSize().y; ++h )
 	    	{
 		    	writer.writeStartElement( "Tile" );
 		    	writer.writeAttribute( "index", QString::number( h ) );
@@ -168,7 +170,7 @@ bool MapDocument::Load( const QString& filename )
 			{
 				reader.readNextStartElement();
 				// parse tiles
-				while ( reader.name() == "TileType" )
+				while ( reader.name() == "TileDef" )
 				{
 					QString w = reader.attributes().value("filepath").toString();
 					if ( !w.isEmpty() )
@@ -188,6 +190,9 @@ bool MapDocument::Load( const QString& filename )
 			}
 			else if ( reader.name() == "Tiles" )
 			{
+                int sizeX = reader.attributes().value( "width" ).toUInt();
+                int sizeY = reader.attributes().value( "height" ).toUInt();
+                mWorld->NewWorld( glm::ivec2( sizeX, sizeY ), mTileSet );
 				reader.readNextStartElement();
 				// parse tiles
 				while ( reader.name() == "TileRow" )
@@ -230,6 +235,11 @@ bool MapDocument::Load( const QString& filename )
 	return true;
 }
 
+void MapDocument::NewWorld( int sizeX, int sizeY )
+{
+    mWorld->NewWorld( glm::ivec2( sizeX, sizeY ), mTileSet );
+}
+
 void MapDocument::RestoreCameraState( Procyon::Camera2D *camera ) const
 {
     camera->SetPosition( mCameraState.center );
@@ -245,4 +255,9 @@ void MapDocument::SaveCameraState( const Procyon::Camera2D *camera )
 const Procyon::TileDef& MapDocument::GetTileDef( int idx ) const
 {
 	return mTileSet->GetTileDef( (Procyon::TileId)idx );
+}
+
+glm::ivec2 MapDocument::GetSize() const
+{
+	return mWorld->GetSize();
 }
