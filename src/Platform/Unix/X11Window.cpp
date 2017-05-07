@@ -359,11 +359,19 @@ xcb_keysym_t X11Window::KeyCodeStateToKeySym( xcb_keycode_t code, uint16_t state
 	return XCB_NO_SYMBOL;
 }
 
+void X11Window::QueueEvents()
+{
+	free( mEventQueue.prev );
+	mEventQueue.prev = mEventQueue.cur;
+
+	event = xcb_poll_for_event( mConnection )
+}
+
 void X11Window::PollEvents()
 {
 	xcb_generic_event_t *event;
 
-	if ( (event = xcb_poll_for_event (mConnection) ) )
+	while ( (event = xcb_poll_for_event( mConnection ) ) )
 	{
 		bool notify = false;
 	    InputEvent ievent;
@@ -381,18 +389,18 @@ void X11Window::PollEvents()
 	        	ievent = InputEvent( EVENT_KEY_DOWN );
 	        	ievent.scancode 	= (unsigned)press->detail;
 	        	ievent.keysym 		= TranslateKeySym( keysym );
-	        	ievent.unicode 		= KeySymToUnicode( modifiedKeysym );
 	        	ievent.modifiers 	= TranslateKeyState( press->state );
 	        	notify = true;
 
-				PROCYON_DEBUG( "X11", "Got Sym: %s %i %i", XKeysymToString( keysym )
-					, press->detail,  press->state );
+				PROCYON_DEBUG( "X11", "Got Sym: %s %i %i %i", XKeysymToString( keysym )
+					, press->detail,  press->state, press->sequence );
 	        }
 
 			PROCYON_DEBUG( "X11", "XCB_KEY_PRESS" );
 	        break;
 
 	    }
+		//ievent.unicode 		= KeySymToUnicode( modifiedKeysym );
 	    case XCB_KEY_RELEASE: // key up
 	    {
 	        xcb_key_release_event_t *release = (xcb_key_release_event_t *)event;
@@ -405,12 +413,11 @@ void X11Window::PollEvents()
 	        	ievent = InputEvent( EVENT_KEY_UP );
 	        	ievent.scancode 	= (unsigned)release->detail;
 	        	ievent.keysym 		= TranslateKeySym( keysym );
-	        	ievent.unicode 		= KeySymToUnicode( modifiedKeysym );
 	        	ievent.modifiers 	= TranslateKeyState( release->state );
 	        	notify = true;
 
-				PROCYON_DEBUG( "X11", "Got Sym: %s %i %i", XKeysymToString( keysym )
-					, release->detail,  release->state );
+				PROCYON_DEBUG( "X11", "Got Sym: %s %i %i %i" , XKeysymToString( keysym )
+					, release->detail,  release->state, release->sequence );
 	        }
 
 			PROCYON_DEBUG( "X11", "XCB_KEY_RELEASE" );
@@ -481,6 +488,7 @@ void X11Window::PollEvents()
 	        ievent.windowy = e->y;
 	        ievent.width = e->width;
 	        ievent.height = e->height;
+	        notify = true;
 
 			PROCYON_DEBUG( "X11", "XCB_CONFIGURE_NOTIFY" );
             break;

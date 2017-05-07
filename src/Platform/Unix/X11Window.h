@@ -38,6 +38,13 @@ namespace Unix {
 
 	class X11GLContext;
 
+	struct X11EventQueue
+	{
+		xcb_generic_event_t* prev = nullptr;
+		xcb_generic_event_t* cur = nullptr;
+		xcb_generic_event_t* next = nullptr;
+	};
+
 	class X11Window : public WindowBase
 	{
 	public:
@@ -109,6 +116,8 @@ namespace Unix {
 
 		int					mWidth;
 		int 				mHeight;
+
+		X11EventQueue		mEventQueue;
 	};
 
 } /* namespace Unix */

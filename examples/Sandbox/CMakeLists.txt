@@ -1,9 +1,9 @@
 # TinyXML Library
 if ( PROCYON_VS )
-	set( TinyXML_INCLUDE_DIRS "${PROCYON_THIRDPARTY_ROOT}tinyxml2/include" )
-	set( TinyXML_LIBRARIES "optimized;${PROCYON_THIRDPARTY_ROOT}tinyxml2/lib/vs110/x64/Release/tinyxml2.lib;debug;${PROCYON_THIRDPARTY_ROOT}tinyxml2/lib/vs110/x64/Debug/tinyxml2.lib")
+	set( TINYXML2_INCLUDE_DIR "${PROCYON_THIRDPARTY_ROOT}tinyxml2/include" )
+	set( TINYXML2_LIBRARIES "optimized;${PROCYON_THIRDPARTY_ROOT}tinyxml2/lib/vs110/x64/Release/tinyxml2.lib;debug;${PROCYON_THIRDPARTY_ROOT}tinyxml2/lib/vs110/x64/Debug/tinyxml2.lib")
 else()
-	find_package( TinyXML REQUIRED )
+	find_package( TinyXML2 REQUIRED )
 endif()
 
 add_executable(Sandbox
@@ -16,10 +16,10 @@ add_executable(Sandbox
 )
 
 include_directories(
-	${TinyXML_INCLUDE_DIRS}
+	${TINYXML2_INCLUDE_DIR}
 )
 
 target_link_libraries(Sandbox
-	Procyon_lib
-	${TinyXML_LIBRARIES}
+	${PROCYON_LINKER_INPUT}
+	${TINYXML2_LIBRARIES}
 )
