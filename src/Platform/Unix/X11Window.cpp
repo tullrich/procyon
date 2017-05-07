@@ -481,7 +481,6 @@ void X11Window::PollEvents()
 	        ievent.windowy = e->y;
 	        ievent.width = e->width;
 	        ievent.height = e->height;
-	        ret = true;
 
 			PROCYON_DEBUG( "X11", "XCB_CONFIGURE_NOTIFY" );
             break;
