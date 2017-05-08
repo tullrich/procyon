@@ -359,14 +359,6 @@ xcb_keysym_t X11Window::KeyCodeStateToKeySym( xcb_keycode_t code, uint16_t state
 	return XCB_NO_SYMBOL;
 }
 
-void X11Window::QueueEvents()
-{
-	free( mEventQueue.prev );
-	mEventQueue.prev = mEventQueue.cur;
-
-	event = xcb_poll_for_event( mConnection )
-}
-
 void X11Window::PollEvents()
 {
 	xcb_generic_event_t *event;
@@ -384,13 +376,15 @@ void X11Window::PollEvents()
 
 	        if( keysym != XCB_NO_SYMBOL && !xcb_is_modifier_key( press->detail ) )
 	        {
-	        	xcb_keysym_t modifiedKeysym = KeyCodeStateToKeySym( press->detail, press->state );
-
 	        	ievent = InputEvent( EVENT_KEY_DOWN );
 	        	ievent.scancode 	= (unsigned)press->detail;
 	        	ievent.keysym 		= TranslateKeySym( keysym );
 	        	ievent.modifiers 	= TranslateKeyState( press->state );
 	        	notify = true;
+
+			    InputEvent txtEvent = InputEvent( EVENT_TEXT );
+				txtEvent.unicode = KeySymToUnicode( KeyCodeStateToKeySym( press->detail, press->state ) );
+				mListener->HandleInputEvent( txtEvent );
 
 				PROCYON_DEBUG( "X11", "Got Sym: %s %i %i %i", XKeysymToString( keysym )
 					, press->detail,  press->state, press->sequence );
@@ -400,7 +394,6 @@ void X11Window::PollEvents()
 	        break;
 
 	    }
-		//ievent.unicode 		= KeySymToUnicode( modifiedKeysym );
 	    case XCB_KEY_RELEASE: // key up
 	    {
 	        xcb_key_release_event_t *release = (xcb_key_release_event_t *)event;
