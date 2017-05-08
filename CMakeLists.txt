@@ -4,7 +4,7 @@ cmake_minimum_required( VERSION 2.6 )
 # turn on with 'cmake -Dtest=ON'
 option(test "Build all tests." OFF)
 option(examples "Build the examples." ON)
-option(editor "Build the editor." OFF)
+option(editor "Build the editor." ON)
 
 # start proj
 project( Procyon )
