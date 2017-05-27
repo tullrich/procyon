@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	int ret;
     LOGOG_INITIALIZE();
     {
-        logog::GetFilterDefault().Group( "ProcyonCanvas" );
+        logog::GetFilterDefault().Group( "RawInput" );
         logog::Cout err;
 
 		QGLFormat glFormat;
