@@ -61,6 +61,7 @@ Editor::Editor( QWidget *parent )
     : QMainWindow( parent )
     , mSettings( new EditorSettings( this ) )
     , mUi( new Ui::Editor )
+    , mUndoGroup( new QUndoGroup( this ) )
     , mCanvas( nullptr )
     , mCameraLabel( nullptr )
     , mTabBar( nullptr )
@@ -86,26 +87,24 @@ Editor::Editor( QWidget *parent )
     connect( mTabBar, &QTabBar::tabCloseRequested, [this]( int tab ) { CloseDocument( mDocuments[ tab ] ); } );
     connect( mTabBar, &QTabBar::tabBarDoubleClicked, [this]( int tab ) { if ( tab == -1 ) NewDocument(); } );
 
-    // Init central canvas
+    // Init the Undo/Redo view
+    mUi->undoRedo->setGroup( mUndoGroup );
+
+    // Init canvas scroll area
     mScrollArea = new QAbstractScrollArea( mUi->centralwidget );
     QVBoxLayout* scrollAreaLayout = new QVBoxLayout( mScrollArea->viewport() );
     scrollAreaLayout->setContentsMargins( 0, 0, 0, 0 );
-
-    // set black background
-    QPalette pal = palette();
-    pal.setColor( QPalette::Background, Qt::red );
-    mScrollArea->viewport()->setAutoFillBackground( true );
-    mScrollArea->viewport()->setPalette( pal );
-
     mScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarPolicy::ScrollBarAlwaysOn );
     mScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarPolicy::ScrollBarAlwaysOn );
-    mUi->centralwidget->layout()->addWidget( mScrollArea );
     mScrollArea->verticalScrollBar()->setPageStep( 10 );
     mScrollArea->horizontalScrollBar()->setPageStep( 10 );
     mScrollArea->verticalScrollBar()->setRange( 0, 100 );
     mScrollArea->horizontalScrollBar()->setRange( 0, 100 );
+    mUi->centralwidget->layout()->addWidget( mScrollArea );
 
+    // Init central canvas
     mCanvas = new ProcyonCanvas( mScrollArea->viewport() );
+    scrollAreaLayout->addWidget( mCanvas );
     connect( mScrollArea->horizontalScrollBar(), &QScrollBar::valueChanged, [ this ]( int value ) {
         if ( mActiveDocument )
         {
@@ -120,11 +119,9 @@ Editor::Editor( QWidget *parent )
             mCanvas->SetCamera( mCanvas->GetCameraPosition().x, mScrollArea->verticalScrollBar()->maximum() - ( float )value );
         }
     } );
-    scrollAreaLayout->addWidget( mCanvas );
-
-    connect( this, SIGNAL( ActiveDocumentChanged(MapDocument*) ), mCanvas, SLOT( OnActiveDocumentChanged(MapDocument*) ) );
+    connect( this, SIGNAL( ActiveDocumentChanged( MapDocument* ) ), mCanvas, SLOT( OnActiveDocumentChanged( MapDocument* ) ) );
     connect( mCanvas, SIGNAL( CameraChanged( const Procyon::Camera2D* ) )
-           , this, SLOT( CanvasCameraChanged( const Procyon::Camera2D* ) ) );
+        , this, SLOT( CanvasCameraChanged( const Procyon::Camera2D* ) ) );
 
     // Init simple menu actions
     connect( mUi->actionNew, SIGNAL( triggered() ), this, SLOT( NewDocument() ) );
@@ -161,6 +158,15 @@ Editor::Editor( QWidget *parent )
     mUi->menuWindows->addAction( mUi->dockObjects->toggleViewAction() );
     mUi->menuToolbars->addAction( mUi->fileToolbar->toggleViewAction() );
     mUi->menuToolbars->addAction( mUi->viewToolbar->toggleViewAction() );
+
+    // Setup the Edit->Undo/Redo 
+    QAction* undoAction = mUndoGroup->createUndoAction( this, tr( "&Undo" ) );
+    undoAction->setShortcuts( QKeySequence::Undo );
+    mUi->menuEdit->addAction( undoAction );
+
+    QAction* redoAction = mUndoGroup->createRedoAction( this, tr( "&Redo" ) );
+    redoAction->setShortcuts( QKeySequence::Redo );
+    mUi->menuEdit->addAction( redoAction );
 
     // Setup initial docks
     tabifyDockWidget( mUi->dockScene, mUi->dockTiles );
@@ -244,6 +250,11 @@ void Editor::SetActiveDocument( int idx )
 
     mActiveDocument =  doc;
     mTabBar->setCurrentIndex( idx );
+    mActiveDocument->GetUndoStack()->setActive();
+
+    // update menu action state
+    mUi->actionSave->setEnabled( mActiveDocument->IsModified() );
+    mUi->actionSave_As->setEnabled( mActiveDocument->IsModified() );
 
 	// update the scene tree
 	QItemSelectionModel *m = mUi->sceneTree->selectionModel();
@@ -263,8 +274,20 @@ void Editor::SetActiveDocument( int idx )
 
 	// update the viewport scrollers
     Rect map = mCanvas->GetMapBounds();
-	mScrollArea->horizontalScrollBar()->setRange( 0, (int)map.GetWidth() );
-	mScrollArea->verticalScrollBar()->setRange( 0, (int)map.GetHeight() );
+    Rect viewport = mCanvas->GetCameraViewport();
+
+    QScrollBar* horizontal = mScrollArea->horizontalScrollBar();
+    const QSignalBlocker hBlocker( horizontal );
+    horizontal->setRange( 0, ( int )map.GetWidth() );
+    horizontal->setValue( mCanvas->GetCameraPosition().x );
+    horizontal->setPageStep( viewport.GetWidth() );
+
+    QScrollBar* vertical = mScrollArea->verticalScrollBar();
+    const QSignalBlocker vBlocker( vertical );
+    vertical->setRange( 0, ( int )map.GetHeight() );
+    vertical->setValue( vertical->maximum() - mCanvas->GetCameraPosition().y );
+    vertical->setPageStep( viewport.GetHeight() );
+
 }
 
 void Editor::TabMoved( int from, int to )
@@ -342,8 +365,8 @@ void Editor::OpenDocument( QString filePath /* = QString() */ )
 
 void Editor::AddDocument( MapDocument *doc, bool makeActive /* = true */ )
 {
-
     mDocuments.push_back( doc );
+    mUndoGroup->addStack( doc->GetUndoStack() );
 
     int tabIdx = mTabBar->addTab( doc->GetTabString() );
     connect(doc, &MapDocument::FilePathChanged, [doc, this](const QFileInfo &newFilePath) {
@@ -364,6 +387,12 @@ void Editor::AddDocument( MapDocument *doc, bool makeActive /* = true */ )
         if ( idx != -1 )
         {
             mTabBar->setTabText( idx, doc->GetTabString() );
+
+            if ( doc == mActiveDocument )
+            {
+                mUi->actionSave->setEnabled( modified );
+                mUi->actionSave_As->setEnabled( modified );
+            }
         }
         else
         {

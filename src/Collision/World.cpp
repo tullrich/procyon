@@ -199,4 +199,9 @@ namespace Procyon {
 		return GetTileDef( glm::vec2( xidx, yidx ) );
 	}
 
+	bool World::InBounds( const glm::ivec2& t )
+	{
+		return t.x >= 0 && t.x < mSize.x & t.y >= 0 && t.y < mSize.y;
+	}
+
 } /* namespace Procyon */

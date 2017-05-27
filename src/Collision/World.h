@@ -94,6 +94,8 @@ namespace Procyon {
 		TileId	 			GetTile( const glm::ivec2& t ) const;
 		const TileDef&	 	GetTileDef( const glm::ivec2& t ) const;
 		const TileDef&		PointToTileDef( const glm::vec2& point ) const;
+
+		bool				InBounds( const glm::ivec2& t );
 		const glm::ivec2& 	GetSize() const { return mSize; }
 
 	protected:

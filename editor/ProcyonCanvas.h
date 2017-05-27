@@ -133,6 +133,9 @@ protected:
 	// The map bounding region
 	Procyon::Rect		mMapBounds;
 
+    // Current stroke number
+    int                 mStroke;
+
 };
 
 #endif /* _PROCYON_CANVAS_H */

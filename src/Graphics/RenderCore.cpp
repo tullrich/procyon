@@ -202,7 +202,7 @@ namespace Procyon {
 		// Bind the texture
 	    GLint texLoc = program->GetUniformLocation( "tex" );
 		glUniform1i( texLoc, 0 );
-		glActiveTexture( GL_TEXTURE0 );
+		//glActiveTexture( GL_TEXTURE0 );
 		rc.texture->Bind();
 
 		// Bind the immuatable quad position data
@@ -254,6 +254,13 @@ namespace Procyon {
 	    glEnableVertexAttribArray( quadTintLoc );
 
 		glDrawElementsInstanced( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, rc.instancecount );
+
+        glVertexAttribDivisor( quadPosLoc, 0 );
+        glVertexAttribDivisor( quadSizeLoc, 0 );
+        glVertexAttribDivisor( quadRotLoc, 0 );
+        glVertexAttribDivisor( quadUVOffsetLoc, 0 );
+        glVertexAttribDivisor( quadUVSizeLoc, 0 );
+        glVertexAttribDivisor( quadTintLoc, 0 );
 
 		mFrameStats.batches++;
 		mFrameStats.totalquads += rc.instancecount;

@@ -37,6 +37,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <QColor>
 #include <QList>
 #include <QIcon>
+#include <QUndoStack>
+#include <QUndoCommand>
 
 namespace Procyon {
     class Camera2D;
@@ -232,8 +234,6 @@ public:
 	MapDocument();
 	virtual ~MapDocument();
 
-	Procyon::World* GetWorld() { return mWorld; }
-
 	QString FileName() const { return mFilePath.fileName(); }
 	QString GetFilePath() const { return mFilePath.filePath(); }
 	QString GetTabString() const;
@@ -250,6 +250,11 @@ public:
 
 	void RestoreCameraState( Procyon::Camera2D *camera ) const;
 	void SaveCameraState( const Procyon::Camera2D *camera );
+    void Render( Procyon::Renderer* r );
+
+	void AddCommand( QUndoCommand* cmd );
+	void SetTile( const glm::ivec2& t, Procyon::TileId type, int stroke = -1 );
+	Procyon::TileId GetTile( const glm::ivec2& t );
 
 	int GetTileDefCount() const { return mTileSet->Size(); }
 	const Procyon::TileDef& GetTileDef( int idx ) const;
@@ -257,6 +262,7 @@ public:
 	glm::ivec2 GetSize() const;
 
 	SceneObject* GetRootSceneObject() { return mRoot; }
+    QUndoStack* GetUndoStack() { return mUndoStack; }
 signals:
     void 	FilePathChanged( const QFileInfo& filepath );
     void 	DocumentPreparingToSave();
@@ -280,6 +286,11 @@ protected:
 
 	// True if this map has been modified since last save or open
 	bool 				mModified;
+
+    // Undo/Redo stack for this document. This is not restored on document open.
+    QUndoStack*         mUndoStack;
+
+    friend class SetTileCommand;
 };
 
 

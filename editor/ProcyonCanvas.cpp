@@ -51,6 +51,7 @@ ProcyonCanvas::ProcyonCanvas(QWidget* Parent)
     , mActiveDocument( NULL )
     , mTimer( NULL )
     , mCamera( NULL )
+    , mStroke( 0 )
 {
     // Accepts both clicking and tabbing focus, enabling keyboard events.
     setFocusPolicy( Qt::StrongFocus );
@@ -111,7 +112,7 @@ void ProcyonCanvas::StartRendering()
 }
 
 glm::vec2 ProcyonCanvas::GetCameraPosition() const
-{ 
+{
     return mCamera->GetPosition();
 }
 
@@ -242,14 +243,14 @@ void ProcyonCanvas::paintGL()
             mRenderer->ResetCameras( *mCamera );
 
 			int hex2 = 0xcccccc;
-			mRenderer->DrawRectShape( glm::vec2( TILE_PIXEL_SIZE * 5.0f ), glm::vec2( TILE_PIXEL_SIZE * 10.5f ), 0.0f
+			mRenderer->DrawRectShape( glm::vec2( mActiveDocument->GetSize() * TILE_PIXEL_SIZE ) * 0.5f, mActiveDocument->GetSize() * TILE_PIXEL_SIZE, 0.0f
 				, glm::vec4( ((hex2 >> 16)&0xff)/255.0f, ((hex2 >> 8)&0xff)/255.0f, (hex2&0xff)/255.0f, 1.0f ) );
 
-            mActiveDocument->GetWorld()->Render( mRenderer );
+            mActiveDocument->Render( mRenderer );
 
 			mActiveDocument->GetRootSceneObject()->Render( mRenderer );
 
-            mGrid->Render( mRenderer, mActiveDocument->GetWorld()->GetSize() );
+            mGrid->Render( mRenderer, mActiveDocument->GetSize() );
 
             //mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(32.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) );
             //mRenderer->DrawWorldLine( glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 32.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f) );
@@ -332,8 +333,8 @@ void ProcyonCanvas::Zoom( float amount )
 void ProcyonCanvas::SetCamera( float xPos, float yPos )
 {
     glm::vec2 newPos;
-    newPos.x = glm::clamp( xPos, 0.0f, ( float )( mActiveDocument->GetWorld()->GetSize().x * TILE_PIXEL_SIZE ) );
-    newPos.y = glm::clamp( yPos, 0.0f, ( float )( mActiveDocument->GetWorld()->GetSize().y * TILE_PIXEL_SIZE ) );
+    newPos.x = glm::clamp( xPos, 0.0f, ( float )( mActiveDocument->GetSize().x * TILE_PIXEL_SIZE ) );
+    newPos.y = glm::clamp( yPos, 0.0f, ( float )( mActiveDocument->GetSize().y * TILE_PIXEL_SIZE ) );
 
     mCamera->SetPosition( newPos );
 
@@ -368,29 +369,31 @@ glm::vec2 ProcyonCanvas::WindowToWorld( const QPointF& point )
 // Called when the mouse is clicked over this widget.
 void ProcyonCanvas::mousePressEvent( QMouseEvent* event )
 {
+    if ( !mActiveDocument )
+        return;
+
     // Store mouse down position for mouse move drag.
     mMouseLast = WindowToScreen( event->pos() );
     mDragStart = event->pos();
+    mStroke++;
+
+    glm::vec2 scr = WindowToWorld( event->pos() );
+    if ( event->buttons() & Qt::RightButton )
+    {
+        PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
+        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 1, mStroke );
+    }
+    else if ( event->buttons() & Qt::MiddleButton ) // Move the camera
+    {
+        PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
+        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 2, mStroke );
+    }
 }
 
 void ProcyonCanvas::mouseReleaseEvent( QMouseEvent* event )
 {
     /*glm::vec2 scr = WindowToWorld( event->pos() );
-    PROCYON_DEBUG( "ProcyonCanvas", "Mouse Release Event <%f, %f>", scr.x, scr.y );
-
-    if ( !mActiveDocument )
-        return;
-
-   switch ( event->button() )
-    {
-        case Qt::LeftButton:
-            mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 1 );
-            break;
-        case Qt::RightButton:
-            mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 2 );
-            break;
-    }
-    mActiveDocument->SetModified();*/
+    PROCYON_DEBUG( "ProcyonCanvas", "Mouse Release Event <%f, %f>", scr.x, scr.y );*/
 }
 
 // Called when the mouse is moved over this widget *only* while a mouse button is pressed
@@ -434,14 +437,12 @@ void ProcyonCanvas::OnMouseDrag( QMouseEvent* event )
     else if ( event->buttons() & Qt::RightButton )
     {
         PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
-        mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 1 );
-        mActiveDocument->SetModified();
+        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 1, mStroke );
     }
     else if ( event->buttons() & Qt::MiddleButton ) // Move the camera
     {
         PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
-        mActiveDocument->GetWorld()->SetTile( POINT_TO_TILE( scr.x, scr.y ), 2 );
-        mActiveDocument->SetModified();
+        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 2, mStroke );
     }
 
 	updateGL();

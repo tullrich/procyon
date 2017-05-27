@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>957</width>
+    <width>961</width>
     <height>695</height>
    </rect>
   </property>
@@ -42,7 +42,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>957</width>
+     <width>961</width>
      <height>21</height>
     </rect>
    </property>
@@ -73,8 +73,6 @@
      <property name="title">
       <string>Grid Size</string>
      </property>
-     <addaction name="actionDisableGrid"/>
-     <addaction name="separator"/>
      <addaction name="action1x1"/>
      <addaction name="action5x5"/>
     </widget>
@@ -89,6 +87,7 @@
      </property>
     </widget>
     <addaction name="actionReset"/>
+    <addaction name="actionDisableGrid"/>
     <addaction name="menuGrid_Size"/>
     <addaction name="separator"/>
     <addaction name="menuWindows"/>
@@ -100,7 +99,13 @@
     </property>
     <addaction name="actionPreferences"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuSettings"/>
   </widget>
@@ -206,6 +211,21 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="dockUndoRedo">
+   <property name="windowTitle">
+    <string>History</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_6">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QUndoView" name="undoRedo"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <action name="actionReset">
    <property name="checkable">
     <bool>false</bool>
@@ -247,6 +267,9 @@
    <property name="text">
     <string>Show Grid</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
   </action>
   <action name="actionNew">
    <property name="enabled">
@@ -280,7 +303,7 @@
     <string>Save As</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+T, G</string>
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionClose">
@@ -322,6 +345,11 @@
    <class>QtTreePropertyBrowser</class>
    <extends>QListWidget</extends>
    <header location="global">QtTreePropertyBrowser</header>
+  </customwidget>
+  <customwidget>
+   <class>QUndoView</class>
+   <extends>QListWidget</extends>
+   <header location="global">QUndoView</header>
   </customwidget>
  </customwidgets>
  <tabstops>

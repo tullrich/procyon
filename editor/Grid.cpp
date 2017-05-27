@@ -51,8 +51,13 @@ void Grid::Render( Renderer* r, const glm::ivec2& size )
 
 	const float gridAdvance = mGridSize * ((r->GetCamera().GetZoom() < 0.75f) ? mMajorFrequency : 1.0f);
 
-	//Rect rect = r->GetCamera().GetScreenRect();
-	Rect rect( 0.0f, 32.0f * (float)size.y, 32.0f * ( float )size.x, 32.0f * ( float )size.y );
+    Procyon::Rect viewport = r->GetCamera().GetScreenRect();
+    Procyon::Rect map( 0.0f, mGridSize * (float)size.y, mGridSize * ( float )size.x, mGridSize * ( float )size.y );
+
+    Procyon::Rect rect( glm::max( viewport.topleft.x, map.topleft.x )
+        , glm::min( viewport.topleft.y, map.topleft.y )
+        , glm::min( viewport.dimensions.x, map.dimensions.x )
+        , glm::min( viewport.dimensions.y, map.dimensions.y ) );
 
 	// Draw horizontal lines
 	float yCursor = rect.GetBottomLeft().y - fmod( rect.GetBottomLeft().y, gridAdvance );

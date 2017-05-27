@@ -30,6 +30,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <QList>
 #include <QMenu>
 #include <QListWidget>
+#include <QUndoGroup>
 
 class QLabel;
 
@@ -134,6 +135,9 @@ protected:
 
 	// Viewport scroll area
 	QAbstractScrollArea* mScrollArea;
+
+    // Aggregation of QUndoStacks of each open document
+    QUndoGroup*     mUndoGroup;
 };
 
 #endif /* _EDITOR_H */

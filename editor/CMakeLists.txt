@@ -47,17 +47,30 @@ include_directories( ${QPROPERTYBROWSER_INCLUDE_DIR} )
 add_executable(Editor WIN32
 	main.cpp
 	Editor.cpp
+	Editor.h
 	ProcyonCanvas.cpp
+	ProcyonCanvas.h
 	ProcyonQtUtil.cpp
+	ProcyonQtUtil.h
 	Grid.cpp
+	Grid.h
 	LogOutputTarget.cpp
+	LogOutputTarget.h
 	EditorAssets.cpp
+	EditorAssets.h
 	MapDocument.cpp
+	MapDocument.h
 	EditorSettings.cpp
+	EditorSettings.h
 	RecentFileList.cpp
+	RecentFileList.h
 	SceneObject.cpp
+	SceneObject.h
 	PrefsDialog.cpp
+	PrefsDialog.h
 	NewMapDialog.cpp
+	NewMapDialog.h
+	MapDocumentCommands.h
 	editor_resources.qrc
 	${PROCYON_PLATFORM_SOURCES}
 )

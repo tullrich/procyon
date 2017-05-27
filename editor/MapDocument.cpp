@@ -5,16 +5,22 @@
 #include "Camera.h"
 #include "ProcyonQtUtil.h"
 #include "EditorAssets.h"
+#include "MapDocumentCommands.h"
 
 #include <QFile>
 #include <QXmlStreamWriter>
+
+#define MAP_DOCUMENT_UNDO_LIMIT 256
 
 MapDocument::MapDocument()
 	: mTileSet( new Procyon::TileSet() )
 	, mWorld( new Procyon::World )
 	, mRoot( new SceneObject( "Root", this ) )
 	, mModified( false )
+    , mUndoStack( new QUndoStack( this ) )
 {
+    mUndoStack->setUndoLimit( MAP_DOCUMENT_UNDO_LIMIT );
+
 	SceneObject* obj1 = new SceneObject( "Object1", mRoot );
 	mRoot->AddChild( obj1  );
 	mRoot->AddChild( new SceneObject( "Object2", mRoot ) );
@@ -58,6 +64,10 @@ void MapDocument::SetModified( bool modified /* = true */)
 	if ( mModified != modified )
 	{
 		mModified = modified;
+        if ( !mModified )
+        {
+            mUndoStack->setClean();
+        }
 		emit ModificationStateChanged( mModified );
 	}
 }
@@ -250,6 +260,29 @@ void MapDocument::SaveCameraState( const Procyon::Camera2D *camera )
 {
     mCameraState.center = camera->GetPosition();
     mCameraState.zoom = camera->GetZoom();
+}
+
+void MapDocument::Render( Procyon::Renderer* r )
+{
+    mWorld->Render( r );
+}
+
+void MapDocument::AddCommand( QUndoCommand* cmd )
+{
+	mUndoStack->push( cmd );
+}
+
+void MapDocument::SetTile( const glm::ivec2& t, Procyon::TileId type, int stroke /*= -1*/ )
+{
+	if ( mWorld->InBounds( t ) && GetTile( t ) != type )
+	{
+		mUndoStack->push( new SetTileCommand( this, t, type, stroke ) );
+	}
+}
+
+Procyon::TileId MapDocument::GetTile( const glm::ivec2& t )
+{
+	return mWorld->GetTile( t );
 }
 
 const Procyon::TileDef& MapDocument::GetTileDef( int idx ) const
