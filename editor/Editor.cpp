@@ -200,7 +200,10 @@ Editor::Editor( QWidget *parent )
     } );
     connect( mUi->sceneTreeDeleteBtn, &QPushButton::clicked, [this]() { } );
     connect( mUi->sceneTreeFilter, &QLineEdit::textEdited, [ this ]( const QString &text ) {
-        ( ( QSortFilterProxyModel* )mUi->sceneTree->model() )->setFilterFixedString( text );
+        if ( mActiveDocument )
+        {
+            ( ( QSortFilterProxyModel* )mUi->sceneTree->model() )->setFilterFixedString( text );
+        }
     } );
 
 
@@ -220,6 +223,8 @@ Editor::Editor( QWidget *parent )
 
     // Setup output log
     SetupOutputLog();
+
+    SetActiveDocument( -1 );
 }
 
 Editor::~Editor()
@@ -258,11 +263,8 @@ void Editor::SetActiveDocument( int idx )
 
         mUi->actionSave->setEnabled( false );
         mUi->actionSave_As->setEnabled( false );
+        mUi->sceneTree->setModel( nullptr );
 
-        QItemSelectionModel* old = mUi->sceneTree->selectionModel();
-        QSortFilterProxyModel* emptyModel = new QSortFilterProxyModel( this );
-        mUi->sceneTree->setModel( emptyModel );
-        delete old;
         mTileSetsView->clear();
 
         emit ActiveDocumentChanged( nullptr );
@@ -300,13 +302,11 @@ void Editor::SetActiveDocument( int idx )
     mUi->actionSave_As->setEnabled( mActiveDocument->IsModified() );
 
 	// update the scene tree
-	QItemSelectionModel* old = mUi->sceneTree->selectionModel();
-    SceneObjectListModel* model = new SceneObjectListModel( this, mActiveDocument->GetRootSceneObject() );
-    QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel( this );
-    proxyModel->setDynamicSortFilter( false );
-    proxyModel->setSourceModel( model );
-	mUi->sceneTree->setModel( proxyModel );
-	delete old;
+    mActiveDocument->GetListModel()->setFilterFixedString( mUi->sceneTreeFilter->text() );
+    mUi->sceneTree->clearSelection();
+	mUi->sceneTree->setModel( mActiveDocument->GetListModel() );
+    delete mUi->sceneTree->selectionModel(); // delete automatically created selection model
+    mUi->sceneTree->setSelectionModel( mActiveDocument->GetItemSelectionModel() );
 
 	// update the tile list
 	mTileSetsView->clear();
@@ -455,12 +455,6 @@ void Editor::AddDocument( MapDocument *doc, bool makeActive /* = true */ )
     if ( makeActive )
     {
         SetActiveDocument( tabIdx );
-
-        bool replace = mDocuments.size() == 2 && mDocuments[ 0 ]->IsFresh();
-        if ( replace )
-        {
-            CloseDocument( mDocuments[ 0 ] );
-        }
     }
 }
 
@@ -587,7 +581,10 @@ void Editor::CanvasCameraChanged( const Camera2D* cam )
 
 void Editor::OnSceneTreeContextMenuRequested( const QPoint& point )
 {
-	QModelIndex filteredIndex = mUi->sceneTree->indexAt( point );
+    if ( !mActiveDocument )
+        return;
+	
+    QModelIndex filteredIndex = mUi->sceneTree->indexAt( point );
     QSortFilterProxyModel* proxyModel = ( QSortFilterProxyModel* )mUi->sceneTree->model();
     QModelIndex index = proxyModel->mapToSource( filteredIndex );
 	if ( index.isValid() )
@@ -675,6 +672,9 @@ void Editor::ShowStatusMessage( const QString& msg, bool permanent /* = false */
 
 void Editor::OnObjectActivated( const QModelIndex &index )
 {
+    if ( !mActiveDocument )
+        return;
+
     QModelIndex mappedIndex = ((QSortFilterProxyModel*)mUi->sceneTree->model())->mapToSource( index );
 	if ( mappedIndex.isValid() )
 	{

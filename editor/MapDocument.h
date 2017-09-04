@@ -39,6 +39,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <QIcon>
 #include <QUndoStack>
 #include <QUndoCommand>
+#include <QSortFilterProxyModel>
+#include <QItemSelectionModel>
 
 namespace Procyon {
     class Camera2D;
@@ -53,7 +55,6 @@ public:
 		: QAbstractItemModel( parent )
 		, mRoot( root )
 	{
-		//setupModelData
 		RegisterSignals( mRoot );
 	}
 
@@ -264,6 +265,8 @@ public:
 
 	SceneObject* GetRootSceneObject() { return mRoot; }
     QUndoStack* GetUndoStack() { return mUndoStack; }
+    QSortFilterProxyModel* GetListModel() { return mListModel; }
+    QItemSelectionModel* GetItemSelectionModel() { return mSelectionModel; }
 signals:
     void 	FilePathChanged( const QFileInfo& filepath );
     void 	DocumentPreparingToSave();
@@ -290,6 +293,10 @@ protected:
 
     // Undo/Redo stack for this document. This is not restored on document open.
     QUndoStack*         mUndoStack;
+
+    // The list model for the tree view (retained so that its state is preserved on tab switch)
+    QSortFilterProxyModel* mListModel;
+    QItemSelectionModel* mSelectionModel;
 
     friend class SetTileCommand;
 };

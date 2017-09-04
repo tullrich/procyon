@@ -20,7 +20,12 @@ MapDocument::MapDocument()
 	, mRoot( new SceneObject( "Root", this ) )
 	, mModified( false )
     , mUndoStack( new QUndoStack( this ) )
+    , mListModel( new QSortFilterProxyModel( this ) )
 {
+    mListModel->setDynamicSortFilter( false );
+    mListModel->setSourceModel( new SceneObjectListModel( this, mRoot ) );
+    mSelectionModel = new QItemSelectionModel( mListModel, this );
+
     mUndoStack->setUndoLimit( MAP_DOCUMENT_UNDO_LIMIT );
 
 	Procyon::TileDef td;
