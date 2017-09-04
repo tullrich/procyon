@@ -9,6 +9,8 @@
 
 #include <QFile>
 #include <QXmlStreamWriter>
+#include <QDomDocument>
+#include <QDomElement>
 
 #define MAP_DOCUMENT_UNDO_LIMIT 256
 
@@ -20,13 +22,6 @@ MapDocument::MapDocument()
     , mUndoStack( new QUndoStack( this ) )
 {
     mUndoStack->setUndoLimit( MAP_DOCUMENT_UNDO_LIMIT );
-
-	SceneObject* obj1 = new SceneObject( "Object1", mRoot );
-	mRoot->AddChild( obj1  );
-	mRoot->AddChild( new SceneObject( "Object2", mRoot ) );
-	mRoot->AddChild( new SceneObject( "Object3", mRoot ) );
-	obj1->AddChild( new SceneObject( "Object4", obj1 ) );
-	obj1->AddChild( new SceneObject( "Object5", obj1 ) );
 
 	Procyon::TileDef td;
 	td.filepath = "sprites/tile.png";
@@ -80,7 +75,7 @@ bool MapDocument::Save( const QString& filename )
 
 	if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
 	{
-        PROCYON_WARN( "MapDocument", "Unable to open file '%s' for saving.", filename.toUtf8() );
+        PROCYON_WARN( "MapDocument", "Unable to open file '%s' for saving.", filename.toUtf8().data() );
         return false;
 	}
 
@@ -123,6 +118,32 @@ bool MapDocument::Save( const QString& filename )
 	    }
 	    writer.writeEndElement(); // tiles
 
+        if ( mRoot && mRoot->GetChildCount() > 0 )
+        {
+            writer.writeStartElement( "Objects" );
+            for ( int oi = 0; oi < mRoot->GetChildCount(); oi++ )
+            {
+                const SceneObject* obj = mRoot->GetChild( oi );
+                writer.writeStartElement( "Object" );
+                writer.writeAttribute( "name", obj->GetName() );
+                writer.writeStartElement( "Transform" );
+                writer.writeStartElement( "Position" );
+                writer.writeAttribute( "x", QString::number( obj->GetPosition().x() ) );
+                writer.writeAttribute( "y", QString::number( obj->GetPosition().y() ) );
+                writer.writeAttribute( "z", QString::number( 0 ) );
+                writer.writeEndElement(); // Position
+                writer.writeStartElement( "Dimensions" );
+                writer.writeAttribute( "width", QString::number( obj->GetDimensions().x() ) );
+                writer.writeAttribute( "height", QString::number( obj->GetDimensions().y() ) );
+                writer.writeEndElement(); // Dimensions
+                writer.writeStartElement( "Rotation" );
+                writer.writeCharacters( QString::number( obj->GetRotation() ) );
+                writer.writeEndElement(); // Rotation
+                writer.writeEndElement(); // Transform
+                writer.writeEndElement(); // Object
+            }
+            writer.writeEndElement(); // Objects
+        }
 	writer.writeEndElement(); // map
 
     writer.writeEndDocument();
@@ -130,13 +151,13 @@ bool MapDocument::Save( const QString& filename )
     if ( writer.hasError() )
 	{
     	PROCYON_WARN( "MapDocument", "Saving map '%s' failed with QXmlStreamWriter error"
-    		, filename.toUtf8() );
+    		, filename.toUtf8().data() );
     	return false;
     }
 	else if ( file.error() != QFile::NoError )
 	{
     	PROCYON_WARN( "MapDocument", "Saving map '%s' failed with QFile error: %s"
-    		, filename.toUtf8(), file.errorString().toUtf8() );
+    		, filename.toUtf8().data(), file.errorString().toUtf8().data() );
     	return false;
 	}
 
@@ -148,97 +169,132 @@ bool MapDocument::Load( const QString& filename )
 {
 	QFile file( filename );
 
-	if ( !file.open(QIODevice::ReadOnly | QIODevice::Text) )
+	if ( !file.open( QIODevice::ReadOnly ) )
 	{
         PROCYON_WARN( "MapDocument", "Unable to open file '%s' for loading.", filename.toUtf8().data() );
         return false;
 	}
 
-	QXmlStreamReader reader( &file );
+    QDomDocument doc;
 
-	reader.readNext();
-	if ( !reader.isStartDocument() )
-	{
-        PROCYON_WARN( "MapDocument", "Error reading map '%s': malformed xml", filename.toUtf8().data() );
+    QString errMsg;
+    int errLine, errColumn;
+    if ( !doc.setContent( &file, &errMsg, &errLine, &errColumn ) )
+    {
+        PROCYON_WARN( "MapDocument", "Error parsing XML file '%s' Line %i Column %i: %s"
+            , filename.toUtf8().data()
+            , errLine, errColumn
+            , errMsg.toUtf8().data() );
+        file.close();
         return false;
-	}
-
-	reader.readNext();
-	if ( !reader.isStartElement() || reader.name() != "Map" )
-	{
-        PROCYON_WARN( "MapDocument", "Error reading map '%s': malformed xml", filename.toUtf8().data() );
-        return false;
-	}
-
-	while( !reader.atEnd())
-	{
-		reader.readNextStartElement();
-
-		if( reader.isStartElement() )
-		{
-			if ( reader.name() == "TileSet")
-			{
-				reader.readNextStartElement();
-				// parse tiles
-				while ( reader.name() == "TileDef" )
-				{
-					QString w = reader.attributes().value("filepath").toString();
-					if ( !w.isEmpty() )
-					{
-						//mTileSets.push_back( w );
-					}
-
-					reader.readNextStartElement();
-				}
-			}
-			else if ( reader.name() == "Camera" )
-			{
-				// parse camera
-				mCameraState.center.x = reader.attributes().value("x").toFloat();
-				mCameraState.center.y = reader.attributes().value("y").toFloat();
-				mCameraState.zoom = reader.attributes().value("zoom").toFloat();
-			}
-			else if ( reader.name() == "Tiles" )
-			{
-                int sizeX = reader.attributes().value( "width" ).toUInt();
-                int sizeY = reader.attributes().value( "height" ).toUInt();
-                mWorld->NewWorld( glm::ivec2( sizeX, sizeY ), mTileSet );
-				reader.readNextStartElement();
-				// parse tiles
-				while ( reader.name() == "TileRow" )
-				{
-					PROCYON_DEBUG( "Editor", "TileRow" );
-					int w = reader.attributes().value("index").toInt();
-
-					reader.readNextStartElement();
-					while( reader.name() == "Tile" )
-					{
-						int h = reader.attributes().value("index").toInt();
-						int tileType = reader.readElementText().toInt();
-						PROCYON_DEBUG( "Editor", "\tTile [%i %i] = %i", w, h, tileType );
-
-						mWorld->SetTile( glm::ivec2( w, h ), (Procyon::TileId)tileType );
-
-						//reader.skipCurrentElement();
-						reader.readNextStartElement();
-					}
-				}
-			}
-		}
-	}
-
-    if (reader.hasError())
-	{
-    	PROCYON_WARN( "MapDocument", "Loading map '%s' failed with QXmlStreamWriter error"
-    		, filename.toUtf8().data(), reader.errorString().toUtf8().data() );
-    	//return false;
     }
-	else if (file.error() != QFile::NoError)
-	{
-    	PROCYON_WARN( "MapDocument", "Loading map '%s' failed with QFile error: %s"
-    		, filename.toUtf8().data(), file.errorString().toUtf8().data() );
-    	return false;
-	}
+    file.close();
+
+    QDomElement docElem = doc.documentElement();
+    QDomNode n = docElem.firstChild();
+    if ( !n.isNull() )
+    {
+        // Parse TileSet
+        QDomElement domTileSet = docElem.firstChildElement( "TileSet" );
+        if ( !domTileSet.isNull() )
+        {
+            QDomElement domtTileDef = domTileSet.firstChildElement( "TileDef" );
+            while ( !domtTileDef.isNull() )
+            {
+                QString filepath = domtTileDef.attribute( "filepath" );
+                if ( !filepath.isEmpty() )
+                {
+                    Procyon::TileDef def;
+                    def.filepath = filepath.toUtf8();
+                    mTileSet->AddTileDef( def );
+                }
+                else
+                {
+                    mTileSet->AddTileDef( Procyon::TileDef::Empty );
+                }
+
+                domtTileDef = domtTileDef.nextSiblingElement( "TileDef" );
+            }
+        }
+
+        // Parse Camera
+        QDomElement domCamera = docElem.firstChildElement( "Camera" );
+        if ( !domCamera.isNull() )
+        {
+            // parse camera
+            mCameraState.center.x = domCamera.attribute( "x" ).toFloat();
+            mCameraState.center.y = domCamera.attribute( "y" ).toFloat();
+            mCameraState.zoom = domCamera.attribute( "zoom" ).toFloat();
+        }
+
+        // Parse Tiles
+        QDomElement domTiles = docElem.firstChildElement( "Tiles" );
+        if ( !domTiles.isNull() )
+        {
+            int sizeX = domTiles.attribute( "width" ).toUInt();
+            int sizeY = domTiles.attribute( "height" ).toUInt();
+            mWorld->NewWorld( glm::ivec2( sizeX, sizeY ), mTileSet );
+
+            // parse tiles
+            QDomElement domTileRow = domTiles.firstChildElement( "TileRow" );
+            while ( !domTileRow.isNull() )
+            {
+                int w = domTileRow.attribute( "index" ).toInt();
+                QDomElement domTile = domTileRow.firstChildElement( "Tile" );
+                while ( !domTile.isNull() )
+                {
+                    int h = domTile.attribute( "index" ).toInt();
+                    int tileType = domTile.text().toInt();
+                    mWorld->SetTile( glm::ivec2( w, h ), ( Procyon::TileId )tileType );
+                    domTile = domTile.nextSiblingElement( "Tile" );
+                }
+                domTileRow = domTileRow.nextSiblingElement( "TileRow" );
+            }
+        }
+
+        // Parse Objects
+        QDomElement domObjects = docElem.firstChildElement( "Objects" );
+        if ( !domObjects.isNull() )
+        {
+            QDomElement domObject = domObjects.firstChildElement( "Object" );
+            QString name;
+            while ( !domObject.isNull() && !( name = domObject.attribute( "name" ) ).isEmpty() )
+            {
+                SceneObject* obj = new SceneObject( name, nullptr );
+
+                QDomElement domTransform = domObject.firstChildElement( "Transform" );
+                if ( !domTransform.isNull() )
+                {
+                    QDomElement domPosition = domTransform.firstChildElement( "Position" );
+                    if ( !domPosition.isNull() )
+                    {
+                        QPoint pos;
+                        pos.setX( domPosition.attribute( "x" ).toFloat() );
+                        pos.setY( domPosition.attribute( "y" ).toFloat() );
+                        obj->SetPosition( pos );
+                    }
+
+                    QDomElement domDimensions = domTransform.firstChildElement( "Dimensions" );
+                    if ( !domDimensions.isNull() )
+                    {
+                        QPoint dims;
+                        dims.setX( domPosition.attribute( "width" ).toFloat() );
+                        dims.setY( domPosition.attribute( "height" ).toFloat() );
+                        obj->SetDimensions( dims );
+                    }
+
+                    QDomElement domRotation = domTransform.firstChildElement( "Rotation" );
+                    if ( !domRotation.isNull() )
+                    {
+                        obj->SetRotation( domRotation.text().toFloat() );
+                    }
+                }
+
+                mRoot->AddChild( obj );
+                domObject = domObject.nextSiblingElement( "Object" );
+            }
+        }
+    }
 
 	mFilePath = filename;
 	SetModified( false );

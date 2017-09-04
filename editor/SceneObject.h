@@ -44,9 +44,10 @@ class SceneObject : public QObject
 public:
 	SceneObject( QString name, QObject* owner );
 
-	Q_PROPERTY(QString Name MEMBER mName NOTIFY NameChanged )
-	Q_PROPERTY(QPoint Position MEMBER mPosition )
-	Q_PROPERTY(QPoint Dimensions MEMBER mDimensions )
+	Q_PROPERTY( QString Name MEMBER mName NOTIFY NameChanged READ GetName WRITE SetName )
+	Q_PROPERTY( QPoint Position MEMBER mPosition READ GetPosition WRITE SetPosition )
+    Q_PROPERTY( QPoint Dimensions MEMBER mDimensions READ GetDimensions WRITE SetDimensions )
+	Q_PROPERTY( float Rotation MEMBER mRotation READ GetRotation WRITE SetRotation )
 
 	int GetChildCount() const { return mChildren.size(); }
 	const SceneObject* GetChild( int idx ) const;
@@ -61,6 +62,16 @@ public:
 	int GetIndexInParent() const;
 
 	QString GetName() const { return mName; }
+    void SetName( QString name ) { mName = name; emit NameChanged( mName ); }
+
+    QPoint GetPosition() const { return mPosition; }
+    void SetPosition( QPoint pos ) { mPosition = pos; }
+
+    QPoint GetDimensions() const { return mDimensions; }
+    void SetDimensions( QPoint dims ) { mDimensions = dims; }
+
+    float GetRotation() const { return mRotation; }
+    void SetRotation( float rot ) { mRotation = rot; }
 
 	void Render( Procyon::Renderer* renderer );
 
@@ -76,6 +87,7 @@ protected:
 
 	QPoint mDimensions;
 	QPoint mPosition;
+    float mRotation;
 
 	QString mName;
 

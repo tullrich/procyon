@@ -3,8 +3,16 @@
     <TileSet>
         <TileDef filepath="sprites/tile.png"/>
         <TileDef filepath="sprites/uv_map.png"/>
+        <TileDef filepath="sprites/tile.png"/>
+        <TileDef filepath="sprites/uv_map.png"/>
+        <TileDef filepath="sprites/tile.png"/>
+        <TileDef filepath="sprites/uv_map.png"/>
+        <TileDef filepath="sprites/tile.png"/>
+        <TileDef filepath="sprites/uv_map.png"/>
+        <TileDef filepath="sprites/tile.png"/>
+        <TileDef filepath="sprites/uv_map.png"/>
     </TileSet>
-    <Camera x="374" y="0" zoom="1"/>
+    <Camera x="762" y="464" zoom="1"/>
     <Tiles width="32" height="32">
         <TileRow index="0">
             <Tile index="0">1</Tile>
@@ -273,7 +281,7 @@
             <Tile index="25">1</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">0</Tile>
-            <Tile index="28">0</Tile>
+            <Tile index="28">1</Tile>
             <Tile index="29">0</Tile>
             <Tile index="30">0</Tile>
             <Tile index="31">0</Tile>
@@ -298,7 +306,7 @@
             <Tile index="16">1</Tile>
             <Tile index="17">2</Tile>
             <Tile index="18">0</Tile>
-            <Tile index="19">0</Tile>
+            <Tile index="19">1</Tile>
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">2</Tile>
@@ -307,7 +315,7 @@
             <Tile index="25">1</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">0</Tile>
-            <Tile index="28">0</Tile>
+            <Tile index="28">1</Tile>
             <Tile index="29">0</Tile>
             <Tile index="30">0</Tile>
             <Tile index="31">0</Tile>
@@ -332,8 +340,8 @@
             <Tile index="16">1</Tile>
             <Tile index="17">2</Tile>
             <Tile index="18">0</Tile>
-            <Tile index="19">0</Tile>
-            <Tile index="20">0</Tile>
+            <Tile index="19">1</Tile>
+            <Tile index="20">1</Tile>
             <Tile index="21">2</Tile>
             <Tile index="22">2</Tile>
             <Tile index="23">0</Tile>
@@ -341,7 +349,7 @@
             <Tile index="25">1</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">0</Tile>
-            <Tile index="28">0</Tile>
+            <Tile index="28">1</Tile>
             <Tile index="29">0</Tile>
             <Tile index="30">0</Tile>
             <Tile index="31">0</Tile>
@@ -367,15 +375,15 @@
             <Tile index="17">1</Tile>
             <Tile index="18">0</Tile>
             <Tile index="19">2</Tile>
-            <Tile index="20">2</Tile>
+            <Tile index="20">1</Tile>
             <Tile index="21">2</Tile>
             <Tile index="22">1</Tile>
             <Tile index="23">0</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">1</Tile>
             <Tile index="26">0</Tile>
-            <Tile index="27">0</Tile>
-            <Tile index="28">0</Tile>
+            <Tile index="27">1</Tile>
+            <Tile index="28">1</Tile>
             <Tile index="29">0</Tile>
             <Tile index="30">1</Tile>
             <Tile index="31">0</Tile>
@@ -401,7 +409,7 @@
             <Tile index="17">1</Tile>
             <Tile index="18">1</Tile>
             <Tile index="19">0</Tile>
-            <Tile index="20">0</Tile>
+            <Tile index="20">1</Tile>
             <Tile index="21">1</Tile>
             <Tile index="22">0</Tile>
             <Tile index="23">0</Tile>
@@ -643,7 +651,7 @@
             <Tile index="21">1</Tile>
             <Tile index="22">0</Tile>
             <Tile index="23">1</Tile>
-            <Tile index="24">0</Tile>
+            <Tile index="24">1</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">1</Tile>
@@ -677,8 +685,8 @@
             <Tile index="21">1</Tile>
             <Tile index="22">0</Tile>
             <Tile index="23">1</Tile>
-            <Tile index="24">0</Tile>
-            <Tile index="25">0</Tile>
+            <Tile index="24">1</Tile>
+            <Tile index="25">1</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">1</Tile>
             <Tile index="28">1</Tile>
@@ -711,9 +719,9 @@
             <Tile index="21">0</Tile>
             <Tile index="22">1</Tile>
             <Tile index="23">1</Tile>
-            <Tile index="24">0</Tile>
-            <Tile index="25">0</Tile>
-            <Tile index="26">0</Tile>
+            <Tile index="24">1</Tile>
+            <Tile index="25">1</Tile>
+            <Tile index="26">1</Tile>
             <Tile index="27">0</Tile>
             <Tile index="28">1</Tile>
             <Tile index="29">0</Tile>
@@ -779,7 +787,7 @@
             <Tile index="21">0</Tile>
             <Tile index="22">1</Tile>
             <Tile index="23">0</Tile>
-            <Tile index="24">0</Tile>
+            <Tile index="24">1</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">0</Tile>
@@ -813,7 +821,7 @@
             <Tile index="21">0</Tile>
             <Tile index="22">1</Tile>
             <Tile index="23">0</Tile>
-            <Tile index="24">0</Tile>
+            <Tile index="24">1</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">0</Tile>
@@ -847,7 +855,7 @@
             <Tile index="21">0</Tile>
             <Tile index="22">1</Tile>
             <Tile index="23">0</Tile>
-            <Tile index="24">0</Tile>
+            <Tile index="24">1</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">0</Tile>
@@ -882,7 +890,7 @@
             <Tile index="22">1</Tile>
             <Tile index="23">0</Tile>
             <Tile index="24">0</Tile>
-            <Tile index="25">0</Tile>
+            <Tile index="25">1</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">0</Tile>
             <Tile index="28">1</Tile>
@@ -916,7 +924,7 @@
             <Tile index="22">1</Tile>
             <Tile index="23">0</Tile>
             <Tile index="24">0</Tile>
-            <Tile index="25">0</Tile>
+            <Tile index="25">1</Tile>
             <Tile index="26">0</Tile>
             <Tile index="27">0</Tile>
             <Tile index="28">1</Tile>
@@ -951,7 +959,7 @@
             <Tile index="23">0</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
-            <Tile index="26">0</Tile>
+            <Tile index="26">1</Tile>
             <Tile index="27">0</Tile>
             <Tile index="28">1</Tile>
             <Tile index="29">0</Tile>
@@ -985,7 +993,7 @@
             <Tile index="23">0</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
-            <Tile index="26">0</Tile>
+            <Tile index="26">1</Tile>
             <Tile index="27">0</Tile>
             <Tile index="28">1</Tile>
             <Tile index="29">0</Tile>
@@ -1019,7 +1027,7 @@
             <Tile index="23">0</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
-            <Tile index="26">0</Tile>
+            <Tile index="26">1</Tile>
             <Tile index="27">0</Tile>
             <Tile index="28">1</Tile>
             <Tile index="29">1</Tile>
@@ -1095,4 +1103,13 @@
             <Tile index="31">0</Tile>
         </TileRow>
     </Tiles>
+    <Objects>
+        <Object name="Object1">
+            <Transform>
+                <Position x="10" y="10" z="0"/>
+                <Dimensions width="0" height="0"/>
+                <Rotation>0</Rotation>
+            </Transform>
+        </Object>
+    </Objects>
 </Map>

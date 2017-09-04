@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Map>
+    <TileSet>
+        <TileDef filepath="sprites/tile.png"/>
+        <TileDef filepath="sprites/uv_map.png"/>
+    </TileSet>
+    <Camera x="162" y="133" zoom="1"/>
+    <Tiles width="10" height="10">
+        <TileRow index="0">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+        <TileRow index="1">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+        <TileRow index="2">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+        <TileRow index="3">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+        <TileRow index="4">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+        <TileRow index="5">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+        <TileRow index="6">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">1</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+        <TileRow index="7">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+        <TileRow index="8">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+        <TileRow index="9">
+            <Tile index="0">0</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+        </TileRow>
+    </Tiles>
+    <Objects>
+        <Object name="New Object">
+            <Transform>
+                <Position x="0" y="0" z="0"/>
+                <Dimensions width="100" height="100"/>
+                <Rotation>0</Rotation>
+            </Transform>
+        </Object>
+        <Object name="bbb">
+            <Transform>
+                <Position x="0" y="0" z="0"/>
+                <Dimensions width="100" height="100"/>
+                <Rotation>0</Rotation>
+            </Transform>
+        </Object>
+        <Object name="New Object">
+            <Transform>
+                <Position x="0" y="0" z="0"/>
+                <Dimensions width="100" height="100"/>
+                <Rotation>0</Rotation>
+            </Transform>
+        </Object>
+        <Object name="New Object">
+            <Transform>
+                <Position x="0" y="0" z="0"/>
+                <Dimensions width="100" height="100"/>
+                <Rotation>0</Rotation>
+            </Transform>
+        </Object>
+        <Object name="New Object">
+            <Transform>
+                <Position x="0" y="0" z="0"/>
+                <Dimensions width="100" height="100"/>
+                <Rotation>0</Rotation>
+            </Transform>
+        </Object>
+        <Object name="New Object">
+            <Transform>
+                <Position x="0" y="0" z="0"/>
+                <Dimensions width="100" height="100"/>
+                <Rotation>0</Rotation>
+            </Transform>
+        </Object>
+        <Object name="New Object">
+            <Transform>
+                <Position x="0" y="0" z="0"/>
+                <Dimensions width="100" height="100"/>
+                <Rotation>0</Rotation>
+            </Transform>
+        </Object>
+    </Objects>
+</Map>

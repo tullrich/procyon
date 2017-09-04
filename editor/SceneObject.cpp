@@ -6,6 +6,7 @@ SceneObject::SceneObject( QString name, QObject* owner )
 	, mParent( nullptr )
 	, mName( name )
 	, mDimensions( 100.0f, 100.0f )
+    , mRotation( 0.0f )
 {
 }
 

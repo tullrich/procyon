@@ -5,6 +5,7 @@ set( CMAKE_PREFIX_PATH "D:/Qt/5.7/msvc2015_64" )
 # Find QT5 (Widgets includes QT5 Base and other modules).
 find_package( Qt5Widgets REQUIRED )
 find_package( Qt5OpenGL REQUIRED )
+find_package( Qt5Xml REQUIRED )
 
 # Disable automatic linking against qtmain.lib
 cmake_policy( SET CMP0020 NEW )
@@ -37,6 +38,7 @@ add_definitions( ${Qt5Widgets_DEFINITIONS} )
 # Add QT5 includes (also includes other modules)
 include_directories(
 	${Qt5Widgets_INCLUDE_DIRS}
+	${Qt5Xml_INCLUDE_DIRS}
 	${PROCYON_PLATFORM_INCLUDE_DIRS}
 	)
 
@@ -80,6 +82,7 @@ target_link_libraries(Editor
 	Procyon_lib
 	${Qt5Widgets_LIBRARIES}
 	${Qt5OpenGL_LIBRARIES}
+	${Qt5Xml_LIBRARIES}
 	${QPROPERTYBROWSER_LIBRARIES}
 	${PROCYON_PLATFORM_LIBRARIES}
 )
