@@ -63,9 +63,9 @@ void EditorSettings::Load()
 
     // Canvas settings
     settings.beginGroup( "Canvas" );
-    SetGridVisible( settings.value( "grid_visible", mGridVisible).toBool() );
+    SetGridVisible( settings.value( "grid_visible", mGridVisible ).toBool() );
     SetGridSize( settings.value( "grid_size", mGridSize ).toFloat() );
-    settings.endGroup(); // Camera
+    settings.endGroup(); // Canvas
 
 	settings.beginGroup( "Preferences" );
 		settings.beginGroup( "Log" );
@@ -93,7 +93,7 @@ void EditorSettings::Save()
     settings.beginGroup( "Canvas" );
     	settings.setValue( "grid_visible", mGridVisible );
     	settings.setValue( "grid_size", mGridSize );
-    settings.endGroup(); // Camera
+    settings.endGroup(); // Canvas
 
 	settings.beginGroup( "Preferences" );
 		settings.beginGroup( "Log" );

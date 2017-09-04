@@ -138,7 +138,6 @@ Editor::Editor( QWidget *parent )
 
     // Setup the grid show/hide action
     mUi->actionDisableGrid->setCheckable( true );
-    mUi->actionDisableGrid->setChecked( EditorSettings::Get().GetGridVisible() );
     connect( mUi->actionDisableGrid, &QAction::toggled, []( bool checked ) {
         EditorSettings::Get().SetGridVisible( checked );
     } );
@@ -147,10 +146,8 @@ Editor::Editor( QWidget *parent )
     QActionGroup* group = new QActionGroup( this );
     group->setExclusive( true );
     mUi->action1x1->setCheckable( true );
-    mUi->action1x1->setChecked( (int)EditorSettings::Get().GetGridSize() == 1 );
     mUi->action1x1->setActionGroup( group );
     mUi->action5x5->setCheckable( true );
-    mUi->action5x5->setChecked( (int)EditorSettings::Get().GetGridSize() == 5 );
     mUi->action5x5->setActionGroup( group );
     connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( GridSizeChanged( QAction* ) ) );
 
@@ -220,6 +217,9 @@ Editor::Editor( QWidget *parent )
 
 	// Load settings init
 	mSettings->Load();
+    mUi->action1x1->setChecked( ( int )EditorSettings::Get().GetGridSize() == 1 );
+    mUi->action5x5->setChecked( ( int )EditorSettings::Get().GetGridSize() == 5 );
+    mUi->actionDisableGrid->setChecked( EditorSettings::Get().GetGridVisible() );
 
     // Setup output log
     SetupOutputLog();
@@ -242,7 +242,7 @@ void Editor::GridSizeChanged( QAction* action )
 {
 	if ( action == mUi->action1x1 )
         EditorSettings::Get().SetGridSize( 1.0f );
-	else if ( action == mUi->action5x5 )
+    else if ( action == mUi->action5x5 )
         EditorSettings::Get().SetGridSize( 5.0f );
 }
 
