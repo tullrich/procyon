@@ -54,10 +54,14 @@ void Grid::Render( Renderer* r, const glm::ivec2& size )
     Procyon::Rect viewport = r->GetCamera().GetScreenRect();
     Procyon::Rect map( 0.0f, mGridSize * (float)size.y, mGridSize * ( float )size.x, mGridSize * ( float )size.y );
 
-    Procyon::Rect rect( glm::max( viewport.topleft.x, map.topleft.x )
-        , glm::min( viewport.topleft.y, map.topleft.y )
-        , glm::min( viewport.dimensions.x, map.dimensions.x )
-        , glm::min( viewport.dimensions.y, map.dimensions.y ) );
+    glm::vec2 topLeft; 
+    topLeft.x = glm::max( viewport.topleft.x, map.topleft.x );
+    topLeft.y = glm::min( viewport.topleft.y, map.topleft.y );
+    glm::vec2 botRight;
+    botRight.x = glm::min( viewport.GetBottomRight().x, map.GetBottomRight().x );
+    botRight.y = glm::max( viewport.GetBottomRight().y, map.GetBottomRight().y );
+    Procyon::Rect rect( topLeft.x, topLeft.y
+        , botRight.x - topLeft.x, topLeft.y - botRight.y );
 
 	// Draw horizontal lines
 	float yCursor = rect.GetBottomLeft().y - fmod( rect.GetBottomLeft().y, gridAdvance );
