@@ -33,6 +33,9 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <QAbstractScrollArea>
 #include <QScrollBar>
 #include <QSignalBlocker>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QSortFilterProxyModel>
 
 #include "Camera.h"
 
@@ -180,15 +183,25 @@ Editor::Editor( QWidget *parent )
 
 	// Setup object list
 	mSceneTreeItemMenu = new QMenu( this );
-	mSceneCreate = new QAction( "Add Object", mSceneTreeItemMenu );
-	mSceneDelete = new QAction( "Delete", mSceneTreeItemMenu );
+	mSceneCreate = new QAction( "Add Object", this );
+	mSceneDelete = new QAction( "Delete", this );
 	mSceneTreeItemMenu->addAction( mSceneDelete );
 	mSceneTreeItemMenu->addAction( mSceneCreate );
 	mUi->sceneTree->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect( mUi->sceneTree, SIGNAL( customContextMenuRequested( const QPoint& ) )
 		, this, SLOT( OnSceneTreeContextMenuRequested( const QPoint & ) ), Qt::QueuedConnection );
-	connect( mUi->sceneTree, SIGNAL( activated( const QModelIndex& ) )
+	connect( mUi->sceneTree, SIGNAL( clicked( const QModelIndex& ) )
 		, this, SLOT( OnObjectActivated( const QModelIndex& ) ) );
+    connect( mUi->sceneTreeAddBtn, &QPushButton::clicked, [this]() {
+        if ( mActiveDocument )
+        {
+            mActiveDocument->GetRootSceneObject()->AddChild( new SceneObject( "New Object", nullptr ) );
+        }
+    } );
+    connect( mUi->sceneTreeDeleteBtn, &QPushButton::clicked, [this]() { } );
+    connect( mUi->sceneTreeFilter, &QLineEdit::textEdited, [ this ]( const QString &text ) {
+        ( ( QSortFilterProxyModel* )mUi->sceneTree->model() )->setFilterFixedString( text );
+    } );
 
 
 	// Setup property editor
@@ -257,9 +270,14 @@ void Editor::SetActiveDocument( int idx )
     mUi->actionSave_As->setEnabled( mActiveDocument->IsModified() );
 
 	// update the scene tree
-	QItemSelectionModel *m = mUi->sceneTree->selectionModel();
-	mUi->sceneTree->setModel( new SceneObjectListModel( this, mActiveDocument->GetRootSceneObject() ) );
-	delete m;
+	QItemSelectionModel* old = mUi->sceneTree->selectionModel();
+
+    SceneObjectListModel* model = new SceneObjectListModel( this, mActiveDocument->GetRootSceneObject() );
+    QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel( this );
+    proxyModel->setDynamicSortFilter( false );
+    proxyModel->setSourceModel( model );
+	mUi->sceneTree->setModel( proxyModel );
+	delete old;
 
 	// update the tile list
 	mTileSetsView->clear();
@@ -539,7 +557,9 @@ void Editor::CanvasCameraChanged( const Camera2D* cam )
 
 void Editor::OnSceneTreeContextMenuRequested( const QPoint& point )
 {
-	QModelIndex index = mUi->sceneTree->indexAt( point );
+	QModelIndex filteredIndex = mUi->sceneTree->indexAt( point );
+    QSortFilterProxyModel* proxyModel = ( QSortFilterProxyModel* )mUi->sceneTree->model();
+    QModelIndex index = proxyModel->mapToSource( filteredIndex );
 	if ( index.isValid() )
 	{
 		mSceneDelete->setEnabled( true );
@@ -562,8 +582,9 @@ void Editor::OnSceneTreeContextMenuRequested( const QPoint& point )
 					, index.row(), index.column(), index.internalPointer() );
 				object->GetParent()->RemoveChild( object );
 				PROCYON_DEBUG( "Editor", "Post 1" );
-				//delete object;
+				delete object;
 				//object->deleteLater();
+                proxyModel->invalidate();
 			}
 		}
 	}
@@ -579,6 +600,7 @@ void Editor::OnSceneTreeContextMenuRequested( const QPoint& point )
 			parent = mActiveDocument->GetRootSceneObject();
 		}
 		parent->AddChild( new SceneObject( "New Object", parent ) );
+        proxyModel->invalidate();
 	}
 }
 
@@ -623,12 +645,12 @@ void Editor::ShowStatusMessage( const QString& msg, bool permanent /* = false */
 
 void Editor::OnObjectActivated( const QModelIndex &index )
 {
-	if ( index.isValid() )
+    QModelIndex mappedIndex = ((QSortFilterProxyModel*)mUi->sceneTree->model())->mapToSource( index );
+	if ( mappedIndex.isValid() )
 	{
 		PROCYON_DEBUG( "Editor", "OnObjectActivated");
-		SceneObject* object = static_cast< SceneObject* >( index.internalPointer() );
+		SceneObject* object = static_cast< SceneObject* >( mappedIndex.internalPointer() );
 		SetPropertySheetObject( object );
-
 	}
 }
 
@@ -757,6 +779,7 @@ void Editor::SetPropertySheetObject( QObject *object )
             mUi->propertyList->removeProperty(it.next());
         }
         mTopLevelProperties.clear();
+        mClassToProperty.clear();
     }
 
     mPropertyObject = object;
