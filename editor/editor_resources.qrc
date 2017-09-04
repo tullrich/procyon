@@ -1,10 +1,12 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
+<RCC>
+  <qresource>
+    <file>resources/cross-button.png</file>
+    <file>resources/plus-button.png</file>
     <file>resources/disk-black.png</file>
     <file>resources/document.png</file>
     <file>resources/grid.png</file>
     <file>resources/node-select-child.png</file>
     <file>resources/folder-horizontal-open.png</file>
     <file>resources/app.ico</file>
-</qresource>
+  </qresource>
 </RCC>
