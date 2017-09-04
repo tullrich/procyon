@@ -252,6 +252,8 @@ void Editor::SetActiveDocument( int idx )
     {
         mActiveDocument = nullptr;
 
+        setWindowTitle( "Procyon" );
+
         mTabBar->setCurrentIndex( -1 );
 
         mUi->actionSave->setEnabled( false );
@@ -285,6 +287,11 @@ void Editor::SetActiveDocument( int idx )
         return;
 
     mActiveDocument =  doc;
+
+    // update window title
+    setWindowTitle( doc->GetTitleString() );
+
+    // update tab bar
     mTabBar->setCurrentIndex( idx );
     mActiveDocument->GetUndoStack()->setActive();
 
@@ -413,8 +420,12 @@ void Editor::AddDocument( MapDocument *doc, bool makeActive /* = true */ )
         int idx = GetDocumentIndex( doc );
         if ( idx != -1 )
         {
-            mTabBar->setTabText( idx, newFilePath.fileName() );
-            mTabBar->setTabToolTip( idx, newFilePath.filePath() );
+            mTabBar->setTabText( idx, doc->GetTabString() );
+            mTabBar->setTabToolTip( idx, doc->GetFilePath() );
+            if ( doc == mActiveDocument )
+            {
+                setWindowTitle( doc->GetTitleString() );
+            }
         }
         else
         {
@@ -432,6 +443,7 @@ void Editor::AddDocument( MapDocument *doc, bool makeActive /* = true */ )
             {
                 mUi->actionSave->setEnabled( modified );
                 mUi->actionSave_As->setEnabled( modified );
+                setWindowTitle( doc->GetTitleString() );
             }
         }
         else
@@ -513,7 +525,7 @@ bool Editor::CloseDocument( MapDocument *doc /* = NULL */, bool forceDiscard /* 
     {
         SetActiveDocument( idx );
 
-        QString docName = (doc->HasSavePath()) ? doc->FileName() : "untitled";
+        QString docName = (doc->HasSavePath()) ? doc->GetFileName() : "untitled";
 
         QMessageBox msgBox( this );
         msgBox.setText("Document '" + docName + "' has been modified.");

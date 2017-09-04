@@ -234,9 +234,10 @@ public:
 	MapDocument();
 	virtual ~MapDocument();
 
-	QString FileName() const { return mFilePath.fileName(); }
+	QString GetFileName() const { return mFilePath.fileName(); }
 	QString GetFilePath() const { return mFilePath.filePath(); }
 	QString GetTabString() const;
+    QString GetTitleString() const;
 	bool IsFresh() const { return !HasSavePath() && !mModified; }
 
 	void SetFilePath( const QFileInfo& filepath );

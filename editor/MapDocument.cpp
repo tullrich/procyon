@@ -42,10 +42,22 @@ MapDocument::~MapDocument()
 
 QString MapDocument::GetTabString() const
 {
-	QString text = ( HasSavePath() ) ? FileName() : tr( "untitled" );
+	QString text = ( HasSavePath() ) ? GetFileName() : tr( "untitled" );
 	if ( mModified )
 		text += "*";
 	return text;
+}
+
+QString MapDocument::GetTitleString() const
+{
+    if ( HasSavePath() )
+    {
+        return QString( "%1 - %2 - Procyon" ).arg( GetTabString(), GetFilePath() );
+    }
+    else
+    {
+        return QString( "%1 - Procyon" ).arg( GetTabString() );
+    }
 }
 
 void MapDocument::SetFilePath( const QFileInfo& filepath )
