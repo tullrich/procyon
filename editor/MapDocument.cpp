@@ -278,8 +278,8 @@ bool MapDocument::Load( const QString& filename )
                     if ( !domDimensions.isNull() )
                     {
                         QPoint dims;
-                        dims.setX( domPosition.attribute( "width" ).toFloat() );
-                        dims.setY( domPosition.attribute( "height" ).toFloat() );
+                        dims.setX( domDimensions.attribute( "width" ).toFloat() );
+                        dims.setY( domDimensions.attribute( "height" ).toFloat() );
                         obj->SetDimensions( dims );
                     }
 
