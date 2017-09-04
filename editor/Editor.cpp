@@ -220,9 +220,6 @@ Editor::Editor( QWidget *parent )
 
     // Setup output log
     SetupOutputLog();
-
-    // Create initial document
-    NewDocument( false );
 }
 
 Editor::~Editor()
@@ -251,8 +248,34 @@ void Editor::ResetViewport()
 
 void Editor::SetActiveDocument( int idx )
 {
-    if ( idx == -1 ) // no active tab, unsupported
+    if ( idx == -1 ) // no active tab
     {
+        mActiveDocument = nullptr;
+
+        mTabBar->setCurrentIndex( -1 );
+
+        mUi->actionSave->setEnabled( false );
+        mUi->actionSave_As->setEnabled( false );
+
+        QItemSelectionModel* old = mUi->sceneTree->selectionModel();
+        QSortFilterProxyModel* emptyModel = new QSortFilterProxyModel( this );
+        mUi->sceneTree->setModel( emptyModel );
+        delete old;
+        mTileSetsView->clear();
+
+        emit ActiveDocumentChanged( nullptr );
+
+        QScrollBar* horizontal = mScrollArea->horizontalScrollBar();
+        const QSignalBlocker hBlocker( horizontal );
+        horizontal->setRange( 0, 0 );
+        horizontal->setValue(  0 );
+        horizontal->setPageStep( 0 );
+
+        QScrollBar* vertical = mScrollArea->verticalScrollBar();
+        const QSignalBlocker vBlocker( vertical );
+        vertical->setRange( 0, 0 );
+        vertical->setValue( 0 );
+        vertical->setPageStep( 0 );
         return;
     }
 
@@ -271,7 +294,6 @@ void Editor::SetActiveDocument( int idx )
 
 	// update the scene tree
 	QItemSelectionModel* old = mUi->sceneTree->selectionModel();
-
     SceneObjectListModel* model = new SceneObjectListModel( this, mActiveDocument->GetRootSceneObject() );
     QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel( this );
     proxyModel->setDynamicSortFilter( false );
@@ -519,11 +541,7 @@ bool Editor::CloseDocument( MapDocument *doc /* = NULL */, bool forceDiscard /* 
     mDocuments.removeAt( idx );
     ShowStatusMessage( "Closed " + ( ( doc->HasSavePath() ) ? doc->GetFilePath() : "untitled" ) );
 
-    if ( mDocuments.size() == 0 )
-    {
-        NewDocument( false );
-    }
-    else if ( doc == mActiveDocument )
+    if ( doc == mActiveDocument )
     {
         SetActiveDocument( mTabBar->currentIndex() );
     }

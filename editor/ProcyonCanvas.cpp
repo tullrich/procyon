@@ -134,17 +134,21 @@ void ProcyonCanvas::OnActiveDocumentChanged( MapDocument *doc )
 
     // Switch
     mActiveDocument = doc;
-    connect( mActiveDocument, SIGNAL( DocumentPreparingToSave() )
-        , this, SLOT( SaveCameraState() ) );
 
-	mMapBounds = Rect( 0, mActiveDocument->GetSize().y * TILE_PIXEL_SIZE,
-		mActiveDocument->GetSize().x * TILE_PIXEL_SIZE, mActiveDocument->GetSize().y * TILE_PIXEL_SIZE );
-
-    // Restore previous state
-    if ( mCamera )
+    if ( mActiveDocument )
     {
-        mActiveDocument->RestoreCameraState( mCamera );
-        emit CameraChanged( mCamera );
+        connect( mActiveDocument, SIGNAL( DocumentPreparingToSave() )
+            , this, SLOT( SaveCameraState() ) );
+
+        mMapBounds = Rect( 0, mActiveDocument->GetSize().y * TILE_PIXEL_SIZE,
+            mActiveDocument->GetSize().x * TILE_PIXEL_SIZE, mActiveDocument->GetSize().y * TILE_PIXEL_SIZE );
+
+        // Restore previous state
+        if ( mCamera )
+        {
+            mActiveDocument->RestoreCameraState( mCamera );
+            emit CameraChanged( mCamera );
+        }
     }
 }
 
