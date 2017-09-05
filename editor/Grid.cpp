@@ -24,6 +24,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Grid.h"
 #include "Renderer.h"
+#include "World.h"
 
 using namespace Procyon;
 
@@ -52,7 +53,7 @@ void Grid::Render( Renderer* r, const glm::ivec2& size )
 	const float gridAdvance = mGridSize * ((r->GetCamera().GetZoom() < 0.75f) ? mMajorFrequency : 1.0f);
 
     Procyon::Rect viewport = r->GetCamera().GetScreenRect();
-    Procyon::Rect map( 0.0f, mGridSize * (float)size.y, mGridSize * ( float )size.x, mGridSize * ( float )size.y );
+    Procyon::Rect map( 0.0f, TILE_PIXEL_SIZE * (float)size.y, TILE_PIXEL_SIZE * ( float )size.x, TILE_PIXEL_SIZE * ( float )size.y );
 
     glm::vec2 topLeft; 
     topLeft.x = glm::max( viewport.topleft.x, map.topleft.x );
