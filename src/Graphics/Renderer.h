@@ -63,7 +63,7 @@ namespace Procyon {
 
 		void 				BeginRender();
 		void 				Draw( const Renderable* r );
-        void                DrawWireframeRect( const Rect& rect, const glm::vec4& color );
+        void                DrawWireframeRect( const Rect& rect, const glm::vec4& color, bool screenSpace );
 		void 				DrawLine( const glm::vec2& start, const glm::vec2& end, const glm::vec4& color );
 		void 				DrawAALine( const glm::vec2& start, const glm::vec2& end, float width, float feather, const glm::vec4& color );
 		void 				DrawAnchor( const glm::vec2* points, const glm::vec4& color, float width, PolyLineJoinMode joinMode, float miterLimit );

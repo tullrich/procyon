@@ -176,7 +176,7 @@ namespace Procyon {
             const glm::vec2 baselineStart = mPosition + glm::vec2( 0.0f, -metrics.descender );
             if ( !mText.empty() )
                 r->DrawLine( baselineStart, baselineStart + glm::vec2( mDims.x, 0.0f ), glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f ) );
-            r->DrawWireframeRect( Rect( mPosition + glm::vec2(0.0f, 0.5f), glm::vec2( mDims.x, -mDims.y ) ), glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ) );
+            r->DrawWireframeRect( Rect( mPosition + glm::vec2(0.0f, 0.5f), glm::vec2( mDims.x, -mDims.y ) ), glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ), true );
         }
 
 		float x = 0.0f;

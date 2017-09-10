@@ -95,12 +95,22 @@ namespace Procyon {
 		r->PostRenderCommands( this, mRenderCore );
 	}
 
-    void Renderer::DrawWireframeRect( const Rect& rect, const glm::vec4& color )
+    void Renderer::DrawWireframeRect( const Rect& rect, const glm::vec4& color, bool screenSpace )
     {
-        DrawLine( rect.GetTopLeft(), rect.GetTopRight(), color );
-        DrawLine( rect.GetTopLeft(), rect.GetBottomLeft(), color );
-        DrawLine( rect.GetBottomRight(), rect.GetTopRight(), color );
-        DrawLine( rect.GetBottomRight(), rect.GetBottomLeft(), color );
+        if ( screenSpace )
+        {
+            DrawLine( rect.GetTopLeft(), rect.GetTopRight(), color );
+            DrawLine( rect.GetTopLeft(), rect.GetBottomLeft(), color );
+            DrawLine( rect.GetBottomRight(), rect.GetTopRight(), color );
+            DrawLine( rect.GetBottomRight(), rect.GetBottomLeft(), color );
+        }
+        else
+        {
+            DrawWorldLine( rect.GetTopLeft(), rect.GetTopRight(), color );
+            DrawWorldLine( rect.GetTopLeft(), rect.GetBottomLeft(), color );
+            DrawWorldLine( rect.GetBottomRight(), rect.GetTopRight(), color );
+            DrawWorldLine( rect.GetBottomRight(), rect.GetBottomLeft(), color );
+        }
     }
 
 	void Renderer::EndRender()
