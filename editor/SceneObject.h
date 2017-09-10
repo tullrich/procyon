@@ -75,6 +75,9 @@ public:
 
 	void Render( Procyon::Renderer* renderer );
 
+    void SetSelected( bool selected ) { mSelected = selected; }
+    bool IsSelected() const { return mSelected; }
+
 signals:
 	void ChildRemovedStart( SceneObject* child, int idx );
 	void ChildRemovedEnd( SceneObject* child, int idx );
@@ -93,6 +96,8 @@ protected:
 
 	SceneObject* mParent;
 	QVector< SceneObject* > mChildren;
+
+    bool mSelected;
 };
 
 #endif /* _SCENE_OBJECT */

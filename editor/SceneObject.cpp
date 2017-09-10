@@ -1,5 +1,8 @@
 #include "SceneObject.h"
 #include "Renderer.h"
+#include "ProcyonQtUtil.h"
+
+using namespace Procyon;
 
 SceneObject::SceneObject( QString name, QObject* owner )
 	: QObject( owner )
@@ -7,6 +10,7 @@ SceneObject::SceneObject( QString name, QObject* owner )
 	, mName( name )
 	, mDimensions( 100.0f, 100.0f )
     , mRotation( 0.0f )
+    , mSelected( false )
 {
 }
 
@@ -88,9 +92,18 @@ void SceneObject::Render( Procyon::Renderer* renderer )
 
 void SceneObject::OnRender( Procyon::Renderer* renderer )
 {
-	glm::vec2 start( mPosition.x(), mPosition.y() );
+	/*glm::vec2 start( mPosition.x(), mPosition.y() );
 	glm::vec2 end1( mPosition.x(), mPosition.y() + mDimensions.y() );
 	glm::vec2 end2( mPosition.x() + mDimensions.x(), mPosition.y() );
     renderer->DrawWorldLine( start, end1, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) );
-    renderer->DrawWorldLine( start, end2, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f) );
+    renderer->DrawWorldLine( start, end2, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f) );*/
+
+
+    renderer->DrawRectShape( ProcyonQtUtil::QPointFToVec2( mPosition ), ProcyonQtUtil::QPointFToVec2( mDimensions ), mRotation, glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ) );
+
+    if ( mSelected )
+    {
+        Procyon::Rect r( ProcyonQtUtil::QPointFToVec2( mPosition ), ProcyonQtUtil::QPointFToVec2( mDimensions ) );
+        renderer->DrawWireframeRect( r, glm::vec4( 0.0f, 0.0f, 1.0f, 1.0f ), false );
+    }
 }

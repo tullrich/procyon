@@ -72,10 +72,6 @@ void Grid::Render( Renderer* r, const glm::ivec2& size )
 		r->DrawWorldLine( glm::vec2( int(rect.GetTopLeft().x), int(yCursor) )
 			, glm::vec2(int( rect.GetTopLeft().x + rect.GetWidth()), int(yCursor) )
 			, glm::vec4( glm::vec3( 0.0f ), 0.3f )  );
-		//r->DrawAALine( glm::vec2( rect.GetTopLeft().x, yCursor ) + glm::vec2( 0.5f, 0.5f )
-		//	, glm::vec2( rect.GetTopLeft().x + rect.GetWidth(), yCursor ) + glm::vec2( 0.5f, 0.5f )
-		//	, 1.2f, 0.7f
-		//	, glm::vec4( glm::vec3( 0.0f ), 0.3f )  );
 		yCursor += gridAdvance;
 	}
 
@@ -87,11 +83,6 @@ void Grid::Render( Renderer* r, const glm::ivec2& size )
 		r->DrawWorldLine( glm::vec2( xCursor, rect.GetTopLeft().y )
 			, glm::vec2( xCursor, rect.GetTopLeft().y - rect.GetHeight() )
 			, glm::vec4( glm::vec3( 0.0f ), 0.3f  )  );
-
-		//r->DrawAALine( glm::vec2( xCursor, rect.GetTopLeft().y ) + glm::vec2( 0.5f, 0.5f )
-		//	, glm::vec2( xCursor, rect.GetTopLeft().y - rect.GetHeight() ) + glm::vec2( 0.5f, 0.5f )
-		//	, 1.2f, 0.7f
-		//	, glm::vec4( glm::vec3( 0.0f ), 0.3f )  );
 		xCursor += gridAdvance;
 	}
 }

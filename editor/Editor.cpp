@@ -748,7 +748,7 @@ void Editor::AddClassProperties(const QMetaObject *metaObject)
 				{
                     subProperty = mPropertyManager->addProperty(type, QLatin1String(metaProperty.name()));
 				}
-                subProperty->setValue(metaProperty.read( mPropertyObject ));
+                subProperty->setValue(metaProperty.read( mSelectedObject ));
             } else {
                 subProperty = mPropertyManager->addProperty(QVariant::String, QLatin1String(metaProperty.name()));
                 subProperty->setValue(QLatin1String("< Unknown Type >"));
@@ -770,7 +770,7 @@ void Editor::OnPropertyValueChanged(QtProperty* property, const QVariant& value 
 {
 	PROCYON_DEBUG( "Editor", "OnPropertyValueChanged" );
 
-    const QMetaObject *metaObject = mPropertyObject->metaObject();
+    const QMetaObject *metaObject = mSelectedObject->metaObject();
     int idx = metaObject->indexOfProperty( property->propertyName().toUtf8().data() );
 
 	if ( idx == -1 )
@@ -792,32 +792,34 @@ void Editor::OnPropertyValueChanged(QtProperty* property, const QVariant& value 
     }
 	else
 	{
-        metaProperty.write( mPropertyObject, value);
+        metaProperty.write( mSelectedObject, value);
     }
 }
 
-void Editor::SetPropertySheetObject( QObject *object )
+void Editor::SetPropertySheetObject( SceneObject *object )
 {
-    if ( mPropertyObject == object)
+    if ( mSelectedObject == object)
 	{
         return;
 	}
 
-    if ( mPropertyObject ) {
+    if ( mSelectedObject ) {
     	QListIterator< QtProperty* > it( mTopLevelProperties );
         while (it.hasNext()) {
             mUi->propertyList->removeProperty(it.next());
         }
         mTopLevelProperties.clear();
         mClassToProperty.clear();
+        mSelectedObject->SetSelected( false );
     }
 
-    mPropertyObject = object;
+    mSelectedObject = object;
 
-    if ( !mPropertyObject )
+    if ( !mSelectedObject )
 	{
         return;
 	}
 
-    AddClassProperties( mPropertyObject->metaObject() );
+    AddClassProperties( mSelectedObject->metaObject() );
+    mSelectedObject->SetSelected( true );
 }

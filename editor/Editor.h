@@ -44,6 +44,7 @@ class ProcyonCanvas;
 class MapDocument;
 class EditorSettings;
 class RecentFileList;
+class SceneObject;
 class QtVariantPropertyManager;
 class QtProperty;
 
@@ -85,7 +86,7 @@ protected slots:
 protected:
     void ShowStatusMessage( const QString& msg, bool permanent = false );
 	void AddClassProperties(const QMetaObject *metaObject);
-	void SetPropertySheetObject( QObject *object );
+	void SetPropertySheetObject( SceneObject *object );
     void AddDocument( MapDocument *doc, bool makeActive = true );
 
     void SetupOutputLog();
@@ -125,7 +126,7 @@ protected:
     RecentFileList* mRecentFiles;
 
 	// Current object being shown on the property sheet
-	QObject* mPropertyObject;
+	SceneObject* mSelectedObject;
 	QtVariantPropertyManager* mPropertyManager;
     QList<QtProperty *> mTopLevelProperties;
     QMap<const QMetaObject *, QtProperty *> mClassToProperty;
