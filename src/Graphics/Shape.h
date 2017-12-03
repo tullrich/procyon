@@ -31,7 +31,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-	class RenderContext;
 	namespace GL
 	{
 		class GLGeometry;
@@ -53,7 +52,6 @@ namespace Procyon {
 	    const GL::GLGeometry*	GetGeometry() const;
 
     	virtual void 			Render( const GL::GLProgram* program ) const;
-    	virtual void 			Render( const Camera2D* camera, RenderContext* rc ) const;
 		virtual void 			PostRenderCommands( Renderer* r, RenderCore* rc ) const;
 
 	protected:

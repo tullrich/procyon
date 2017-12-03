@@ -27,22 +27,16 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ProcyonCommon.h"
 #include "Transformable.h"
-#include "GLMaterial.h"
 #include "Renderable.h"
+#include "GraphicsPlatform.h"
 
 namespace Procyon {
 
-	namespace GL
-	{
-		class GLProgram;
-		class GLTexture;
-	}
-
-	class Sprite : public Transformable, public GL::GLMaterial, public Renderable
+	class Sprite : public Transformable, public Material, public Renderable
 	{
 	public:
-							Sprite( const GL::GLProgram* prog, const GL::GLTexture* mainTex );
-	    					Sprite( const GL::GLTexture* tex );
+							Sprite( const Program* prog, const Texture* mainTex );
+	    					Sprite( const Texture* tex );
 
 	    virtual void 		Process( FrameTime t ) { };
 
@@ -50,14 +44,13 @@ namespace Procyon {
     	const Rect&  		GetTextureRect() const;
     	glm::mat3 			GetUVTransform() const;
 
-    	virtual void 		Render( const Camera2D* camera, RenderContext* rc ) const;
     	virtual void 		PostRenderCommands( Renderer* r, RenderCore* rc ) const;
 	protected:
-		GL::GLProgram* 		GetOrCreateDefaultProgram();
+		Program* 		    GetOrCreateDefaultProgram();
 
-		static GL::GLProgram* 	sDefaultProgram;
-	    const GL::GLTexture* 	mTexture;
-	    Rect 					mTextureRect;
+		static Program* 	sDefaultProgram;
+	    const Texture* 	    mTexture;
+	    Rect 				mTextureRect;
 	};
 
 } /* namespace Procyon */

@@ -22,48 +22,28 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
-#ifndef _SPRITE_RENDERER_H
-#define _SPRITE_RENDERER_H
+#ifndef _GRAPHICS_PLATFORM_H
+#define _GRAPHICS_PLATFORM_H
 
-#include "ProcyonCommon.h"
-#include "Quad.h"
+#define PROCYON_GRAPHICS_DIRECTX
 
 namespace Procyon {
 
-	class Camera2D;
-	class Sprite;
+	namespace DirectX {
+		class DirectXTexture { };
+		class DirectXShader { };
+		class DirectXProgram { };
+		class DirectXBuffer { };
+		class DirectXGeometry { };
+		class DirectXMaterial { };
+	} /* DirectX */
 
-	class SpriteRenderer
-	{
-		class SpriteRenderInstance
-		{
-		public:
-			glm::mat3 	mViewProj;
-			Sprite* 	mSprite;
+	using Texture = DirectX::DirectXTexture;
+	using Shader = DirectX::DirectXShader;
+	using Program = DirectX::DirectXProgram;
+	using Buffer = DirectX::DirectXBuffer;
+	using Geometry = DirectX::DirectXGeometry;
+	using Material = DirectX::DirectXMaterial;
+} /* Procyon */
 
-			SpriteRenderInstance()
-				: mViewProj( glm::mat3() )
-				, mSprite( NULL )
-			{
-			}
-
-			SpriteRenderInstance( const glm::mat3& vp, Sprite* sprite )
-				: mViewProj( vp )
-				, mSprite( sprite )
-			{
-			}
-		};
-
-	public:
-		void BeginRender();
-    	void RenderSprite( const Camera2D* camera, const Sprite* s );
-		void EndRender();
-
-	protected:
-	    Quad                    				mQuad;
-	    std::vector<SpriteRenderInstance>    	mRenderInstances;
-	};
-
-} /* namespace Procyon */
-
-#endif /* _SPRITE_RENDERER_H */
+#endif /* _GRAPHICS_PLATFORM_H */

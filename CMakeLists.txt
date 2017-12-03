@@ -5,6 +5,7 @@ cmake_minimum_required( VERSION 2.6 )
 option(test "Build all tests." OFF)
 option(examples "Build the examples." ON)
 option(editor "Build the editor." ON)
+set(RenderInteface "GL" CACHE STRING "GL or DirectX")
 
 # start proj
 project( Procyon )
@@ -43,6 +44,18 @@ elseif( MSVC OR MSVC_IDE )
   set( PROCYON_VS true )
 else( )
   message(FATAL_ERROR "Unsupported platform")
+endif ()
+
+# Render backend
+if ( RenderInteface STREQUAL "GL" )
+	set( PROCYON_GL true )
+elseif ( RenderInteface STREQUAL "DirectX" )
+	if ( PROCYON_LINUX )
+		message( FATAL_ERROR "DirectX unsupported on linux." )
+	endif ()
+	set( PROCYON_DIRECTX true )
+else ()
+  message( FATAL_ERROR "Unknown render interface: ${RenderInteface}" )
 endif ()
 
 

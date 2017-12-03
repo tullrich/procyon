@@ -22,31 +22,27 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
-#ifndef _SHAPE_RENDERER_H
-#define _SHAPE_RENDERER_H
+#ifndef _GRAPHICS_PLATFORM_H
+#define _GRAPHICS_PLATFORM_H
+
+#define PROCYON_GRAPHICS_GL
+
+#include "GLTexture.h"
+#include "GLShader.h"
+#include "GLProgram.h"
+#include "GLBuffer.h"
+#include "GLGeometry.h"
+#include "GLMaterial.h"
+#include "GLContext.h"
+#include "ProcyonVaser.h"
 
 namespace Procyon {
+	using Texture = GL::GLTexture;
+	using Shader = GL::GLShader;
+	using Program = GL::GLProgram;
+	using Buffer = GL::GLBuffer;
+	using Geometry = GL::GLGeometry;
+	using Material = GL::GLMaterial;
+} /* Procyon */
 
-	class Camera2D;
-	class Shape;
-	namespace GL {
-		class GLProgram;
-		class GLMaterial; 
-	}
-	
-	class ShapeRenderer
-	{
-	public:
-	    		ShapeRenderer();
-	    		~ShapeRenderer();
-
-	    void 	Render( const Camera2D* camera, const Shape* s );
-
-	protected:
-	    GL::GLProgram*          mProgram;
-	    GL::GLMaterial*         mMaterial;
-	};
-	
-} /* namespace Procyon */
-
-#endif /* _SHAPE_RENDERER_H */
+#endif /* _GRAPHICS_PLATFORM_H */

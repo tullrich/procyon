@@ -36,7 +36,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Sprite.h"
 #include "LineShape.h"
 #include "RectShape.h"
-#include "RenderContext.h"
 #include "Console.h"
 #include "Player.h"
 #include "CustomSprites.h"
@@ -103,7 +102,7 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
     // Create the camera
     mCamera = new Camera2D();
-    mCamera->OrthographicProj( 
+    mCamera->OrthographicProj(
           -SANDBOX_WINDOW_WIDTH / 2.0f, SANDBOX_WINDOW_WIDTH / 2.0f
         , -SANDBOX_WINDOW_HEIGHT / 2.0f, SANDBOX_WINDOW_HEIGHT / 2.0f );
 

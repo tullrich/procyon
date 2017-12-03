@@ -201,7 +201,7 @@ namespace Procyon {
 
 	bool World::InBounds( const glm::ivec2& t )
 	{
-		return t.x >= 0 && t.x < mSize.x & t.y >= 0 && t.y < mSize.y;
+		return t.x >= 0 && t.x < mSize.x && t.y >= 0 && t.y < mSize.y;
 	}
 
 } /* namespace Procyon */

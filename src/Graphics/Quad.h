@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _QUAD_H
 
 #include "ProcyonCommon.h"
-#include "GLGeometry.h"
+#include "GraphicsPlatform.h"
 
 namespace Procyon {
 

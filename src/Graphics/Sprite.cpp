@@ -23,38 +23,33 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Sprite.h"
-#include "GLProgram.h"
-#include "GLTexture.h"
-#include "RenderContext.h"
 #include "Renderer.h"
-
-using namespace Procyon::GL;
 
 namespace Procyon {
 
-    GLProgram* Sprite::sDefaultProgram = NULL;
+    Program* Sprite::sDefaultProgram = NULL;
 
-    Sprite::Sprite( const GLProgram* prog, const GLTexture* mainTex )
-        : GLMaterial( prog )
+    Sprite::Sprite( const Program* prog, const Texture* mainTex )
+        : Material( prog )
         , mTexture( mainTex )
         , mTextureRect( glm::vec2(), glm::vec2( 1.0f ) )
     {
         SetSampler( "tex", mTexture );
     }
 
-	Sprite::Sprite( const GLTexture* tex )
-		: GLMaterial( GetOrCreateDefaultProgram() )
+	Sprite::Sprite( const Texture* tex )
+		: Material( GetOrCreateDefaultProgram() )
         , mTexture( tex )
         , mTextureRect( glm::vec2(), glm::vec2( 1.0f ) )
 	{
         SetSampler( "tex", mTexture );
 	}
 
-    GLProgram* Sprite::GetOrCreateDefaultProgram()
+    Program* Sprite::GetOrCreateDefaultProgram()
     {
         if ( !sDefaultProgram )
         {
-            sDefaultProgram = new GLProgram( "shaders/shader.vert", "shaders/shader.frag" );
+            sDefaultProgram = new Program( "shaders/shader.vert", "shaders/shader.frag" );
         }
         return sDefaultProgram;
     }
@@ -72,11 +67,6 @@ namespace Procyon {
     glm::mat3 Sprite::GetUVTransform() const
     {
         return mTextureRect.GetTransform();
-    }
-
-    void Sprite::Render( const Camera2D* camera, RenderContext* rc ) const
-    {
-        rc->RenderSprite( camera, this );
     }
 
     void Sprite::PostRenderCommands( Renderer* r, RenderCore* rc ) const
