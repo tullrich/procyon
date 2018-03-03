@@ -145,14 +145,14 @@ namespace Procyon {
 	{
         while ( mWindow->IsOpen() )
         {
-            mWindow->PollEvents();
-
             double before = SecsSinceLaunch();
+
+			mWindow->PollEvents();
 
             Frame();
 
             double framerate =  1.0 / ( SecsSinceLaunch() - before );
-            mAvgFPS = mAvgFPS * 0.9 + framerate * 0.1;
+           mAvgFPS = mAvgFPS * 0.5 + framerate * 0.5;
         }
 	}
 
