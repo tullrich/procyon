@@ -28,6 +28,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Contact.h"
 #include "Sound.h"
 #include "SandboxAssets.h"
+#include "Renderer.h"
 
 namespace Procyon {
 
@@ -74,7 +75,8 @@ namespace Procyon {
 	Player::Player( World* world )
 		: mVelocity( 0.0f, 0.0f )
 		, mWorld( world )
-		, mBounds( glm::vec2( TILE_PIXEL_SIZE / 1.25f ) + TILE_PIXEL_SIZE / 2.0f, glm::vec2( TILE_PIXEL_SIZE / 2.0f ) - .0001f )
+		, mBounds( glm::vec2( TILE_PIXEL_SIZE / 1.25f ) + TILE_PIXEL_SIZE / 2.0f, glm::vec2( PLAYER_PIXEL_WIDTH, PLAYER_PIXEL_HEIGHT ) / 2.0f - .0001f )
+		, mGrounded( true )
 	{
 		mSprite = new Sprite( SandboxAssets::sPlayerTexture );
 		mSprite->SetOrigin( 0.5f, 0.5f );
@@ -105,9 +107,17 @@ namespace Procyon {
 
 	void Player::Process( FrameTime ft )
 	{
+		if (mGrounded) 
+		{
+			mAcceleration.x = 0.0f;
+		}
+		mAcceleration.y = PLAYER_GRAVITY_PIXELS;
+
 		// Gravity
-		mVelocity += glm::vec2( 0.0f, 32.0f * -9.8f * ft.dt );
-		PROCYON_DEBUG( "Player", "vel %f, %f", mVelocity.x, mVelocity.y );
+		mVelocity += mAcceleration * ft.dt;
+		mVelocity.x = glm::clamp(mVelocity.x, -PLAYER_MAX_SPEED, PLAYER_MAX_SPEED);
+
+		PROCYON_DEBUG( "PlayerVelocity", "vel %f, %f", mVelocity.x, mVelocity.y );
 
 		glm::vec2 projPos = mBounds.mCenter + mVelocity * ft.dt;
 
@@ -123,6 +133,11 @@ namespace Procyon {
 		}
 
 		UpdatePosition( ft );
+	}
+
+	void Player::Draw( Renderer* r ) const
+	{
+		r->DrawRectShape(GetPosition(), PLAYER_DIMS, 0.0f, glm::vec4(245/255.0f, 121/255.0f, 79/255.0f, 1.f));
 	}
 
 	void Player::CollideTile( const glm::ivec2& t, FrameTime ft )
@@ -181,13 +196,9 @@ namespace Procyon {
 				glm::vec2 tangent( -c.normal.y, c.normal.x );
 				float tanVelocity = glm::dot( mVelocity, tangent ) * 0.2f; // friction
 				mVelocity -= tangent  * tanVelocity;
+				mGrounded = true;
 			}
 		}
-	}
-
-	const Renderable* Player::GetRenderable() const
-	{
-		return mSprite;
 	}
 
 	glm::vec2 Player::GetPosition() const
@@ -195,19 +206,31 @@ namespace Procyon {
 		return mBounds.mCenter;
 	}
 
+	Aabb Player::GetBounds() const
+	{
+		return mBounds;
+	}
+
 	void Player::Jump()
 	{
-		if ( mVelocity.y >= 0.0f )
+		if ( mGrounded )
 		{
-			mVelocity += glm::vec2( 0.0f, 225.0f );
+			mVelocity += glm::vec2( 0.0f, PLAYER_JUMP_VELOCITY );
         	mJumpSnd->Play( true );
+			mGrounded = false;
 		}
 	}
 
 	void Player::SetLeftRightInput( float input )
 	{
-		const float kSpeed = 75.0f;
-		mVelocity.x = glm::clamp( kSpeed * input, -kSpeed, kSpeed );
+		if ( mGrounded )
+		{
+			mVelocity.x = PLAYER_DEFAULT_SPEED * input;
+		}
+		else 
+		{
+			mAcceleration.x = 4.0f * PLAYER_DEFAULT_SPEED * input;
+		}
 	}
 
 } /* namespace Procyon */
