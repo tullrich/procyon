@@ -390,7 +390,7 @@ void ProcyonCanvas::mousePressEvent( QMouseEvent* event )
     else if ( event->buttons() & Qt::MiddleButton ) // Move the camera
     {
         PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
-        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 2, mStroke );
+        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 0, mStroke );
     }
 }
 
@@ -446,7 +446,7 @@ void ProcyonCanvas::OnMouseDrag( QMouseEvent* event )
     else if ( event->buttons() & Qt::MiddleButton ) // Move the camera
     {
         PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
-        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 2, mStroke );
+        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 0, mStroke );
     }
 
 	updateGL();
