@@ -72,7 +72,7 @@ void SandboxAssets::Load()
     sPlayerTexture  = new GLTexture( GL_TEXTURE_2D, "sprites/raccoon.jpg" );
     sTileTexture    = new GLTexture( GL_TEXTURE_2D, "sprites/tile.png" );
     sTestTexture    = new GLTexture( GL_TEXTURE_2D, "tinyTest.png" );
-    sJumpSound      = new SoundBuffer( "audio/jump.wav" );
+    sJumpSound      = new SoundBuffer( "audio/jump3.wav" );
 
     TileDef def;
     def.filepath    = "sprites/tile.png";
