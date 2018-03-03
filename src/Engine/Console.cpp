@@ -55,10 +55,10 @@ Console style vars
 */
 
 // x resolution of the console window
-#define CONSOLE_X_RES 500.0f
+#define CONSOLE_X_RES 1280.0f
 
 // y resolution of the console window
-#define CONSOLE_Y_RES 250.0f
+#define CONSOLE_Y_RES 400.0f
 
 // font file loaded by the console
 //#define CONSOLE_FONT_FILE "fonts/OpenSans-Regular.ttf"

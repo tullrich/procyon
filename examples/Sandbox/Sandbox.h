@@ -42,9 +42,9 @@ class Grid;
 using namespace Procyon::GL;
 using namespace Procyon;
 
-
-#define SANDBOX_WINDOW_HEIGHT 500
-#define SANDBOX_WINDOW_WIDTH 500
+#define SANDBOX_WINDOW_WIDTH 1280
+#define SANDBOX_WINDOW_HEIGHT 800	
+#define CAMERA_VERTICAL_OFFSET 250.0f
 
 class Sandbox : public MainLoop
 {

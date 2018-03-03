@@ -85,7 +85,8 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
     mWindow->SetIcon( *SandboxAssets::sWindowIcon );
 
-    fps = new Text( SandboxAssets::sMainFont, 11 );
+    fps = new Text( SandboxAssets::sMainFont, 18 );
+	fps->SetColor( glm::vec3( 1.0f ) );
 
     world = new World();
 
@@ -106,7 +107,7 @@ void Sandbox::Initialize( int argc, char *argv[] )
           -SANDBOX_WINDOW_WIDTH / 2.0f, SANDBOX_WINDOW_WIDTH / 2.0f
         , -SANDBOX_WINDOW_HEIGHT / 2.0f, SANDBOX_WINDOW_HEIGHT / 2.0f );
 
-    mGrid = new Grid( (float)TILE_PIXEL_SIZE );
+    //mGrid = new Grid( (float)TILE_PIXEL_SIZE );
 
     // Create the player
     mPlayer   = new Player( world );
@@ -175,7 +176,9 @@ void Sandbox::Process( FrameTime t )
     mPlayer->Process( t );
 
     const float kCameraLerpSpeed = 1.0f;
-    mCamera->SetPosition( glm::round( mCamera->GetPosition() * (1.0f - kCameraLerpSpeed) + mPlayer->GetPosition() * kCameraLerpSpeed ) );
+
+	glm::vec2 target = mPlayer->GetPosition() + glm::vec2(0.0f, CAMERA_VERTICAL_OFFSET);
+    mCamera->SetPosition( glm::round( mCamera->GetPosition() * (1.0f - kCameraLerpSpeed) + target * kCameraLerpSpeed ) );
 
     Console_Process( t );
 
@@ -217,7 +220,7 @@ void Sandbox::Render()
 {
     mContext->MakeCurrent();
 
-    int hex = 0x99CCFF;
+    int hex = 0x2a2f43;
     glClearColor( ((hex >> 16)&0xff)/255.0f, ((hex >> 8)&0xff)/255.0f, (hex&0xff)/255.0f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -231,27 +234,13 @@ void Sandbox::Render()
 
         world->Render( mRenderer );
 
-        mRenderer->Draw( mPlayer->GetRenderable() );
+		mPlayer->Draw( mRenderer );
 
-        mGrid->Render( mRenderer, world->GetSize() );
+		if ( mGrid ) {
+			mGrid->Render( mRenderer, world->GetSize() );
+		}
 
         mRenderer->Draw( fps );
-		//SandboxAssets::sTestTexture->SetMinMagFilter( GL_LINEAR, GL_LINEAR );
-		//mRenderer->DrawTexture( SandboxAssets::sTestTexture, glm::vec2(), glm::vec2( 10.0f ), 0.0f );
-		//mRenderer->DrawTexture( SandboxAssets::sTestTexture, glm::vec2(), glm::vec2(00.0f, 200.0f), 0.0f );
-
-		float lerp = (sin( mCamera->GetPosition().x / 20.0f )+1.0f) / 2.0f;
-		//mRenderer->DrawAALine( glm::vec2(), glm::vec2(50.0f), 15.0f, lerp, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f ) );
-
-		//mRenderer->DrawPolyLine( sPoints, glm::vec4( 0.0f, 1.0f, 0.0f, 0.6f ), 20.f
-		//	, PolyLineJoinMode::BEVEL, PolyLineCapMode::BUTT, 250.0f );
-
-		//mRenderer->DrawPolyLine( sPoints2, glm::vec4( 0.0f, 1.0f, 0.0f, 0.6f ), 5.f
-		//	, PolyLineJoinMode::BEVEL, PolyLineCapMode::BUTT, 250.0f );
-
-
-		//VASEr::polyline( const Vec2*, Color, double W, int length, const polyline_opt*);
-
 
 		if( sPoints.size() >= 4 )
 		{
@@ -334,23 +323,7 @@ void Sandbox::Render()
 
 void Sandbox::OnKeyDown( const InputEvent& ev )
 {
-    if ( ev.keysym == KEY_UP )
-    {
-        mCamera->Move( 0.0f, 32.0f );
-    }
-    else if ( ev.keysym == KEY_LEFT )
-    {
-        mCamera->Move( -32.0f, 0.0f );
-    }
-    else if ( ev.keysym == KEY_DOWN )
-    {
-        mCamera->Move( 0.0f, -32.0f );
-    }
-    else if ( ev.keysym == KEY_RIGHT )
-    {
-        mCamera->Move( 32.0f, 0.0f );
-    }
-    else if ( ev.keysym == KEY_SPACE )
+	if ( ev.keysym == KEY_SPACE )
     {
         mPlayer->Jump();
     }
@@ -378,15 +351,7 @@ void Sandbox::OnKeyUp( const InputEvent& ev )
 
 void Sandbox::OnMouseDown( const InputEvent& ev )
 {
-    if ( ev.mousebutton == MOUSE_SCROLL_UP )
-    {
-        mCamera->ZoomOut( 0.1f );
-    }
-    else if( ev.mousebutton == MOUSE_SCROLL_DOWN )
-    {
-        mCamera->ZoomIn( 0.1f );
-    }
-	else if ( ev.mousebutton == MOUSE_BTN_LEFT )
+	if ( ev.mousebutton == MOUSE_BTN_LEFT )
 	{
 		sPoints.push_back( sMouseLoc );
 		sMouseDown = true;
