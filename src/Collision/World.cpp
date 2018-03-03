@@ -103,7 +103,8 @@ namespace Procyon {
 			{
 				glm::vec2 pos = glm::vec2( (float)x , (float)y ) * (float)TILE_PIXEL_SIZE + HALF_TILE_SIZE;
 				glm::vec2 dim( (float)TILE_PIXEL_SIZE );
-				r->DrawTexture( tt.texture, pos, dim, 0 );
+				r->DrawRectShape(pos, dim, 0.0f, glm::vec4(92/255.0f, 172/255.0f, 144/255.0f, 1.f));
+				//r->DrawTexture( tt.texture, pos, dim, 0 );
 			}
 		}
 	}
