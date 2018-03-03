@@ -50,7 +50,6 @@ namespace Procyon {
     	const Rect&  		GetTextureRect() const;
     	glm::mat3 			GetUVTransform() const;
 
-    	virtual void 		Render( const Camera2D* camera, RenderContext* rc ) const;
     	virtual void 		PostRenderCommands( Renderer* r, RenderCore* rc ) const;
 	protected:
 		GL::GLProgram* 		GetOrCreateDefaultProgram();

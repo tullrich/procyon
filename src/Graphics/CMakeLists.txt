@@ -19,15 +19,11 @@ set( PROCYON_GRAPHICS_SRC_FILES )
 add_subdirectory( GL/ )
 
 add_library(Procyon_Graphics STATIC
-	RenderContext.cpp
 	Camera.cpp
-	FontRenderer.cpp
 	Sprite.cpp
-	SpriteRenderer.cpp
 	Shape.cpp
 	LineShape.cpp
 	RectShape.cpp
-	ShapeRenderer.cpp
 	Quad.cpp
 	FontFace.cpp
 	Renderer.cpp

@@ -30,14 +30,12 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 namespace Procyon {
 
 	class Camera2D;
-	class RenderContext;
     class Renderer;
 	class RenderCore;
 
 	class Renderable
 	{
 	public:
-		virtual void Render( const Camera2D* camera, RenderContext* rc ) const { };
 		virtual void PostRenderCommands( Renderer* r, RenderCore* rc ) const = 0;
 	};
 

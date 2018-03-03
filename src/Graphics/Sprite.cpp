@@ -25,7 +25,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Sprite.h"
 #include "GLProgram.h"
 #include "GLTexture.h"
-#include "RenderContext.h"
 #include "Renderer.h"
 
 using namespace Procyon::GL;
@@ -72,11 +71,6 @@ namespace Procyon {
     glm::mat3 Sprite::GetUVTransform() const
     {
         return mTextureRect.GetTransform();
-    }
-
-    void Sprite::Render( const Camera2D* camera, RenderContext* rc ) const
-    {
-        rc->RenderSprite( camera, this );
     }
 
     void Sprite::PostRenderCommands( Renderer* r, RenderCore* rc ) const

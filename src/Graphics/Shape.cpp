@@ -24,7 +24,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Shape.h"
 #include "GLGeometry.h"
-#include "RenderContext.h"
 #include "RenderCore.h"
 
 using namespace Procyon::GL;
@@ -71,11 +70,6 @@ namespace Procyon {
     {
         mGeometry->Bind( program );
         mGeometry->Draw();
-    }
-
-    void Shape::Render( const Camera2D* camera, RenderContext* rc ) const
-    {
-        rc->RenderShape( camera, this );
     }
 
     void Shape::PostRenderCommands(  Renderer* r, RenderCore* rc ) const

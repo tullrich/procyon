@@ -36,7 +36,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Sprite.h"
 #include "LineShape.h"
 #include "RectShape.h"
-#include "RenderContext.h"
 #include "Console.h"
 #include "Player.h"
 #include "CustomSprites.h"
