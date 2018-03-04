@@ -172,6 +172,19 @@ namespace Procyon {
 				return;
 			}
 		}
+		if ( cmd.op == RENDER_OP_PRIMITIVE && mRenderCommandCount > 0 )
+		{
+			RenderCommand& prev = mCmdBuffer[ mRenderCommandCount - 1 ];
+			if ( prev == cmd )
+			{
+				// append
+				if ( PushCommandData( cmd ) )
+				{
+					prev.vertcount += cmd.vertcount;
+				}
+				return;
+			}
+		}
 
 		// fallback to just adding
 		AddCommand( cmd );
