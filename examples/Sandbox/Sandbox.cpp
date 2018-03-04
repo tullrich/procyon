@@ -63,7 +63,6 @@ Sandbox::Sandbox()
     , mPlayer( NULL )
     , mRenderer( NULL )
     , mCamera( NULL )
-    , mGrid( NULL )
     , mCustomMap( NULL )
 {
 }
@@ -101,16 +100,15 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
     Console_Init();
 
+	// Create the player
+	mPlayer   = new Player(world);
+
     // Create the camera
     mCamera = new Camera2D();
     mCamera->OrthographicProj( 
           -SANDBOX_WINDOW_WIDTH / 2.0f, SANDBOX_WINDOW_WIDTH / 2.0f
         , -SANDBOX_WINDOW_HEIGHT / 2.0f, SANDBOX_WINDOW_HEIGHT / 2.0f );
-
-    //mGrid = new Grid( (float)TILE_PIXEL_SIZE );
-
-    // Create the player
-    mPlayer   = new Player( world );
+	mCamera->SetPosition(mPlayer->GetPosition());
 
 	memset( &sOpts, 0, sizeof( VASEr::polyline_opt ) );
 	memset( &sTessOpts, 0, sizeof( VASEr::tessellator_opt ) );
@@ -175,7 +173,7 @@ void Sandbox::Process( FrameTime t )
     }
     mPlayer->Process( t );
 
-    const float kCameraLerpSpeed = 1.0f;
+    const float kCameraLerpSpeed = 0.25f;
 
 	glm::vec2 target = mPlayer->GetPosition() + glm::vec2(0.0f, CAMERA_VERTICAL_OFFSET);
     mCamera->SetPosition( glm::round( mCamera->GetPosition() * (1.0f - kCameraLerpSpeed) + target * kCameraLerpSpeed ) );
@@ -235,10 +233,6 @@ void Sandbox::Render()
         world->Render( mRenderer );
 
 		mPlayer->Draw( mRenderer );
-
-		if ( mGrid ) {
-			mGrid->Render( mRenderer, world->GetSize() );
-		}
 
         mRenderer->Draw( fps );
 

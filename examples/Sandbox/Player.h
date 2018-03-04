@@ -28,22 +28,22 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "ProcyonCommon.h"
 #include "Aabb.h"
 
-#define PIXELS_PER_METER 128.0f
+#define PIXELS_PER_METER 64.0f
 #define PixelsToMeters( pixels ) 						\
 			(float)pixels / (float)PIXELS_PER_METER
 #define MetersToPixels( meters )						\
 			(float)meters * (float)PIXELS_PER_METER
 
-#define PLAYER_PIXEL_HEIGHT TILE_PIXEL_SIZE
+#define PLAYER_PIXEL_HEIGHT (TILE_PIXEL_SIZE*2)
 #define PLAYER_PIXEL_WIDTH TILE_PIXEL_SIZE
 #define PLAYER_DIMS (glm::vec2(PLAYER_PIXEL_WIDTH, PLAYER_PIXEL_HEIGHT))
 
-#define PLAYER_DEFAULT_SPEED (PIXELS_PER_METER*3.0f)
-#define PLAYER_MAX_SPEED PLAYER_DEFAULT_SPEED
+#define PLAYER_DEFAULT_SPEED (PIXELS_PER_METER*2.0f)
 #define PLAYER_AIR_CONTROL_RATIO 0.6f
 #define PLAYER_JUMP_VELOCITY (PIXELS_PER_METER*4.0f)
 #define PLAYER_GRAVITY -9.8f
 #define PLAYER_GRAVITY_PIXELS (PIXELS_PER_METER*PLAYER_GRAVITY)
+#define PLAYER_MAX_SPEED (glm::vec2(PLAYER_DEFAULT_SPEED, -PLAYER_GRAVITY_PIXELS))
 
 namespace Procyon {
 
@@ -82,8 +82,8 @@ namespace Procyon {
 
 		World* 		mWorld;
 		Aabb		mBounds;
+		glm::vec2	mInput;
 		glm::vec2 	mVelocity;
-		glm::vec2	mAcceleration;
 		Sprite* 	mSprite;
 		glm::vec2 	mPenetrationCorrection;
 		Sound*		mJumpSnd;

@@ -45,7 +45,7 @@ namespace Procyon {
 		return xoverlap && yoverlap;
 	}
 
-	static Contact QueryAabbVsAabb( const Aabb& aabb1, const Aabb& aabb2 )
+	static Contact QueryAabbVsAabb_Old( const Aabb& aabb1, const Aabb& aabb2 )
 	{
 		Contact out;
 
@@ -72,10 +72,59 @@ namespace Procyon {
 		return out;
 	}
 
+	static bool TestAabbAxis( const glm::vec2& axis, float minA, float maxA, float minB, float maxB, glm::vec2* mtvAxis, float* mtvDist )
+	{
+        float d0 = (maxB - minA);   // 'Left' side
+        float d1 = (maxA - minB);   // 'Right' side
+
+		if (d0 <= 0.0f || d1 <= 0.0f)
+		{
+			return false;
+		}
+
+        float overlap = (d0 < d1) ? d0 : -d1;
+
+		glm::vec2 seperation = axis * overlap;
+
+        float sepLengthSquared = glm::dot(seperation, seperation);
+		if ( sepLengthSquared < *mtvDist )
+		{
+			*mtvDist = sepLengthSquared;
+			*mtvAxis = seperation;
+		}
+
+        return true;
+	}
+
+	static bool QueryAabbVsAabb( const Aabb& a, const Aabb& b, Contact* out )
+	{
+		float mtvDist = std::numeric_limits<float>::max();
+		glm::vec2 mtvAxis;
+
+		if ( !TestAabbAxis( glm::vec2(1.0f, 0.0f),
+				a.GetMin().x, a.GetMax().x, b.GetMin().x, b.GetMax().x,
+				&mtvAxis, &mtvDist ) )
+		{
+			return false;
+		}
+
+		if ( !TestAabbAxis( glm::vec2(0.0f, 1.0f),
+				a.GetMin().y, a.GetMax().y, b.GetMin().y, b.GetMax().y,
+				&mtvAxis, &mtvDist ) )
+		{
+			return false;
+		}
+
+		out->normal = glm::normalize(mtvAxis);
+		out->distance = sqrt(mtvDist) * -1.001f;
+
+   		return true;
+	}
+
 	Player::Player( World* world )
 		: mVelocity( 0.0f, 0.0f )
 		, mWorld( world )
-		, mBounds( glm::vec2( TILE_PIXEL_SIZE / 1.25f ) + TILE_PIXEL_SIZE / 2.0f, glm::vec2( PLAYER_PIXEL_WIDTH, PLAYER_PIXEL_HEIGHT ) / 2.0f - .0001f )
+		, mBounds( glm::vec2( TILE_PIXEL_SIZE / 1.25f ) + 4.0f*TILE_PIXEL_SIZE, glm::vec2( PLAYER_PIXEL_WIDTH, PLAYER_PIXEL_HEIGHT ) / 2.0f - .0001f )
 		, mGrounded( true )
 	{
 		mSprite = new Sprite( SandboxAssets::sPlayerTexture );
@@ -107,32 +156,36 @@ namespace Procyon {
 
 	void Player::Process( FrameTime ft )
 	{
-		if (mGrounded) 
+		if ( mGrounded )
 		{
-			mAcceleration.x = 0.0f;
+			mVelocity.x = PLAYER_DEFAULT_SPEED * mInput.x;
 		}
-		mAcceleration.y = PLAYER_GRAVITY_PIXELS;
+		else
+		{
+			mVelocity.x += 3.5f * PLAYER_DEFAULT_SPEED * mInput.x * ft.dt;
+		}
+		mVelocity.y += PLAYER_GRAVITY_PIXELS * ft.dt;
+		mVelocity = glm::clamp(mVelocity, -PLAYER_MAX_SPEED, PLAYER_MAX_SPEED);
 
-		// Gravity
-		mVelocity += mAcceleration * ft.dt;
-		mVelocity.x = glm::clamp(mVelocity.x, -PLAYER_MAX_SPEED, PLAYER_MAX_SPEED);
-
-		PROCYON_DEBUG( "PlayerVelocity", "vel %f, %f", mVelocity.x, mVelocity.y );
-
-		glm::vec2 projPos = mBounds.mCenter + mVelocity * ft.dt;
-
-		Aabb projBounds( projPos, mBounds.mHalfExtent );
-		projBounds.Contain( mBounds );
+		mBounds.mCenter += mVelocity * ft.dt;
 
 		std::vector<glm::ivec2> intersecting;
-		mWorld->TileIntersection( projBounds, intersecting );
+		mWorld->TileIntersection(mBounds, intersecting );
 
+		mGrounded = false;
 		for ( auto& t : intersecting )
 		{
 			CollideTile( t, ft );
 		}
 
 		UpdatePosition( ft );
+
+		if ( mGrounded )
+		{
+			mVelocity.y = 0.0f;
+		}
+
+		mInput = glm::vec2(0.0f);
 	}
 
 	void Player::Draw( Renderer* r ) const
@@ -145,30 +198,23 @@ namespace Procyon {
 		Aabb tileBounds( ( glm::vec2( t ) + glm::vec2( 0.5f ) ) * (float)TILE_PIXEL_SIZE
 			, glm::vec2( HALF_TILE_SIZE ) );
 
-		Contact c = QueryAabbVsAabb( mBounds, tileBounds );
-
-		if ( !mWorld->IsInternalCollision( t, c ) )
+		Contact c;
+		if ( QueryAabbVsAabb( mBounds, tileBounds, &c ) && !mWorld->IsInternalCollision( t, c ) )
 		{
-
 			PROCYON_DEBUG( "PlayerCollision", "Contact with tile center <%i, %i>" \
 				" normal <%.2f, %.2f> distance %.20f"
 				, t.x, t.y, c.normal.x, c.normal.y, c.distance * 100.0f );
 			CollisionResponse( c, ft );
 		}
-		else
-		{
-			/*PROCYON_DEBUG( "PlayerCollision", "Ignoring internal collision with tile <%i, %i> Normal <%f, %f>"
-				, t->GetGridCoords().x, t->GetGridCoords().y, c.normal.x, c.normal.y );*/
-		}
 	}
 
 	void Player::Collide( const Aabb& other, FrameTime ft )
 	{
-		Contact c = QueryAabbVsAabb( mBounds, other );
-
-		PROCYON_DEBUG( "PlayerCollision", "4. Narrowphase contactNormal <%f, %f>, contactDist %f"
-			, c.normal.x, c.normal.y, c.distance );
-		CollisionResponse( c, ft );
+		Contact c;
+		if ( QueryAabbVsAabb( mBounds, other, &c ) )
+		{
+			CollisionResponse( c, ft );
+		}
 	}
 
 	void Player::CollisionResponse( const Contact& c, FrameTime ft )
@@ -180,22 +226,20 @@ namespace Procyon {
 
 		if ( penetration < 0.0f )
 		{
-			mPenetrationCorrection -= c.normal * penetration;/*
-			PROCYON_DEBUG( "PlayerCollision", "4.5 CollisionResponse mPenetrationCorrection <%f, %f>"
-				, mPenetrationCorrection.x, mPenetrationCorrection.y );*/
+			mBounds.mCenter -= c.normal * penetration;
 		}
 
 		if( normVel < 0.0f )
-		{/*
-			PROCYON_DEBUG( "PlayerCollision", "5. CollisionResponse velCorrection <%f, %f>"
-				, (c.normal * normVel).x, (c.normal * normVel).y );*/
+		{
 			mVelocity -= c.normal * normVel;
 
-			if ( c.normal.y > 0.0f ) // friction
+			// friction
+			if ( c.normal.y > 0.0f )
 			{
 				glm::vec2 tangent( -c.normal.y, c.normal.x );
 				float tanVelocity = glm::dot( mVelocity, tangent ) * 0.2f; // friction
 				mVelocity -= tangent  * tanVelocity;
+
 				mGrounded = true;
 			}
 		}
@@ -213,6 +257,7 @@ namespace Procyon {
 
 	void Player::Jump()
 	{
+		mInput.y = 1.0f;
 		if ( mGrounded )
 		{
 			mVelocity += glm::vec2( 0.0f, PLAYER_JUMP_VELOCITY );
@@ -223,14 +268,7 @@ namespace Procyon {
 
 	void Player::SetLeftRightInput( float input )
 	{
-		if ( mGrounded )
-		{
-			mVelocity.x = PLAYER_DEFAULT_SPEED * input;
-		}
-		else 
-		{
-			mAcceleration.x = 4.0f * PLAYER_DEFAULT_SPEED * input;
-		}
+		mInput.x = input;
 	}
 
 } /* namespace Procyon */
