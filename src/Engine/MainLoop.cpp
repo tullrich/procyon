@@ -43,6 +43,7 @@ namespace Procyon {
 
 	MainLoop::MainLoop( const std::string& windowTitle, unsigned width, unsigned height )
         : mAvgFPS( (double)TARGET_FPS )
+		, mFrame( 0 )
 	{
         mStartTime      = Now();
         mPrevTime.tsl   = 0.0;
@@ -152,7 +153,7 @@ namespace Procyon {
             Frame();
 
             double framerate =  1.0 / ( SecsSinceLaunch() - before );
-           mAvgFPS = mAvgFPS * 0.5 + framerate * 0.5;
+			mAvgFPS = mAvgFPS * 0.5 + framerate * 0.5;
         }
 	}
 
@@ -160,11 +161,20 @@ namespace Procyon {
 	{
         FrameTime t;
         t.tsl   = (float)SecsSinceLaunch();
-        t.dt    = t.tsl - mPrevTime.tsl;
+		if ( mFrame != 0)
+		{
+			t.dt    = t.tsl - mPrevTime.tsl;
+		}
+		else 
+		{
+			t.dt = 0.0f;
+		}
         mPrevTime = t;
 
 	    Process( t );
 	    Render();
+
+		mFrame++;
 
         float processRenderTime = (float)SecsSinceLaunch() - t.tsl;
 
@@ -175,6 +185,8 @@ namespace Procyon {
             PROCYON_DEBUG( "MainLoop", "Sleeping for %i", sleepmicros );
 			std::this_thread::sleep_for( std::chrono::microseconds( sleepmicros ) );
         }
+
+
 	}
 
 } /* namespace Procyon */

@@ -67,6 +67,7 @@ namespace Procyon {
 	    IWindow*      	mWindow;
 	    GL::IGLContext* mContext;
 
+		uint32_t		mFrame;
 	    FrameTime       mPrevTime;
 	    double			mStartTime;
 	    double 			mAvgFPS;
