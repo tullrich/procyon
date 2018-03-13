@@ -30,8 +30,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-	class Image;
-
 namespace GL {
 
 	class GLTexture : public Texture
