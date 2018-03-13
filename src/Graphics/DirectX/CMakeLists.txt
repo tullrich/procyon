@@ -1,3 +1,5 @@
+# DIRECTX NOT YET IMPLEMENTED
+
 # CMakeLists.txt DirectX source files
 find_package( DirectX REQUIRED )
 

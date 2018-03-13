@@ -101,10 +101,6 @@ namespace Procyon {
 
     	FT_Face 						mFace;
 	};
-
-	FontFace* 		CreateFontFace( const std::string& fontpath );
-	const FontFace* GetOrCreateFontFace( std::string fontpath );
-
 } /* Procyon */
 
 #endif /* _FONT_FACE_H */

@@ -364,29 +364,4 @@ namespace Procyon {
 
 		return search->second->metrics;
 	}
-
-	FontFace* CreateFontFace( const std::string& fontpath )
-	{
-	    return new FontFace( fontpath, 20 );
-	}
-
-	typedef std::unordered_map< std::string, FontFace* > FontCache;
-	static FontCache gFontCache;
-
-const FontFace* GetOrCreateFontFace( std::string fontpath )
-	{
-		//std::transform(fontpath.begin(), fontpath.end(), fontpath.begin(), ::tolower);
-
-		auto search = gFontCache.find( fontpath );
-		if( search != gFontCache.end() )
-		{
-			PROCYON_DEBUG( "FontFace", "FontFace '%s' found in cache.", fontpath.c_str() );
-			return search->second;
-		}
-
-		FontFace* ff = CreateFontFace( fontpath );
-		gFontCache[ fontpath ] = ff;
-		return ff;
-	}
-
 } /* Procyon */

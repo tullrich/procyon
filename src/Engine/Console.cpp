@@ -243,7 +243,7 @@ namespace Procyon {
         sConsoleOpen 		= false;
         sBlinkTimer 		= 0.0f;
         sNextHistoryLine 	= 0;
-        sConsoleFont 		= CreateFontFace( CONSOLE_FONT_FILE );
+        sConsoleFont 		= new FontFace( CONSOLE_FONT_FILE, 20 );
 
         // Setup the console camera
         sConsoleCamera = new Camera2D();

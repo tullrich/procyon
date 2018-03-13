@@ -34,7 +34,7 @@ Texture*     	EditorAssets::sTileTexture     = NULL;
 
 void EditorAssets::Load()
 {
-	sMainFont 		= CreateFontFace( "fonts/Economica-Regular.ttf" );
+	sMainFont 		= new FontFace( "fonts/Economica-Regular.ttf" );
     sTileTexture    = Texture::Allocate( "sprites/tile.png" );
 }
 
