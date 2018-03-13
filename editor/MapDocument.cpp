@@ -1,7 +1,7 @@
 #include "MapDocument.h"
 #include "SceneObject.h"
 #include "World.h"
-#include "GLTexture.h"
+#include "Texture.h"
 #include "Camera.h"
 #include "ProcyonQtUtil.h"
 #include "EditorAssets.h"
@@ -35,7 +35,7 @@ MapDocument::MapDocument()
 	mTileSet->AddTileDef( td );
 
 	td.filepath = "sprites/uv_map.png";
-	td.texture = new Procyon::GL::GLTexture( GL_TEXTURE_2D, "sprites/uv_map.png" );
+	td.texture = Procyon::Texture::Allocate( "sprites/uv_map.png" );
 	mTileSet->AddTileDef( td );
 }
 

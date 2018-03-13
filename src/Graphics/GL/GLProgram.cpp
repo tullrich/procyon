@@ -25,8 +25,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLProgram.h"
 #include "GLShader.h"
 
-#include <stdexcept>
-
 namespace Procyon {
 
 namespace GL {
@@ -39,7 +37,7 @@ GLProgram::GLProgram()
 GLProgram::GLProgram( const std::string& vertFilename, const std::string& fragFileName )
 {
 	mProgramId = glCreateProgram();
-	
+
     GLShader vertShader( GL_VERTEX_SHADER, vertFilename );
     GLShader fragShader( GL_FRAGMENT_SHADER, fragFileName );
 

@@ -27,15 +27,9 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ProcyonCommon.h"
 
-#define MAX_RENDER_CMDS 10002
-
 namespace Procyon {
 
-	namespace GL {
-		class GLTexture;
-		class GLProgram;
-		class GLBuffer;
-	}
+	class Texture;
 	class Camera2D;
 
 	/*
@@ -107,7 +101,6 @@ namespace Procyon {
 		RenderCommandOp op;
 
 		int 					offset;
-		const GL::GLProgram* 	program;
 		char 					flags;
 
 		union
@@ -116,7 +109,7 @@ namespace Procyon {
 			{
 				const BatchedQuad* 		quaddata;
 				int 					instancecount;
-				const GL::GLTexture* 	texture;
+				const Texture*			texture;
 			};
 
 			struct // RENDER_OP_PRIMITIVE
@@ -170,47 +163,17 @@ namespace Procyon {
 	class RenderCore
 	{
 	public:
-								RenderCore();
-		virtual  				~RenderCore();
+		virtual  						~RenderCore() { }
 
-		void 					AddCommand( const RenderCommand& cmd );
-		void 					AddOrAppendCommand( const RenderCommand& cmd );
+		virtual	void 					AddCommand( const RenderCommand& cmd ) = 0;
+		virtual void 					AddOrAppendCommand( const RenderCommand& cmd ) = 0;
+		virtual bool 					RenderCommandsPending() const = 0;
+		virtual void 					Flush( const Camera2D& camera ) = 0;
 
-		bool 					RenderCommandsPending() const;
+		virtual void 					ResetStats() = 0;
+		virtual const RenderFrameStats& GetFrameStats() const = 0;
 
-		void 					Flush( const Camera2D& camera );
-
-		void 					ResetStats();
-		const RenderFrameStats& GetFrameStats() const;
-
-	protected:
-		bool 					PushData( const unsigned char* data, int size );
-		bool 					PushCommandData( const RenderCommand& cmd );
-
-		void 					RenderQuadBatch( const RenderCommand& rc, const Camera2D& camera );
-		void 					RenderPrimitive( const RenderCommand& rc, const Camera2D& camera );
-		void 					RenderPolygon( const RenderCommand& rc, const Camera2D& camera );
-		void 					RenderAntiAliasedLine( const RenderCommand& rc, const Camera2D& camera  );
-
-
-		// The buffer of render commands- cleared each frame.
-		RenderCommand 		mCmdBuffer[ MAX_RENDER_CMDS ];
-
-		// Current size of mCmdBuffer.
-		int 				mRenderCommandCount;
-
-		RenderFrameStats	mFrameStats;
-
-		GL::GLBuffer* 		mBuffer;
-		GL::GLBuffer* 		mOffBuffer;
-
-		GL::GLBuffer* 		mQuadBuffer;
-		GL::GLBuffer* 		mQuadIndices;
-
-		GL::GLProgram* 		mDefaultProg;
-		GL::GLProgram* 		mDefaultPrimitiveProg;
-		GL::GLProgram* 		mDefaultPolygonProg;
-		GL::GLProgram* 		mDefaultLineProg;
+		static RenderCore*				Allocate();
 	};
 
 } /* namespace Procyon */

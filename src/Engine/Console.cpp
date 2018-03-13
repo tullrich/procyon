@@ -23,11 +23,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Console.h"
-#include "GLProgram.h"
-#include "GLTexture.h"
-#include "GLMaterial.h"
 #include "Renderer.h"
-#include "RectShape.h"
+#include "Shape.h"
 #include "Camera.h"
 #include "FontFace.h"
 #include "Text.h"
@@ -172,13 +169,13 @@ namespace Procyon {
     static void InitBackground()
     {
         // the colored border on all edges except the top
-        sBackground = new RectShape();
+        sBackground = new Shape();
         sBackground->SetColor( glm::vec4( 0.4f, 0.4, 0.4, 1.0f) );
         sBackground->SetPosition( 0.0f, CONSOLE_Y_RES );
         sBackground->SetDimensions( CONSOLE_X_RES, -CONSOLE_Y_RES );
 
         // the inner background
-        sBackground2 = new RectShape();
+        sBackground2 = new Shape();
         sBackground2->SetColor( glm::vec4( 0.1, 0.1, 0.1f, 1.0f) );
         sBackground2->SetPosition( CONSOLE_BORDER_SIZE, CONSOLE_Y_RES );
         sBackground2->SetDimensions( CONSOLE_X_RES - 2.0f * CONSOLE_BORDER_SIZE
@@ -471,14 +468,14 @@ namespace Procyon {
             if ( !msaaOn )
             {
                 msaaOn = true;
-                glEnable( GL_MULTISAMPLE );
+                //glEnable( GL_MULTISAMPLE );
                 //glEnable( GL_LINE_SMOOTH );
                 Console_PrintLine( "MSAA on", sSystemColor );
             }
             else
             {
                 msaaOn = false;
-                glDisable( GL_MULTISAMPLE );
+                //glDisable( GL_MULTISAMPLE );
                 //glDisable( GL_LINE_SMOOTH );
                 Console_PrintLine( "MSAA off", sSystemColor );
             }

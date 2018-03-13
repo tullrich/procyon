@@ -28,9 +28,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "FontFace.h"
 #include "World.h"
 #include "SoundBuffer.h"
-#include "GLTexture.h"
+#include "Texture.h"
 
-using namespace Procyon::GL;
 using namespace Procyon;
 
 class SandboxAssets
@@ -39,9 +38,9 @@ public:
 	static FontFace*	sMainFont;
 	static Map* 		sMap;
     static IImage*      sWindowIcon;
-    static GLTexture*   sPlayerTexture;
-    static GLTexture*   sTileTexture;
-    static GLTexture*   sTestTexture;
+    static Texture*		sPlayerTexture;
+    static Texture*		sTileTexture;
+    static Texture*		sTestTexture;
     static SoundBuffer* sJumpSound;
 
 	static void Load();

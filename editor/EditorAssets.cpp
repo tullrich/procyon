@@ -24,19 +24,18 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <cstddef>
 #include "FontFace.h"
-#include "GLTexture.h"
+#include "Texture.h"
 #include "EditorAssets.h"
 
 using namespace Procyon;
-using namespace Procyon::GL;
 
 FontFace*       EditorAssets::sMainFont        = NULL;
-GLTexture*      EditorAssets::sTileTexture     = NULL;
+Texture*     	EditorAssets::sTileTexture     = NULL;
 
 void EditorAssets::Load()
 {
 	sMainFont 		= CreateFontFace( "fonts/Economica-Regular.ttf" );
-    sTileTexture    = new GLTexture( GL_TEXTURE_2D, "sprites/tile.png" );
+    sTileTexture    = Texture::Allocate( "sprites/tile.png" );
 }
 
 void EditorAssets::Destroy()

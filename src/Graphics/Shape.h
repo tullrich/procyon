@@ -30,17 +30,11 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Renderable.h"
 
 namespace Procyon {
-
-	namespace GL
-	{
-		class GLGeometry;
-		class GLProgram;
-	}
-
+	
 	class Shape : public Transformable, public Renderable
 	{
 	public:
-	    						Shape( GL::GLGeometry* geo );
+	    						Shape();
 
 	    void 					SetColor( float r, float g, float b, float a );
 	    void 					SetColor( const glm::vec4& color );
@@ -49,14 +43,10 @@ namespace Procyon {
 	    glm::vec4 				GetColor() const;
 	    float 					GetAlpha() const;
 
-	    const GL::GLGeometry*	GetGeometry() const;
-
-    	virtual void 			Render( const GL::GLProgram* program ) const;
-		virtual void 			PostRenderCommands( Renderer* r, RenderCore* rc ) const;
+		void 					PostRenderCommands( Renderer* r, RenderCore* rc ) const;
 
 	protected:
 	    glm::vec4       	mColor;
-	    GL::GLGeometry*     mGeometry;
 	};
 
 } /* namespace Procyon */

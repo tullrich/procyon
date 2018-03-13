@@ -180,7 +180,7 @@ namespace Procyon {
         }
 
 		float x = 0.0f;
-		float y = -metrics.descender;
+		float y = (float)-metrics.descender;
 
 		unsigned int prev = 0;
 
@@ -228,7 +228,6 @@ namespace Procyon {
 
 	        RenderCommand cmd;
 	        cmd.op               = RENDER_OP_QUAD;
-	        cmd.program          = NULL;
 	        cmd.texture          = mFont->GetTexture( mFontSize );
 	        cmd.instancecount    = 1;
 	        cmd.quaddata         = &quaddata;
@@ -253,7 +252,6 @@ namespace Procyon {
 
 	    RenderCommand cmd;
 	    cmd.op               = RENDER_OP_PRIMITIVE;
-	    cmd.program          = NULL;
 	    cmd.primmode         = PRIMITIVE_QUAD;
 	    cmd.verts            = (PrimitiveVertex*) &quaddata[0];
 	    cmd.vertcount        = 4;

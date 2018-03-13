@@ -23,10 +23,9 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "World.h"
-#include "GLTexture.h"
+#include "Texture.h"
 #include "Renderer.h"
 #include "Sprite.h"
-#include "RectShape.h"
 #include "Contact.h"
 
 #define TILE_INDEX( tx, ty ) ( ( tx ) * mSize.y + ( ty ) )
@@ -34,8 +33,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define FOREACH_TILE_INDEX( tiles ) 			\
 	for ( int x = 0; x < mSize.x; x++ )			\
 		for ( int y = 0; y < mSize.y; y++ )		\
-
-using namespace Procyon::GL;
 
 namespace Procyon {
 

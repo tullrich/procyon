@@ -539,7 +539,7 @@ void X11Window::SetIcon( const IImage& icon )
 	PROCYON_DEBUG( "X11", "SetIcon with image Width: %i Height: %i Components: %i"
 		, icon.Width(), icon.Height(), icon.Components() );
 
-	MemoryImage tempImg( icon, 4 ); // convert to 4 components
+	MutableImage tempImg( icon, 4 ); // convert to 4 components
 	uint8_t* tempPixels = tempImg.MutableData();
 	for ( int x = 0; x < icon.Width() * icon.Height(); x++ )
 	{

@@ -59,9 +59,9 @@ TileSet SandboxMap::sTileSet;
 FontFace*       SandboxAssets::sMainFont        = NULL;
 Map*            SandboxAssets::sMap             = NULL;
 IImage*         SandboxAssets::sWindowIcon      = NULL;
-GLTexture*      SandboxAssets::sPlayerTexture   = NULL;
-GLTexture*      SandboxAssets::sTileTexture     = NULL;
-GLTexture*      SandboxAssets::sTestTexture     = NULL;
+Texture*		SandboxAssets::sPlayerTexture   = NULL;
+Texture*		SandboxAssets::sTileTexture     = NULL;
+Texture*		SandboxAssets::sTestTexture     = NULL;
 SoundBuffer*    SandboxAssets::sJumpSound       = NULL;
 
 void SandboxAssets::Load()
@@ -69,10 +69,10 @@ void SandboxAssets::Load()
 	sMainFont 		= CreateFontFace( "fonts/arial.ttf" );
 	//sMainFont 		= CreateFontFace( "fonts/Economica-Regular.ttf" );
     sWindowIcon     = new FileImage( "sprites/tile.png" );
-    sPlayerTexture  = new GLTexture( GL_TEXTURE_2D, "sprites/raccoon.jpg" );
-    sTileTexture    = new GLTexture( GL_TEXTURE_2D, "sprites/tile.png" );
-    sTestTexture    = new GLTexture( GL_TEXTURE_2D, "tinyTest.png" );
-    sJumpSound      = new SoundBuffer( "audio/jump4.wav" );
+    sPlayerTexture  = Texture::Allocate( "sprites/raccoon.jpg" );
+    sTileTexture    = Texture::Allocate( "sprites/tile.png" );
+    sTestTexture    = Texture::Allocate( "tinyTest.png" );
+    sJumpSound      =  new SoundBuffer( "audio/jump4.wav" );
 
     TileDef def;
     def.filepath    = "sprites/tile.png";

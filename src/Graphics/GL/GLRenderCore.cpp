@@ -22,7 +22,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
-#include "RenderCore.h"
+#include "GLRenderCore.h"
 #include "GLTexture.h"
 #include "GLProgram.h"
 #include "GLBuffer.h"
@@ -46,10 +46,10 @@ static unsigned short indices[] =
 
 // 30 MB
 #define MAX_VERTEX_ATTRIB_BYTES 1024 * 1024 * 30
-
 #define BATCH_STRIDE sizeof( BatchedQuad )
 
 namespace Procyon {
+namespace GL {
 
 	static unsigned char 	gVertexAttribData[ MAX_VERTEX_ATTRIB_BYTES ];
 	static int				gVertexDataWriteOffset 		= 0;
@@ -57,7 +57,6 @@ namespace Procyon {
 	bool operator==( const RenderCommand& rc1, const RenderCommand& rc2 )
 	{
 	    return rc1.op == rc2.op
-	    	&& rc1.program == rc2.program
 	    	&& rc1.texture == rc2.texture
 	    	&& rc1.flags == rc2.flags;
 	}
@@ -75,7 +74,7 @@ namespace Procyon {
 		return GL_INVALID_ENUM;
 	}
 
-	RenderCore::RenderCore()
+	GLRenderCore::GLRenderCore()
 		: mRenderCommandCount( 0 )
 	{
 		mQuadBuffer 	= new GLBuffer( sizeof( data ), data );
@@ -94,7 +93,7 @@ namespace Procyon {
 		ResetStats();
 	}
 
-	RenderCore::~RenderCore()
+	GLRenderCore::~GLRenderCore()
 	{
 		delete mDefaultPolygonProg;
 		delete mDefaultLineProg;
@@ -106,11 +105,11 @@ namespace Procyon {
 		delete mQuadBuffer;
 	}
 
-	bool RenderCore::PushData( const unsigned char* data, int size )
+	bool GLRenderCore::PushData( const unsigned char* data, int size )
 	{
 		if ( gVertexDataWriteOffset + size >= MAX_VERTEX_ATTRIB_BYTES )
 		{
-			PROCYON_WARN( "RenderCore", "MAX_VERTEX_ATTRIB_BYTES(%i) overflow, some quads will not be drawn!"
+			PROCYON_WARN( "GLRenderCore", "MAX_VERTEX_ATTRIB_BYTES(%i) overflow, some quads will not be drawn!"
 				, MAX_VERTEX_ATTRIB_BYTES);
 			return false;
 		}
@@ -121,7 +120,7 @@ namespace Procyon {
 		return true;
 	}
 
-	bool RenderCore::PushCommandData( const RenderCommand& rc )
+	bool GLRenderCore::PushCommandData( const RenderCommand& rc )
 	{
 		switch ( rc.op )
 		{
@@ -138,11 +137,11 @@ namespace Procyon {
 		return false;
 	}
 
-	void RenderCore::AddCommand( const RenderCommand& cmd )
+	void GLRenderCore::AddCommand( const RenderCommand& cmd )
 	{
 		if ( mRenderCommandCount >= MAX_RENDER_CMDS - 1 )
 		{
-			PROCYON_WARN( "RenderCore", "MAX_RENDER_CMDS(%i) overflow, some quads will not be drawn!"
+			PROCYON_WARN( "GLRenderCore", "MAX_RENDER_CMDS(%i) overflow, some quads will not be drawn!"
 				, MAX_RENDER_CMDS);
 			return;
 		}
@@ -157,7 +156,7 @@ namespace Procyon {
 		}
 	}
 
-	void RenderCore::AddOrAppendCommand( const RenderCommand& cmd )
+	void GLRenderCore::AddOrAppendCommand( const RenderCommand& cmd )
 	{
 		if ( cmd.op == RENDER_OP_QUAD && mRenderCommandCount > 0 )
 		{
@@ -190,9 +189,9 @@ namespace Procyon {
 		AddCommand( cmd );
 	}
 
-	void RenderCore::RenderQuadBatch( const RenderCommand& rc, const Camera2D& camera  )
+	void GLRenderCore::RenderQuadBatch( const RenderCommand& rc, const Camera2D& camera  )
 	{
-		const GLProgram* program = ( rc.program ) ? rc.program : mDefaultProg;
+		const GLProgram* program = mDefaultProg;
 		program->Bind();
 
 		GLint sstLoc = program->GetUniformLocation( "screenSpaceTransform" );
@@ -288,9 +287,9 @@ namespace Procyon {
 		mFrameStats.batchmax = glm::max( mFrameStats.batchmax, rc.instancecount );
 	}
 
-	void RenderCore::RenderPrimitive( const RenderCommand& rc, const Camera2D& camera  )
+	void GLRenderCore::RenderPrimitive( const RenderCommand& rc, const Camera2D& camera  )
 	{
-		const GLProgram* program = ( rc.program ) ? rc.program : mDefaultPrimitiveProg;
+		const GLProgram* program = mDefaultPrimitiveProg;
 		program->Bind();
 
 		GLint mvMatLoc = program->GetUniformLocation( "modelViewMat" );
@@ -344,9 +343,9 @@ namespace Procyon {
 		mFrameStats.totalprimitives++;
 	}
 
-	void RenderCore::RenderPolygon( const RenderCommand& rc, const Camera2D& camera  )
+	void GLRenderCore::RenderPolygon( const RenderCommand& rc, const Camera2D& camera  )
 	{
-		const GLProgram* program = ( rc.program ) ? rc.program : mDefaultPolygonProg;
+		const GLProgram* program = mDefaultPolygonProg;
 		program->Bind();
 
 		GLint mvMatLoc = program->GetUniformLocation( "u_mv_matrix" );
@@ -381,9 +380,9 @@ namespace Procyon {
 		mFrameStats.batches++;
 	}
 
-	void RenderCore::RenderAntiAliasedLine( const RenderCommand& rc, const Camera2D& camera  )
+	void GLRenderCore::RenderAntiAliasedLine( const RenderCommand& rc, const Camera2D& camera  )
 	{
-		const GLProgram* program = ( rc.program ) ? rc.program : mDefaultLineProg;
+		const GLProgram* program = mDefaultLineProg;
 		program->Bind();
 
 		GLint widthLoc = program->GetUniformLocation( "u_linewidth" );
@@ -425,12 +424,12 @@ namespace Procyon {
 		mFrameStats.batches++;
 	}
 
-	bool RenderCore::RenderCommandsPending() const
+	bool GLRenderCore::RenderCommandsPending() const
 	{
 		return mRenderCommandCount != 0;
 	}
 
-	void RenderCore::Flush( const Camera2D& camera )
+	void GLRenderCore::Flush( const Camera2D& camera )
 	{
 		// early out if nothng is queued.
 		if ( !RenderCommandsPending() )
@@ -479,7 +478,7 @@ namespace Procyon {
 		glDisable(GL_DEPTH_TEST);
 	}
 
-	void RenderCore::ResetStats()
+	void GLRenderCore::ResetStats()
 	{
 		mFrameStats.batches 		= 0;
 		mFrameStats.batchmax 		= 0;
@@ -488,9 +487,17 @@ namespace Procyon {
 		mFrameStats.totalprimitives = 0;
 	}
 
-	const RenderFrameStats& RenderCore::GetFrameStats() const
+	const RenderFrameStats& GLRenderCore::GetFrameStats() const
 	{
 		return mFrameStats;
+	}
+
+} /* namespace GL
+
+
+	/*static*/ RenderCore* RenderCore::Allocate()
+	{
+		return new GL::GLRenderCore();
 	}
 
 } /* namespace Procyon */

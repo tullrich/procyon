@@ -25,20 +25,10 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Sandbox.h"
 
 #include "GLContext.h"
-#include "GLTexture.h"
-#include "GLShader.h"
-#include "GLProgram.h"
-#include "GLBuffer.h"
-#include "GLGeometry.h"
-#include "GLMaterial.h"
 #include "Renderer.h"
 #include "RenderCore.h"
-#include "Sprite.h"
-#include "LineShape.h"
-#include "RectShape.h"
 #include "Console.h"
 #include "Player.h"
-#include "CustomSprites.h"
 #include "Text.h"
 #include "XmlMap.h"
 #include "ProcyonVaser.h"
@@ -52,6 +42,7 @@ glm::vec2 			sMouseLoc;
 bool 				sMouseDown;
 Text*               fps;
 std::vector< glm::highp_vec2 > sPoints;
+int sPointsStart = 0;
 std::vector< glm::highp_vec2 > sPoints2;
 
 VASEr::polyline_opt sOpts;
@@ -105,7 +96,7 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
     // Create the camera
     mCamera = new Camera2D();
-    mCamera->OrthographicProj( 
+    mCamera->OrthographicProj(
           -SANDBOX_WINDOW_WIDTH / 2.0f, SANDBOX_WINDOW_WIDTH / 2.0f
         , -SANDBOX_WINDOW_HEIGHT / 2.0f, SANDBOX_WINDOW_HEIGHT / 2.0f );
 	mCamera->SetPosition(mPlayer->GetPosition());
@@ -176,7 +167,7 @@ void Sandbox::Process( FrameTime t )
     const float kCameraLerpSpeed = 0.25f;
 
 	glm::vec2 target = mPlayer->GetPosition() + glm::vec2(0.0f, CAMERA_VERTICAL_OFFSET);
-    mCamera->SetPosition( glm::round( mCamera->GetPosition() * (1.0f - kCameraLerpSpeed) + target * kCameraLerpSpeed ) );
+    mCamera->SetPosition( mCamera->GetPosition() * (1.0f - kCameraLerpSpeed) + target * kCameraLerpSpeed );
 
     Console_Process( t );
 
@@ -191,26 +182,24 @@ void Sandbox::Process( FrameTime t )
 	static const float screen_x = 500.0f;
 	static const int maxSamples = 200;
 	static const float x_scale = screen_x / (float)maxSamples;
-
 	static float accum = 0.0f;
-	static int tick = 0;
 	static float sampleHz = 1.0f / 15.0f;
 	accum += t.dt;
 	while ( accum >= sampleHz )
 	{
 		accum -= sampleHz;
-		float x = tick % maxSamples * x_scale - screen_x / 2.0f;
-		float y = sin( tick * sampleHz ) * 100.0f;
+		float x = sPointsStart % maxSamples * x_scale - screen_x / 2.0f;
+		float y = sin(sPointsStart * sampleHz ) * 100.0f;
 
-		if ( sPoints2.size() != maxSamples )
+		if ( sPoints.size() != maxSamples )
 		{
-			sPoints2.push_back( glm::vec2( x, y ) );
+			sPoints.push_back( mPlayer->GetPosition() );
 		}
 		else
 		{
-			sPoints2[ tick % maxSamples ] = glm::vec2( x, y );
+			sPoints[sPointsStart % maxSamples ] = mPlayer->GetPosition();
 		}
-		tick++;
+		sPointsStart++;
 	}
 }
 
@@ -236,16 +225,16 @@ void Sandbox::Render()
 
         mRenderer->Draw( fps );
 
-		if( sPoints.size() >= 4 )
+		if( false && sPoints.size() >= 4 )
 		{
 			sOpts.cap = VASEr::PLC_round;
 			sOpts.feather = true;
-			sOpts.feathering = 5.0;
+			sOpts.feathering = 1.0;
 			VASEr::VASErin::vertex_array_holder holder;
 			sTessOpts.holder = &holder;
 
-			const double weight = 15.0;
-			const VaseColor color = GlmToVaseColor( glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f ) );
+			const double weight = 3.0;
+			const VaseColor color = GlmToVaseColor( glm::vec4( 245/255.0f, 121/255.0f, 79/255.0f, 1.0f ) );
 			//VASEr::segment( GlmToVaseVec2( sPoints[ 0 ] ), GlmToVaseVec2( sPoints[ 1 ] ), color, weight, &sOpts);
 
 			std::vector< VaseVec2 > stuff( sPoints.size() );
@@ -288,8 +277,7 @@ void Sandbox::Render()
 
 				RenderCommand cmd;
 		        cmd.op               = RENDER_OP_POLYGON;
-		        cmd.program          = NULL;
-		        cmd.flags            = RENDER_SCREEN_SPACE;
+		        cmd.flags            = 0;
 		        cmd.colorprimmode    = PRIMITIVE_TRIANGLE;
 		        cmd.colorverts       = (ColorVertex*) native.data();
 		        cmd.colorvertcount   = (int) native.size();
@@ -347,7 +335,7 @@ void Sandbox::OnMouseDown( const InputEvent& ev )
 {
 	if ( ev.mousebutton == MOUSE_BTN_LEFT )
 	{
-		sPoints.push_back( sMouseLoc );
+		sPoints2.push_back( sMouseLoc );
 		sMouseDown = true;
 	}
 }
@@ -365,9 +353,9 @@ void Sandbox::OnMouseMoved( const InputEvent& ev )
 	sMouseLoc = glm::vec2( glm::inverse( mCamera->GetProjection() )
 		* glm::vec3( ev.mousex * 2.0f - 1.0f, -ev.mousey * 2.0f + 1.0f, 1.0f ) );
 
-	if ( sMouseDown && sPoints.size() > 0 )
+	if ( sMouseDown && sPoints2.size() > 0 )
 	{
-		sPoints[ sPoints.size() - 1 ] = sMouseLoc;
+		sPoints2[ sPoints.size() - 1 ] = sMouseLoc;
 	}
 }
 

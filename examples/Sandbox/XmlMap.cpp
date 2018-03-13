@@ -23,7 +23,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "XmlMap.h"
-#include "GLTexture.h"
+#include "Texture.h"
 
 #include <tinyxml2.h>
 
@@ -144,7 +144,7 @@ namespace Procyon {
                     if ( filepath )
                     {
                         def.filepath = filepath;
-                        def.texture = new GL::GLTexture( GL_TEXTURE_2D, filepath );
+                        def.texture = Texture::Allocate( filepath );
                         def.collidable = true;
                     }
                     mTileSet.AddTileDef( def );

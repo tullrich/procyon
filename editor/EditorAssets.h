@@ -27,21 +27,19 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 	class FontFace;
-	namespace GL {
-		class GLTexture;
-	}
+	class Texture;
 }
-	
+
 // Stati class for easy asset loading
 class EditorAssets
 {
 public:
 	static Procyon::FontFace*			sMainFont;
-    static Procyon::GL::GLTexture*   	sTileTexture;
-
+    static Procyon::Texture*   			sTileTexture;
+		
 	static void Load();
 	static void Destroy();
 };
-	
+
 
 #endif /* _EDITOR_ASSETS_H */

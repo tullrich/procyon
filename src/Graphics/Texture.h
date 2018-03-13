@@ -22,24 +22,46 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
-#ifndef _RECT_SHAPE_H
-#define _RECT_SHAPE_H
+#ifndef _TEXTURE_H
+#define _TEXTURE_H
 
 #include "ProcyonCommon.h"
-#include "Shape.h"
-#include "Quad.h"
+#include "Image.h"
 
 namespace Procyon {
-	
-	class RectShape : public Shape
+
+	enum TextureFilterMode
+	{
+		FILTER_LINEAR,
+		FILTER_NEAREST,
+		FILTER_NEAREST_MIPMAP_NEAREST,
+		FILTER_NEAREST_MIPMAP_LINEAR,
+		FILTER_LINEAR_MIPMAP_NEAREST,
+		FILTER_LINEAR_MIPMAP_LINEAR
+	};
+
+	class Texture
 	{
 	public:
-		RectShape();
+		virtual			~Texture() { }
+
+		float			Width() const { return mDimensions.x; }
+		float			Height() const { return mDimensions.y; }
+		glm::vec2 		GetDimensions() const { return mDimensions; }
+
+		virtual void 	Bind() const = 0;
+
+		virtual void 	SetMinFilter( TextureFilterMode min ) = 0;
+		virtual void 	SetMagFilter( TextureFilterMode mag ) = 0;
+		virtual void	SetMinMagFilter( TextureFilterMode min, TextureFilterMode mag ) = 0;
+
+		static Texture* Allocate( const std::string& filepath, int mipLevel = 0 );
+		static Texture* Allocate( const IImage& img, int mipLevel = 0 );
 
 	protected:
-		Quad mQuad;
+		glm::vec2 	mDimensions;
 	};
-	
+
 } /* namespace Procyon */
 
-#endif /* _RECT_SHAPE_H */
+#endif /* _TEXTURE_H */

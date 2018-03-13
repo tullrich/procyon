@@ -22,44 +22,41 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
-#ifndef _TEXTURE_H
-#define _TEXTURE_H
+#ifndef _GL_TEXTURE_H
+#define _GL_TEXTURE_H
 
 #include "ProcyonGL.h"
-#include "Image.h"
+#include "Texture.h"
 
 namespace Procyon {
 
-namespace GL { 
+	class Image;
 
-	class GLTexture
+namespace GL {
+
+	class GLTexture : public Texture
 	{
 	public:
-					GLTexture();
-					GLTexture( GLenum target, const std::string& filepath, int mipLevel = 0 );
-					GLTexture( GLenum target, const IImage& img, int mipLevel = 0 );
-					~GLTexture();
+						GLTexture();
+						GLTexture( const std::string& filepath, int mipLevel = 0 );
+						GLTexture( const IImage& img, int mipLevel = 0 );
+		virtual			~GLTexture();
 
-		void		Bind() const;
-		void 		SetData( GLenum target, const IImage& img, int mipLevel = 0 );
+		virtual void	Bind() const;
 
-		int			Width() const;
-		int			Height() const;
-		glm::vec2 	GetDimensions() const;
-
-		void 		SetMinFilter( GLenum min );
-		void 		SetMagFilter( GLenum mag );
-		void		SetMinMagFilter( GLenum min, GLenum mag );
-
-		GLuint 		mTextureId;
+		virtual void 	SetMinFilter( TextureFilterMode min );
+		virtual void 	SetMagFilter( TextureFilterMode mag );
+		virtual void	SetMinMagFilter( TextureFilterMode min, TextureFilterMode mag );
 
 	protected:
+		void 		SetData(const IImage& img, int mipLevel = 0);
+
+		GLuint 		mTextureId;
 		GLenum 		mTarget;
-		glm::vec2 	mDimensions;
 	};
 
 } /* namespace GL */
 
 } /* namespace Procyon */
 
-#endif /* _TEXTURE_H */
+#endif /* _GL_TEXTURE_H */

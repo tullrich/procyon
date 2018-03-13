@@ -29,7 +29,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-namespace GL { 
+namespace GL {
 
 	class GLTexture;
 	class GLProgram;
@@ -86,7 +86,7 @@ namespace GL {
 				GLMaterial( const GLProgram* program );
 
 		const GLProgram* GetProgram() const;
-		
+
 		void	Bind() const;
 
 		void 	SetSampler( const std::string& name, const GLTexture* texture );
@@ -123,8 +123,6 @@ namespace GL {
 		SamplerArray 		mSamplers;
 		UniformMap			mUniforms;
 	};
-
-	typedef std::shared_ptr<GLMaterial> GLMaterialPtr;
 
 } /* namespace GL */
 

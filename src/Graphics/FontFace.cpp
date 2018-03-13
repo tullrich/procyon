@@ -24,14 +24,12 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "FontFace.h"
 #include "Image.h"
-#include "GLTexture.h"
+#include "Texture.h"
 
 #include "stb_rect_pack.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-
-using namespace Procyon::GL;
 
 #define DEFAULT_FONT_IMG_X 256
 #define DEFAULT_FONT_IMG_Y 256
@@ -218,7 +216,7 @@ namespace Procyon {
 
     bool CachedFontSize::Rasterize( FT_Face face, glm::ivec2 dims )
     {
-        MemoryImage img( dims.x, dims.y, 1 );
+        MutableImage img( dims.x, dims.y, 1 );
         unsigned char* data = img.MutableData();
 
         for ( unsigned char code = 0; code < GLYPH_COUNT; code++ )
@@ -248,8 +246,8 @@ namespace Procyon {
             //    , code + 32, g.uvoff.x, g.uvoff.y, g.uvsize.x, g.uvsize.y );
         }
 
-	    atlas = new GLTexture( GL_TEXTURE_2D, img );
-	    atlas->SetMinMagFilter( GL_LINEAR, GL_LINEAR );
+	    atlas = Texture::Allocate( img );
+	    atlas->SetMinMagFilter( FILTER_LINEAR, FILTER_LINEAR);
         return true; // success
     }
 
@@ -313,7 +311,7 @@ namespace Procyon {
 	    return true;
 	}
 
-    const GL::GLTexture* FontFace::GetTexture( unsigned int fontsize ) const
+    const Texture* FontFace::GetTexture( unsigned int fontsize ) const
     {
         EnsureCached( fontsize );
 		auto search = mCache.find( fontsize );

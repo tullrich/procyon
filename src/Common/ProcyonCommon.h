@@ -37,7 +37,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 #include <algorithm>
 #include <iostream>
-#include <stdexcept>
 #include <sstream>
 #include <fstream>
 #include <functional>

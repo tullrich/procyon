@@ -35,17 +35,17 @@ namespace Procyon {
 
 	class Renderable;
 	class Renderer;
+	class Texture;
 	class Camera2D;
 	class World;
 	class Contact;
-	namespace GL { class GLTexture; }
 
 	typedef int TileId;
 
 	struct TileDef
 	{
 		std::string filepath;
-		GL::GLTexture* texture = nullptr;
+		Texture* texture = nullptr;
 		bool collidable = false;
 
 		static TileDef Empty;

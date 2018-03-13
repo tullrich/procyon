@@ -23,40 +23,16 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Sprite.h"
-#include "GLProgram.h"
-#include "GLTexture.h"
+#include "Texture.h"
 #include "Renderer.h"
-
-using namespace Procyon::GL;
 
 namespace Procyon {
 
-    GLProgram* Sprite::sDefaultProgram = NULL;
-
-    Sprite::Sprite( const GLProgram* prog, const GLTexture* mainTex )
-        : GLMaterial( prog )
-        , mTexture( mainTex )
-        , mTextureRect( glm::vec2(), glm::vec2( 1.0f ) )
-    {
-        SetSampler( "tex", mTexture );
-    }
-
-	Sprite::Sprite( const GLTexture* tex )
-		: GLMaterial( GetOrCreateDefaultProgram() )
-        , mTexture( tex )
+	Sprite::Sprite( const Texture* tex )
+        : mTexture( tex )
         , mTextureRect( glm::vec2(), glm::vec2( 1.0f ) )
 	{
-        SetSampler( "tex", mTexture );
 	}
-
-    GLProgram* Sprite::GetOrCreateDefaultProgram()
-    {
-        if ( !sDefaultProgram )
-        {
-            sDefaultProgram = new GLProgram( "shaders/shader.vert", "shaders/shader.frag" );
-        }
-        return sDefaultProgram;
-    }
 
     void Sprite::SetTextureRect( const Rect& texRect )
     {

@@ -32,8 +32,8 @@ namespace Procyon {
 
 	class RenderCore;
 	class Renderable;
+	class Texture;
 	class Camera2D;
-	namespace GL { class GLTexture; }
 
 	enum class PolyLineJoinMode
 	{
@@ -70,8 +70,8 @@ namespace Procyon {
 		void 				DrawPolyLine( const std::vector< glm::vec2 >& points, const glm::vec4& color
 								, float width, PolyLineJoinMode joinMode, PolyLineCapMode capMode, float miterLimit = 1.0f );
 		void				DrawWorldLine( const glm::vec2& start, const glm::vec2& end, const glm::vec4& color );
-		void 				DrawTexture( const GL::GLTexture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, struct Rect textureRect = Rect() );
-        void                DrawFullscreenTexture( const GL::GLTexture* tex );
+		void 				DrawTexture( const Texture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, struct Rect textureRect = Rect() );
+        void                DrawFullscreenTexture( const Texture* tex );
 		void 				DrawRectShape( const glm::vec2& pos, const glm::vec2& dim, float orient, const glm::vec4& color );
 		void 				EndRender();
 
@@ -82,9 +82,8 @@ namespace Procyon {
    	protected:
 		void 				Flush();
 
-   		typedef std::stack<Camera2D> CameraStack;
-   		CameraStack 		mCameras;
-		RenderCore* 		mRenderCore;
+		std::stack< Camera2D > 	mCameras;
+		RenderCore* 			mRenderCore;
 	};
 
 	extern bool sDebugLines;

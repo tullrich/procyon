@@ -34,7 +34,7 @@ typedef struct FT_FaceRec_* FT_Face;
 
 namespace Procyon {
 
-	namespace GL { class GLTexture;	}
+	class Texture;
 
 	struct Glyph
 	{
@@ -69,7 +69,7 @@ namespace Procyon {
 	public:
 		unsigned int 		   size;
 		Glyph 				       glyphs[ GLYPH_COUNT ];
-    	GL::GLTexture*   	 atlas;
+    	Texture*   	 atlas;
         FontMetrics             metrics;
 
 		CachedFontSize( unsigned int fontsize, FT_Face face );
@@ -86,11 +86,11 @@ namespace Procyon {
 								FontFace( const std::string& filepath, unsigned int fontsize );
 								~FontFace();
 
-        const GL::GLTexture*  GetTexture( unsigned int fontsize ) const;
-		const Glyph*               GetGlyph( unsigned int fontsize, unsigned int c ) const;
-		int                               GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const;
-		FontMetrics                 GetMetrics( unsigned int fontsize ) const;
-		void 					         EnsureCached( unsigned int fontsize ) const;
+        const Texture*			GetTexture( unsigned int fontsize ) const;
+		const Glyph*			GetGlyph( unsigned int fontsize, unsigned int c ) const;
+		int						GetKerning( unsigned int fontsize, unsigned int cb1, unsigned int cb2 ) const;
+		FontMetrics				GetMetrics( unsigned int fontsize ) const;
+		void 					EnsureCached( unsigned int fontsize ) const;
 
 	protected:
 		bool 					BufferFile( const std::string& filepath, std::vector<char>& buffer );

@@ -23,11 +23,11 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "GLTexture.h"
-#include <stdexcept>
+#include "Image.h"
 
 namespace Procyon {
 
-namespace GL { 
+namespace GL {
 
 	GLTexture::GLTexture()
 		: mTextureId( -1 )
@@ -36,22 +36,22 @@ namespace GL {
 	    glGenTextures( 1, &mTextureId );
 	}
 
-	GLTexture::GLTexture( GLenum target, const std::string& filepath, int mipLevel /* = 0 */ )
+	GLTexture::GLTexture( const std::string& filepath, int mipLevel /* = 0 */ )
 		: mTextureId( -1 )
 		, mTarget( GL_TEXTURE_2D )
 	{
 	    glGenTextures( 1, &mTextureId );
 
         FileImage img( filepath );
-	    SetData( target, img, mipLevel );
+	    SetData( img, mipLevel );
 	}
 
-	GLTexture::GLTexture( GLenum target, const IImage& img, int mipLevel /* = 0 */ )
+	GLTexture::GLTexture( const IImage& img, int mipLevel /* = 0 */ )
 		: mTextureId( -1 )
 		, mTarget( GL_TEXTURE_2D )
 	{
 	    glGenTextures( 1, &mTextureId );
-	    SetData( target, img, mipLevel );
+	    SetData( img, mipLevel );
 	}
 
 	GLTexture::~GLTexture()
@@ -64,7 +64,7 @@ namespace GL {
 		glBindTexture( mTarget, mTextureId );
 	}
 
-	void GLTexture::SetData( GLenum target, const IImage& img, int mipLevel /* = 0 */ )
+	void GLTexture::SetData( const IImage& img, int mipLevel /* = 0 */ )
 	{
 		GLint format;
 		switch( img.Components() )
@@ -72,59 +72,72 @@ namespace GL {
 			case 1: format = GL_ALPHA; break;
 			case 3: format = GL_RGB; break;
 			case 4: format = GL_RGBA; break;
-			default: throw std::runtime_error("Unsupported GL image format.");
+			default: format = GL_RGBA; break; // unreachable
 		}
 
         Bind();
 
-	    glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	    glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	    glTexParameteri( target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	    glTexParameteri( target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	    glTexParameteri( mTarget, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	    glTexParameteri( mTarget, GL_TEXTURE_WRAP_T, GL_REPEAT );
+	    glTexParameteri( mTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	    glTexParameteri( mTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-		glTexImage2D( target, mipLevel, format, img.Width(), img.Height(), 0, format, GL_UNSIGNED_BYTE, img.Data() );
-	    glGenerateMipmap( target );
+		glTexImage2D( mTarget, mipLevel, format, img.Width(), img.Height(), 0, format, GL_UNSIGNED_BYTE, img.Data() );
+	    glGenerateMipmap( mTarget);
 
-	    mTarget = target;
 	    mDimensions = glm::vec2( img.Width(), img.Height() );
-
         glBindTexture( mTarget, 0 );
 	}
 
-	int	GLTexture::Width() const
+	void GLTexture::SetMinFilter( TextureFilterMode min )
 	{
-		return mDimensions.x;
-	}
+		GLint filter;
+		switch ( min )
+		{
+			case FILTER_LINEAR: filter = GL_LINEAR; break;
+			case FILTER_NEAREST: filter = GL_NEAREST; break;
+			case FILTER_NEAREST_MIPMAP_NEAREST: filter = GL_NEAREST_MIPMAP_NEAREST; break;
+			case FILTER_NEAREST_MIPMAP_LINEAR: filter = GL_NEAREST_MIPMAP_LINEAR; break;
+			case FILTER_LINEAR_MIPMAP_NEAREST: filter = GL_LINEAR_MIPMAP_NEAREST; break;
+			case FILTER_LINEAR_MIPMAP_LINEAR: filter = GL_LINEAR_MIPMAP_LINEAR; break;
+			default: filter = GL_LINEAR; break;
+		}
 
-	int	GLTexture::Height() const
-	{
-		return mDimensions.y;
-	}
-
-	glm::vec2 GLTexture::GetDimensions() const
-	{
-		return mDimensions;
-	}
-
-	void GLTexture::SetMinFilter( GLenum min )
-	{
 		glBindTexture( mTarget, mTextureId );
-	    glTexParameteri( mTarget, GL_TEXTURE_MIN_FILTER, min );
+	    glTexParameteri( mTarget, GL_TEXTURE_MIN_FILTER, filter );
 	}
 
-	void GLTexture::SetMagFilter( GLenum mag )
+	void GLTexture::SetMagFilter( TextureFilterMode mag )
 	{
+		GLint filter;
+		switch ( mag )
+		{
+			case FILTER_LINEAR: filter = GL_LINEAR; break;
+			case FILTER_NEAREST: filter = GL_NEAREST; break;
+			default: filter = GL_LINEAR; break;
+		}
+
 		glBindTexture( mTarget, mTextureId );
-	    glTexParameteri( mTarget, GL_TEXTURE_MAG_FILTER, mag );
+	    glTexParameteri( mTarget, GL_TEXTURE_MAG_FILTER, filter );
 	}
 
-	void GLTexture::SetMinMagFilter( GLenum min, GLenum mag )
+	void GLTexture::SetMinMagFilter( TextureFilterMode min, TextureFilterMode mag )
 	{
-		glBindTexture( mTarget, mTextureId );
-	    glTexParameteri( mTarget, GL_TEXTURE_MIN_FILTER, min );
-	    glTexParameteri( mTarget, GL_TEXTURE_MAG_FILTER, mag );
+		SetMinFilter( min );
+		SetMagFilter( mag );
 	}
 
 } /* namespace GL */
+
+
+	/*static*/ Texture* Texture::Allocate(const std::string& filepath, int mipLevel /* = 0 */)
+	{
+		return new GL::GLTexture(filepath, mipLevel);
+	}
+
+	/*static*/ Texture* Texture::Allocate(const IImage& img, int mipLevel /* = 0 */)
+	{
+		return new GL::GLTexture(img, mipLevel);
+	}
 
 } /* namespace Procyon */

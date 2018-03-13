@@ -72,8 +72,7 @@ namespace Procyon {
 		stbi_image_free( mData );
 	}
 
-
-	MemoryImage::MemoryImage( int width, int height, int components )
+	MutableImage::MutableImage( int width, int height, int components )
 	{
 		mWidth = width;
 		mHeight = height;
@@ -81,7 +80,7 @@ namespace Procyon {
 		mData = new unsigned char[ mWidth * mHeight * mComponents ]();
 	}
 
-	MemoryImage::MemoryImage( const IImage& in, int components )
+	MutableImage::MutableImage( const IImage& in, int components )
 	{
 		mWidth 		= in.Width();
 		mHeight 	= in.Height();
@@ -112,12 +111,12 @@ namespace Procyon {
 		}
 	}
 
-	MemoryImage::~MemoryImage()
+	MutableImage::~MutableImage()
 	{
 		delete[] mData;
 	}
 
-	unsigned char* MemoryImage::MutableData()
+	unsigned char* MutableImage::MutableData()
 	{
 		return mData;
 	}

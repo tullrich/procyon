@@ -23,16 +23,12 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Shape.h"
-#include "GLGeometry.h"
 #include "RenderCore.h"
-
-using namespace Procyon::GL;
 
 namespace Procyon {
 
-    Shape::Shape( GLGeometry* geo )
-        : mGeometry( geo )
-        , mColor( 0.0f, 0.0f, 0.0f, 1.0f )
+    Shape::Shape( )
+        : mColor( 0.0f, 0.0f, 0.0f, 1.0f )
     {
     }
 
@@ -61,43 +57,28 @@ namespace Procyon {
         return mColor.w;
     }
 
-    const GLGeometry* Shape::GetGeometry() const
-    {
-        return mGeometry;
-    }
+	void Shape::PostRenderCommands(  Renderer* r, RenderCore* rc ) const
+	{
+		glm::mat3 tform = GetTransform();
+		glm::vec2 quaddata[] =
+		{
+			glm::vec2( tform * glm::vec3( 0.0f, 1.0f, 1.0f ) ), // v0
+			glm::vec2( tform * glm::vec3( 1.0f, 1.0f, 1.0f ) ), // v1
+			glm::vec2( tform * glm::vec3( 0.0f, 0.0f, 1.0f ) ), // v2
+			glm::vec2( tform * glm::vec3( 1.0f, 0.0f, 1.0f ) ), // v3
+		};
 
-    void Shape::Render( const GL::GLProgram* program ) const
-    {
-        mGeometry->Bind( program );
-        mGeometry->Draw();
-    }
-
-    void Shape::PostRenderCommands(  Renderer* r, RenderCore* rc ) const
-    {
-        glm::mat3 tform = GetTransform();
-        glm::vec2 quaddata[] =
-        {
-            glm::vec2( tform * glm::vec3( 0.0f, 1.0f, 1.0f ) ), // v0
-            glm::vec2( tform * glm::vec3( 1.0f, 1.0f, 1.0f ) ), // v1
-            glm::vec2( tform * glm::vec3( 0.0f, 0.0f, 1.0f ) ), // v2
-            glm::vec2( tform * glm::vec3( 1.0f, 0.0f, 1.0f ) ), // v3
-        };
-
-        // v0, v1, v2
-        // v2, v1, v3
-
-        RenderCommand cmd;
-        cmd.op               = RENDER_OP_PRIMITIVE;
-        cmd.program          = NULL;
-        cmd.primmode         = PRIMITIVE_QUAD;
-        cmd.verts            = (PrimitiveVertex*) &quaddata[0];
-        cmd.vertcount        = 4;
-        cmd.flags            = RENDER_SCREEN_SPACE;
-        cmd.color[0]         = mColor.x;
-        cmd.color[1]         = mColor.y;
-        cmd.color[2]         = mColor.z;
-        cmd.color[3]         = mColor.w;
-        rc->AddOrAppendCommand( cmd );
-    }
+		RenderCommand cmd;
+		cmd.op               = RENDER_OP_PRIMITIVE;
+		cmd.primmode         = PRIMITIVE_QUAD;
+		cmd.verts            = (PrimitiveVertex*) &quaddata[0];
+		cmd.vertcount        = 4;
+		cmd.flags            = RENDER_SCREEN_SPACE;
+		cmd.color[0]         = mColor.x;
+		cmd.color[1]         = mColor.y;
+		cmd.color[2]         = mColor.z;
+		cmd.color[3]         = mColor.w;
+		rc->AddOrAppendCommand( cmd );
+	}
 
 } /* namespace Procyon */

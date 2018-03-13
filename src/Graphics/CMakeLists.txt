@@ -2,13 +2,6 @@
 find_package( OpenGL REQUIRED )
 
 if ( PROCYON_VS )
-	set( GLEW_INCLUDE_DIR "${PROCYON_THIRDPARTY_ROOT}glew-1.13.0/include" )
-	set( GLEW_LIBRARIES "${PROCYON_THIRDPARTY_ROOT}glew-1.13.0/lib/Release/x64/glew32s.lib" )
-else()
-	find_package( GLEW REQUIRED )
-endif()
-
-if ( PROCYON_VS )
 	set( FREETYPE_INCLUDE_DIRS "${PROCYON_THIRDPARTY_ROOT}freetype-2.6.5/include" )
 	set( FREETYPE_LIBRARIES "${PROCYON_THIRDPARTY_ROOT}freetype-2.6.5/lib/vs110/x64/freetype.lib" )
 else()
@@ -16,40 +9,41 @@ else()
 endif()
 
 set( PROCYON_GRAPHICS_SRC_FILES )
-add_subdirectory( GL/ )
+set( PROCYON_GRAPHICS_INCLUDE_DIRS )
+set( PROCYON_GRAPHICS_LIBRARIES )
+set( PROCYON_GRAPHICS_DEFINITIONS )
+
+if ( PROCYON_GL )
+	add_subdirectory( GL/ )
+elseif ( PROCYON_DIRECTX )
+	add_subdirectory( DirectX/ )
+endif ()
 
 add_library(Procyon_Graphics STATIC
 	Camera.cpp
 	Sprite.cpp
 	Shape.cpp
-	LineShape.cpp
-	RectShape.cpp
-	Quad.cpp
 	FontFace.cpp
 	Renderer.cpp
-	RenderCore.cpp
 	Text.cpp
 	${PROCYON_GRAPHICS_SRC_FILES}
 )
 
 target_compile_definitions(Procyon_Graphics PUBLIC
-	-DGLEW_STATIC
+	${PROCYON_GRAPHICS_DEFINITIONS}
 )
 
 target_include_directories(Procyon_Graphics PUBLIC
-	${OPENGL_INCLUDE_DIR}
-	${GLEW_INCLUDE_DIR}
 	${FREETYPE_INCLUDE_DIRS}
 	${VASERENDERER_INCLUDE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/GL
+	${PROCYON_GRAPHICS_INCLUDE_DIRS}
 )
 
 target_link_libraries(Procyon_Graphics
 	Procyon_Common
 	${FREETYPE_LIBRARIES}
-	${OPENGL_LIBRARIES}
-	${GLEW_LIBRARIES}
+	${PROCYON_GRAPHICS_LIBRARIES}
 )
 
 set( PROCYON_LINKER_INPUT ${PROCYON_LINKER_INPUT} Procyon_Graphics PARENT_SCOPE )

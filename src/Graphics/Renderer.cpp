@@ -25,14 +25,14 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Renderer.h"
 #include "RenderCore.h"
 #include "Renderable.h"
-#include "GLTexture.h"
+#include "Texture.h"
 
 namespace Procyon {
 
 	bool sDebugLines = false;
 
 	Renderer::Renderer()
-		: mRenderCore( new RenderCore() )
+		: mRenderCore( RenderCore::Allocate() )
 	{
 		ResetCameras();
 	}
@@ -138,7 +138,6 @@ namespace Procyon {
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_PRIMITIVE;
-        cmd.program          = NULL;
         cmd.primmode         = PRIMITIVE_LINE;
         cmd.verts            = (PrimitiveVertex*) &lineverts[0];
         cmd.vertcount        = 2;
@@ -166,7 +165,6 @@ namespace Procyon {
 
 		RenderCommand cmd;
 		cmd.op             	= RENDER_OP_AA_LINE;
-		cmd.program         = NULL;
 		cmd.flags           = 0;
 		cmd.lineverts		= &lineverts[0];
 		cmd.linevertcount	= 4;
@@ -469,7 +467,6 @@ namespace Procyon {
 		{
 			RenderCommand cmd;
 	        cmd.op               = RENDER_OP_POLYGON;
-	        cmd.program          = NULL;
 	        cmd.flags            = RENDER_SCREEN_SPACE;
 	        cmd.colorprimmode    = PRIMITIVE_TRIANGLE;
 	        cmd.colorverts       = (ColorVertex*) geometry.mVerts2.data();
@@ -479,7 +476,6 @@ namespace Procyon {
 		else
 		{
 		    RenderCommand cmd;
-	        cmd.program          = NULL;
 	        cmd.flags			 = RENDER_SCREEN_SPACE;
 			cmd.op 				 = RENDER_OP_PRIMITIVE;
 			cmd.primmode 		 = PRIMITIVE_TRIANGLE;
@@ -536,7 +532,6 @@ namespace Procyon {
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_PRIMITIVE;
-        cmd.program          = NULL;
         cmd.primmode         = PRIMITIVE_LINE;
         cmd.verts            = (PrimitiveVertex*) &lineverts[0];
         cmd.vertcount        = 2;
@@ -549,7 +544,7 @@ namespace Procyon {
 	}
 
 
-	void Renderer::DrawTexture( const GL::GLTexture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, struct Rect textureRect /*= Rect() */ )
+	void Renderer::DrawTexture( const Texture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, struct Rect textureRect /*= Rect() */ )
 	{
         BatchedQuad quaddata;
         quaddata.position[0] = pos.x;
@@ -567,7 +562,6 @@ namespace Procyon {
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;
-        cmd.program          = NULL;
         cmd.flags            = 0;
         cmd.texture          = tex;
         cmd.instancecount    = 1;
@@ -575,7 +569,7 @@ namespace Procyon {
         mRenderCore->AddOrAppendCommand( cmd );
 	}
 
-    void Renderer::DrawFullscreenTexture( const GL::GLTexture* tex )
+    void Renderer::DrawFullscreenTexture( const Texture* tex )
     {
         BatchedQuad quaddata;
         quaddata.position[0] = 0.0f;
@@ -593,7 +587,6 @@ namespace Procyon {
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;
-        cmd.program          = NULL;
         cmd.flags            = RENDER_SCREEN_SPACE;
         cmd.texture          = tex;
         cmd.instancecount    = 1;
@@ -618,7 +611,6 @@ namespace Procyon {
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_PRIMITIVE;
-        cmd.program     	 = NULL;
         cmd.primmode         = PRIMITIVE_QUAD;
         cmd.flags            = 0;
         cmd.verts            = (PrimitiveVertex*) &verts[0];

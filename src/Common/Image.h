@@ -63,22 +63,16 @@ namespace Procyon {
 		virtual ~FileImage();
 	};
 
-	class MemoryImage : public ImageBase
+	class MutableImage : public ImageBase
 	{
 	public:
-				MemoryImage( const IImage& in, int components );
-				MemoryImage( int width, int height, int components );
-		virtual ~MemoryImage();
+				MutableImage( const IImage& in, int components );
+				MutableImage( int width, int height, int components );
+		virtual ~MutableImage();
 
 
 		unsigned char* MutableData();
 	};
-
-
-	typedef std::unique_ptr<IImage> IImagePtr;
-	typedef std::unique_ptr<FileImage> FileImagePtr;
-	typedef std::unique_ptr<MemoryImage> MemoryImagePtr;
-
 } /* namespace Procyon */
 
 #endif /* _IMAGE_H */
