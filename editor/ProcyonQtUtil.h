@@ -25,7 +25,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _PROCYON_QT_UTIL
 #define _PROCYON_QT_UTIL
 
-#include "Window.h"
+#include "Platform/Window.h"
 
 #include <QString>
 

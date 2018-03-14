@@ -27,7 +27,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _WIN32_GL_CONTEXT_H
 
 #include "ProcyonCommon.h"
-#include "GLContext.h"
+#include "Graphics/GL/GLContext.h"
 
 namespace Procyon {
 namespace Win32 {

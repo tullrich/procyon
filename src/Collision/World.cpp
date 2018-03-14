@@ -23,10 +23,10 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "World.h"
-#include "Texture.h"
-#include "Renderer.h"
-#include "Sprite.h"
 #include "Contact.h"
+#include "Graphics/Texture.h"
+#include "Graphics/Renderer.h"
+#include "Graphics/Sprite.h"
 
 #define TILE_INDEX( tx, ty ) ( ( tx ) * mSize.y + ( ty ) )
 

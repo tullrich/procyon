@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLTexture.h"
 #include "GLProgram.h"
 #include "GLBuffer.h"
-#include "Camera.h"
+#include "Graphics/Camera.h"
 
 using namespace Procyon::GL;
 

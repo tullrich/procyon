@@ -15,7 +15,7 @@ add_executable(runUnitTests
 )
 
 target_link_libraries(runUnitTests
-	Procyon_lib
+	Procyon
 	gtest
 	gmock
 )

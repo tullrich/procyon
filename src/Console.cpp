@@ -23,12 +23,12 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Console.h"
-#include "Renderer.h"
-#include "Shape.h"
-#include "Camera.h"
-#include "FontFace.h"
-#include "Text.h"
-#include "Window.h"
+#include "Graphics/Renderer.h"
+#include "Graphics/Shape.h"
+#include "Graphics/Camera.h"
+#include "Graphics/FontFace.h"
+#include "Graphics/Text.h"
+#include "Platform/Window.h"
 
 using namespace Procyon::GL;
 

@@ -27,10 +27,10 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ProcyonCommon.h"
 #include "MainLoop.h"
+#include "Platform/Joystick.h"
+#include "Audio/AudioDevice.h"
+#include "Graphics/Camera.h"
 #include "Player.h"
-#include "Joystick.h"
-#include "AudioDevice.h"
-#include "Camera.h"
 
 namespace Procyon 
 {

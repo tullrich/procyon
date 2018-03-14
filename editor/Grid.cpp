@@ -23,8 +23,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Grid.h"
-#include "Renderer.h"
-#include "World.h"
+#include "Graphics/Renderer.h"
+#include "Collision/World.h"
 
 using namespace Procyon;
 

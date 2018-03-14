@@ -1,4 +1,3 @@
-# CMakeLists.txt for audio module
 # OpenAl audio library
 if ( PROCYON_VS )
 	set( OPENAL_INCLUDE_DIR "${PROCYON_THIRDPARTY_ROOT}openal-1.1/include" )
@@ -15,23 +14,30 @@ else()
 	find_package( SndFile REQUIRED )
 endif()
 
-add_library(Procyon_Audio STATIC
-	AudioDevice.cpp
-	SoundFile.cpp
-	Sound.cpp
-	SoundBuffer.cpp
+set( PROCYON_SRCS
+	${PROCYON_SRCS}
+	${CMAKE_CURRENT_SOURCE_DIR}/ProcyonAL.h
+	${CMAKE_CURRENT_SOURCE_DIR}/AudioDevice.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/AudioDevice.h
+	${CMAKE_CURRENT_SOURCE_DIR}/SoundFile.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/SoundFile.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Sound.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Sound.h
+	${CMAKE_CURRENT_SOURCE_DIR}/SoundBuffer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/SoundBuffer.h
+	PARENT_SCOPE
 )
 
-target_link_libraries(Procyon_Audio
-	Procyon_Common
-	${OPENAL_LIBRARY}
-	${SNDFILE_LIBRARIES}
-)
-
-target_include_directories(Procyon_Audio PUBLIC
+set( PROCYON_INCLUDES
+	${PROCYON_INCLUDES}
 	${OPENAL_INCLUDE_DIR}
 	${SNDFILE_INCLUDE_DIRS}
-	${CMAKE_CURRENT_SOURCE_DIR}
+	PARENT_SCOPE
 )
 
-set( PROCYON_LINKER_INPUT ${PROCYON_LINKER_INPUT} Procyon_Audio PARENT_SCOPE )
+set( PROCYON_LIBS
+	${PROCYON_LIBS}
+	${OPENAL_LIBRARY}
+	${SNDFILE_LIBRARIES}
+	PARENT_SCOPE
+)

@@ -28,7 +28,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ProcyonCommon.h"
 #include "SceneObject.h"
-#include "World.h"
+#include "Collision/World.h"
 
 #include <QObject>
 #include <QFileInfo>

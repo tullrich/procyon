@@ -24,14 +24,14 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "Sandbox.h"
 
-#include "GLContext.h"
-#include "Renderer.h"
-#include "RenderCore.h"
 #include "Console.h"
-#include "Player.h"
-#include "Text.h"
+#include "Graphics/Text.h"
+#include "Graphics/Renderer.h"
+#include "Graphics/RenderCore.h"
+#include "Graphics/GL/GLContext.h"
+#include "Graphics/GL/ProcyonVaser.h"
 #include "XmlMap.h"
-#include "ProcyonVaser.h"
+#include "Player.h"
 
 #include "SandboxAssets.h"
 #include "../../editor/Grid.h"

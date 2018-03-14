@@ -23,9 +23,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "MainLoop.h"
-#include "Window.h"
-#include "GLContext.h"
-#include "Reflection.h"
+#include "Platform/Window.h"
+#include "Graphics/GL/GLContext.h"
 #include "Image.h"
 #include "Console.h"
 
@@ -49,8 +48,6 @@ namespace Procyon {
         mPrevTime.tsl   = 0.0;
 		mPrevTime.dt    = 0.0;
 
-        InitReflectionTables();
-
         mWindow         = Window_Create( windowTitle, width, height );
         mContext        = mWindow->GetGLContext();
 
@@ -67,8 +64,6 @@ namespace Procyon {
         delete mWindow;
         mWindow = NULL;
         mContext = NULL;
-
-        DestroyReflectionTables();
     }
 
     void MainLoop::HandleInputEvent( const InputEvent& ev )
@@ -165,7 +160,7 @@ namespace Procyon {
 		{
 			t.dt    = t.tsl - mPrevTime.tsl;
 		}
-		else 
+		else
 		{
 			t.dt = 0.0f;
 		}

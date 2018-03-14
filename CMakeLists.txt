@@ -58,29 +58,34 @@ else ()
   message( FATAL_ERROR "Unknown render interface: ${RenderInteface}" )
 endif ()
 
-
 # define the path of our additional CMake modules
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/" )
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} )
 set( PROCYON_THIRDPARTY_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/lib/" )
+set( PROCYON_SOURCE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/src/" )
 
 add_subdirectory( lib/stb )
 add_subdirectory( lib/vaserenderer )
 
-add_definitions("-DNOMINMAX -D_USE_MATH_DEFINES")
-
-# Modules
-set(PROCYON_LINKER_INPUT)
-add_subdirectory( src/Common )
-add_subdirectory( src/Graphics )
-add_subdirectory( src/Platform )
-add_subdirectory( src/Collision )
-add_subdirectory( src/Engine )
-add_subdirectory( src/Audio )
+# Procyon Lib
+set( PROCYON_SRCS )
+set( PROCYON_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src )
+set( PROCYON_LIBS )
+set( PROCYON_DEFINITIONS NOMINMAX _USE_MATH_DEFINES )
+add_subdirectory( src/ )
 
 # Procyon lib
-add_library( Procyon_lib INTERFACE )
-target_link_libraries( Procyon_lib INTERFACE ${PROCYON_LINKER_INPUT} )
+add_library( Procyon STATIC ${PROCYON_SRCS} )
+target_include_directories( Procyon PUBLIC ${PROCYON_INCLUDES} )
+target_link_libraries( Procyon PUBLIC ${PROCYON_LIBS} )
+target_compile_definitions( Procyon PUBLIC ${PROCYON_DEFINITIONS} )
+
+if ( NOT PROCYON_VS )
+	target_compile_options( Procyon PUBLIC
+		-std=c++0x
+		-g
+	)
+endif()
 
 # optional tests
 if ( test )

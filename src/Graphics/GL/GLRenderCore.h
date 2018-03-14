@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _GL_RENDER_CORE_H
 
 #include "ProcyonGL.h"
-#include "RenderCore.h"
+#include "Graphics/RenderCore.h"
 
 #define MAX_RENDER_CMDS 10002
 

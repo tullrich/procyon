@@ -23,7 +23,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "XmlMap.h"
-#include "Texture.h"
+#include "Graphics/Texture.h"
 
 #include <tinyxml2.h>
 

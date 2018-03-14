@@ -1,5 +1,5 @@
 #include "SceneObject.h"
-#include "Renderer.h"
+#include "Graphics/Renderer.h"
 #include "ProcyonQtUtil.h"
 
 using namespace Procyon;

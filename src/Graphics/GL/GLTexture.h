@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _GL_TEXTURE_H
 
 #include "ProcyonGL.h"
-#include "Texture.h"
+#include "Graphics/Texture.h"
 
 namespace Procyon {
 

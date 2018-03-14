@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _MAIN_LOOP_H
 
 #include "ProcyonCommon.h"
-#include "Window.h"
+#include "Platform/Window.h"
 
 #define TARGET_FPS 60
 #define TARGET_HZ 1.0 / (double)TARGET_FPS
@@ -55,7 +55,7 @@ namespace Procyon {
 	    virtual void    Process( FrameTime t ) { };
 	    virtual void    Render() { };
 
-	    // 
+	    //
 	    virtual void    OnKeyDown( const InputEvent& ev ) {};
 	    virtual void    OnKeyRepeat( const InputEvent& ev ) { };
 	    virtual void    OnKeyUp( const InputEvent& ev ) { };

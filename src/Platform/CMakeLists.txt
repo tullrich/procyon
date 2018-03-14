@@ -1,32 +1,20 @@
-set( PROCYON_PLATFORM_INCLUDE_DIRS )
-set( PROCYON_PLATFORM_DEFINITIONS )
-set( PROCYON_PLATFORM_LIBRARIES )
-set( PROCYON_PLATFORM_SOURCES )
+
 if ( PROCYON_LINUX )
 	add_subdirectory( Unix/ )
 else()
 	add_subdirectory( Win32/ )
 endif()
 
-add_library(Procyon_Platform STATIC
-	Window.cpp
-	Joystick.cpp
-	${PROCYON_PLATFORM_SOURCES}
+set( PROCYON_SRCS
+	${PROCYON_SRCS}
+	${CMAKE_CURRENT_SOURCE_DIR}/Window.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Window.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Joystick.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Joystick.h
+	${CMAKE_CURRENT_SOURCE_DIR}/KeyCodes.h
+	PARENT_SCOPE
 )
 
-target_include_directories(Procyon_Platform PUBLIC
-	${PROCYON_PLATFORM_INCLUDE_DIRS}
-	${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-target_compile_definitions(Procyon_Platform PUBLIC
-	${PROCYON_PLATFORM_DEFINITIONS}
-)
-
-target_link_libraries(Procyon_Platform
-	Procyon_Common
-	Procyon_Graphics
-	${PROCYON_PLATFORM_LIBRARIES}
-)
-
-set( PROCYON_LINKER_INPUT ${PROCYON_LINKER_INPUT} Procyon_Platform PARENT_SCOPE )
+set( PROCYON_INCLUDES ${PROCYON_INCLUDES} PARENT_SCOPE )
+set( PROCYON_LIBS ${PROCYON_LIBS} PARENT_SCOPE )
+set( PROCYON_DEFINITIONS ${PROCYON_DEFINITIONS} PARENT_SCOPE )

@@ -1,5 +1,5 @@
 #include "NewMapDialog.h"
-#include "World.h"
+#include "Collision/World.h"
 
 #include <QPushButton>
 

@@ -23,8 +23,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include <cstddef>
-#include "FontFace.h"
-#include "Texture.h"
+#include "Graphics/FontFace.h"
+#include "Graphics/Texture.h"
 #include "EditorAssets.h"
 
 using namespace Procyon;
@@ -34,7 +34,7 @@ Texture*     	EditorAssets::sTileTexture     = NULL;
 
 void EditorAssets::Load()
 {
-	sMainFont 		= new FontFace( "fonts/Economica-Regular.ttf" );
+	sMainFont 		= new FontFace( "fonts/Economica-Regular.ttf", 20 );
     sTileTexture    = Texture::Allocate( "sprites/tile.png" );
 }
 

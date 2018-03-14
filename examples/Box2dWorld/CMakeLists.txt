@@ -10,6 +10,6 @@ target_include_directories(Box2dWorld PUBLIC
 )
 
 target_link_libraries(Box2dWorld
-    Procyon_lib
+    Procyon
     ${BOX2D_LIBRARY}
 )

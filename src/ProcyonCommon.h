@@ -48,7 +48,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <stack>
 
 #include "Logging.h"
-#include "Reflection.h"
 
 #define BIT( bit ) (0x01<<bit)
 

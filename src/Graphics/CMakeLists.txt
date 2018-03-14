@@ -1,5 +1,3 @@
-# CMakeLists.txt for Procyon_Graphics
-find_package( OpenGL REQUIRED )
 
 if ( PROCYON_VS )
 	set( FREETYPE_INCLUDE_DIRS "${PROCYON_THIRDPARTY_ROOT}freetype-2.6.5/include" )
@@ -8,42 +6,44 @@ else()
 	find_package( Freetype REQUIRED )
 endif()
 
-set( PROCYON_GRAPHICS_SRC_FILES )
-set( PROCYON_GRAPHICS_INCLUDE_DIRS )
-set( PROCYON_GRAPHICS_LIBRARIES )
-set( PROCYON_GRAPHICS_DEFINITIONS )
-
 if ( PROCYON_GL )
 	add_subdirectory( GL/ )
 elseif ( PROCYON_DIRECTX )
 	add_subdirectory( DirectX/ )
 endif ()
 
-add_library(Procyon_Graphics STATIC
-	Camera.cpp
-	Sprite.cpp
-	Shape.cpp
-	FontFace.cpp
-	Renderer.cpp
-	Text.cpp
-	${PROCYON_GRAPHICS_SRC_FILES}
+set( PROCYON_SRCS
+	${PROCYON_SRCS}
+	${CMAKE_CURRENT_SOURCE_DIR}/Camera.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Camera.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Sprite.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Sprite.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Shape.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Shape.h
+	${CMAKE_CURRENT_SOURCE_DIR}/FontFace.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/FontFace.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Renderer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Renderer.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Text.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Text.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Texture.h
+	${CMAKE_CURRENT_SOURCE_DIR}/RenderCore.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Renderable.h
+	PARENT_SCOPE
 )
 
-target_compile_definitions(Procyon_Graphics PUBLIC
-	${PROCYON_GRAPHICS_DEFINITIONS}
-)
-
-target_include_directories(Procyon_Graphics PUBLIC
+set( PROCYON_INCLUDES
+	${PROCYON_INCLUDES}
 	${FREETYPE_INCLUDE_DIRS}
 	${VASERENDERER_INCLUDE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${PROCYON_GRAPHICS_INCLUDE_DIRS}
+	PARENT_SCOPE
 )
-
-target_link_libraries(Procyon_Graphics
-	Procyon_Common
+set( PROCYON_LIBS
+	${PROCYON_LIBS}
 	${FREETYPE_LIBRARIES}
-	${PROCYON_GRAPHICS_LIBRARIES}
+	PARENT_SCOPE
 )
-
-set( PROCYON_LINKER_INPUT ${PROCYON_LINKER_INPUT} Procyon_Graphics PARENT_SCOPE )
+set( PROCYON_DEFINITIONS
+	${PROCYON_DEFINITIONS}
+	PARENT_SCOPE
+)

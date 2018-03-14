@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define XML_MAP_H
 
 #include "ProcyonCommon.h"
-#include "World.h"
+#include "Collision/World.h"
 
 namespace Procyon {
 

@@ -40,7 +40,7 @@ include_directories(
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Xml_INCLUDE_DIRS}
 	${PROCYON_PLATFORM_INCLUDE_DIRS}
-	)
+)
 
 add_subdirectory( QPropertyBrowser )
 include_directories( ${QPROPERTYBROWSER_INCLUDE_DIR} )
@@ -79,7 +79,7 @@ add_executable(Editor WIN32
 
 # Link against Qt5 and Procyon targets.
 target_link_libraries(Editor
-	Procyon_lib
+	Procyon
 	${Qt5Widgets_LIBRARIES}
 	${Qt5OpenGL_LIBRARIES}
 	${Qt5Xml_LIBRARIES}

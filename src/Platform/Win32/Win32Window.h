@@ -27,7 +27,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _WIN32_WINDOW_H
 
 #include "ProcyonCommon.h"
-#include "Window.h"
+#include "Platform/Window.h"
 
 struct GLFWwindow;
 

@@ -37,7 +37,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <QLineEdit>
 #include <QSortFilterProxyModel>
 
-#include "Camera.h"
+#include "Graphics/Camera.h"
 
 #include "Editor.h"
 #include "ui_editor.h"

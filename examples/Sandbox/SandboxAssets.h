@@ -25,10 +25,10 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef _SANDBOX_ASSETS_H
 #define _SANDBOX_ASSETS_H
 
-#include "FontFace.h"
-#include "World.h"
-#include "SoundBuffer.h"
-#include "Texture.h"
+#include "Graphics/FontFace.h"
+#include "Graphics/Texture.h"
+#include "Collision/World.h"
+#include "Audio/SoundBuffer.h"
 
 using namespace Procyon;
 

@@ -1,15 +1,17 @@
-# CMakeLists.txt for Procyon_Collision
-add_library(Procyon_Collision STATIC
-	World.cpp
+set( PROCYON_SRCS
+	${PROCYON_SRCS}
+	${CMAKE_CURRENT_SOURCE_DIR}/World.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/World.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Contact.h
+	PARENT_SCOPE
 )
 
-target_link_libraries(Procyon_Collision
-	Procyon_Common
-	Procyon_Graphics
+set( PROCYON_INCLUDES
+	${PROCYON_INCLUDES}
+	PARENT_SCOPE
 )
 
-target_include_directories(Procyon_Collision PUBLIC
-	${CMAKE_CURRENT_SOURCE_DIR}
+set( PROCYON_LIBS
+	${PROCYON_LIBS}
+	PARENT_SCOPE
 )
-
-set( PROCYON_LINKER_INPUT ${PROCYON_LINKER_INPUT} Procyon_Collision PARENT_SCOPE )

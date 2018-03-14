@@ -6,7 +6,7 @@ else()
 	find_package( TinyXML2 REQUIRED )
 endif()
 
-add_executable(Sandbox
+add_executable( Sandbox
 	main.cpp
 	Sandbox.cpp
 	Player.cpp
@@ -15,11 +15,16 @@ add_executable(Sandbox
 	${CMAKE_SOURCE_DIR}/editor/Grid.cpp
 )
 
-include_directories(
+target_include_directories( Sandbox PUBLIC
+	${PROCYON_INCLUDES}
 	${TINYXML2_INCLUDE_DIR}
 )
 
-target_link_libraries(Sandbox
-	${PROCYON_LINKER_INPUT}
+target_link_libraries( Sandbox PUBLIC
+	Procyon
 	${TINYXML2_LIBRARIES}
+)
+
+target_compile_definitions( Sandbox PUBLIC
+	${PROCYON_DEFINITIONS}
 )

@@ -22,13 +22,13 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
+#include "Graphics/Sprite.h"
+#include "Graphics/Renderer.h"
+#include "Collision/World.h"
+#include "Collision/Contact.h"
+#include "Audio/Sound.h"
 #include "Player.h"
-#include "Sprite.h"
-#include "World.h"
-#include "Contact.h"
-#include "Sound.h"
 #include "SandboxAssets.h"
-#include "Renderer.h"
 
 namespace Procyon {
 
