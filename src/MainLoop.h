@@ -29,7 +29,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Platform/Window.h"
 
 #define TARGET_FPS 60
-#define TARGET_HZ 1.0 / (double)TARGET_FPS
+#define TARGET_HZ ( 1.0 / (double)TARGET_FPS )
+#define MAX_DT ( 1.0f / 20.0f )
 
 namespace Procyon {
 

@@ -49,8 +49,8 @@ namespace Procyon {
 		, mFrame( 0 )
 	{
         mStartTime      = Now();
-        mPrevTime.tsl   = 0.0;
-		mPrevTime.dt    = 0.0;
+        mPrevTime.tsl   = 0.0f;
+		mPrevTime.dt    = 0.0f;
 
 		mWindow = IWindow::Allocate( windowTitle, width, height );
 
@@ -167,16 +167,16 @@ namespace Procyon {
 	void MainLoop::Frame()
 	{
         FrameTime t;
-        t.tsl   = (float)SecsSinceLaunch();
-		if ( mFrame != 0)
+		if ( mFrame != 0 )
 		{
-			t.dt    = t.tsl - mPrevTime.tsl;
-		}
+			t.dt = glm::min( (float) SecsSinceLaunch() - mPrevTime.tsl, MAX_DT );
+			t.tsl = mPrevTime.tsl + t.dt;
+			mPrevTime = t;
+		} 
 		else
 		{
-			t.dt = 0.0f;
+			t.dt = t.tsl = 0.0f;
 		}
-        mPrevTime = t;
 
 		mWindow->PollEvents();
 		Keyboard::Poll();
@@ -189,6 +189,7 @@ namespace Procyon {
 			Render();
 			Console_Render( mRenderer );
 		mRenderer->EndRender();
+
 		mFrame++;
 
 		float processRenderTime = (float)SecsSinceLaunch() - t.tsl;
