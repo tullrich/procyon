@@ -42,6 +42,7 @@ namespace Procyon {
 
 		const std::string& 	GetText() const;
 		void 				SetText( const std::string& str );
+		void 				SetText( const char* format, ... );
 		void 				Append( const std::string& str );
 		void 				EraseBack( size_t count = 1 );
 		size_t 				CharacterCount() const;

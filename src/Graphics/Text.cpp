@@ -61,6 +61,16 @@ namespace Procyon {
 		RecalculateDimensions();
 	}
 
+	void Text::SetText( const char* format, ... )
+	{
+		char dest[1024];
+		va_list argptr;
+		va_start( argptr, format );
+		vsnprintf( dest, 1024, format, argptr );
+		va_end( argptr );
+		mText = dest;
+	}
+
 	void Text::Append( const std::string& str )
 	{
 		mText.append( str );
