@@ -23,6 +23,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Graphics/Sprite.h"
+#include "Graphics/Text.h"
 #include "Graphics/Renderer.h"
 #include "Collision/World.h"
 #include "Collision/Contact.h"
@@ -133,6 +134,9 @@ Player::Player( World* world )
 	mSprite->SetPosition( mBounds.mCenter );
 
 	mJumpSnd = new Sound( SandboxAssets::sJumpSound );
+
+	mPlayerText = new Text( SandboxAssets::sMainFont, 12 );
+	mPlayerText->SetColor( glm::vec3( 1.0f ) );
 }
 
 Player::~Player()
@@ -162,15 +166,16 @@ void Player::Process( FrameTime ft )
 	}
 	else
 	{
+		mVelocity.x = mVelocity.x * 0.95f; // Damping
 		mVelocity.x += 3.5f * PLAYER_DEFAULT_SPEED * mInput.x * ft.dt;
 	}
-	//mVelocity.y += PLAYER_GRAVITY_PIXELS * ft.dt;
+	mVelocity.y += PLAYER_GRAVITY_PIXELS * ft.dt;
 	mVelocity = glm::clamp(mVelocity, -PLAYER_MAX_SPEED, PLAYER_MAX_SPEED);
 
 	mBounds.mCenter += mVelocity * ft.dt;
 
 	std::vector<glm::ivec2> intersecting;
-	mWorld->TileIntersection(mBounds, intersecting );
+	mWorld->TileIntersection( mBounds, intersecting );
 
 	mGrounded = false;
 	for ( auto& t : intersecting )
@@ -178,19 +183,20 @@ void Player::Process( FrameTime ft )
 		CollideTile( t, ft );
 	}
 
-	UpdatePosition( ft );
-
 	if ( mGrounded )
 	{
-		mVelocity.y = 0.0f;
+		//mVelocity.y = 0.0f;
 	}
 
 	mInput = glm::vec2(0.0f);
+
+	mPlayerText->SetText( "Velocity <%.2f, %.2f>", mVelocity.x, mVelocity.y );
 }
 
 void Player::Draw( Renderer* r ) const
 {
 	r->DrawRectShape(GetPosition(), PLAYER_DIMS, 0.0f, glm::vec4(245/255.0f, 121/255.0f, 79/255.0f, 1.f));
+	r->Draw( mPlayerText );
 }
 
 void Player::CollideTile( const glm::ivec2& t, FrameTime ft )
@@ -236,11 +242,11 @@ void Player::CollisionResponse( const Contact& c, FrameTime ft )
 		// friction
 		if ( c.normal.y > 0.0f )
 		{
+			mGrounded = true;
 			glm::vec2 tangent( -c.normal.y, c.normal.x );
 			float tanVelocity = glm::dot( mVelocity, tangent ) * 0.2f; // friction
-			mVelocity -= tangent  * tanVelocity;
+			//mVelocity -= tangent  * tanVelocity;
 
-			mGrounded = true;
 		}
 	}
 }
@@ -264,6 +270,11 @@ void Player::Jump()
     	mJumpSnd->Play( true );
 		mGrounded = false;
 	}
+}
+
+void Player::Teleport( const glm::vec2& pos )
+{
+	mBounds.mCenter = pos;
 }
 
 void Player::SetLeftRightInput( float input )

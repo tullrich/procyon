@@ -62,10 +62,6 @@ void Sandbox::Initialize( int argc, char *argv[] )
     mWindow->SetIcon( *SandboxAssets::sWindowIcon );
 	mRenderer->SetClearColor( glm::vec4( 42.0f/225.0f, 47.0f/255.0f, 67.0f/255.0f, 1.0f ) );
 
-	// Fps Text
-	mFpsText = new Text( SandboxAssets::sMainFont, 18 );
-	mFpsText->SetColor( glm::vec3( 1.0f ) );
-
 	// Create the tile map
 	mWorld = new World();
 	mWorld->LoadMap( ( mCustomMap ) ? mCustomMap : SandboxAssets::sMap );
@@ -79,6 +75,11 @@ void Sandbox::Initialize( int argc, char *argv[] )
           -SANDBOX_WINDOW_WIDTH / 2.0f, SANDBOX_WINDOW_WIDTH / 2.0f
         , -SANDBOX_WINDOW_HEIGHT / 2.0f, SANDBOX_WINDOW_HEIGHT / 2.0f );
 	mCamera->SetPosition( mPlayer->GetPosition() );
+
+	// Fps Text
+	mFpsText = new Text( SandboxAssets::sMainFont, 18 );
+	mFpsText->SetPosition( glm::floor( 6.0f-mCamera->GetWidth() / 2.0f ), glm::floor( -mCamera->GetHeight() / 2.0f ) );
+	mFpsText->SetColor( glm::vec3( 1.0f ) );
 
     // Create the optional joystick device (hardcoded for now)
     try
@@ -124,9 +125,14 @@ void Sandbox::Process( FrameTime t )
         mPlayer->SetLeftRightInput( (float) stickValue );
     }
 
+	if ( Mouse::OnButtonDown( MOUSE_BTN_LEFT ) )
+	{
+		mPlayer->Teleport( PixelToWorld( Mouse::GetPosition( mWindow ), mWindow->GetSize(), mCamera ) );
+	}
+
 	int lrInput = (int)Keyboard::IsKeyDown( KEY_D ) - (int)Keyboard::IsKeyDown( KEY_A );
     mPlayer->SetLeftRightInput( (float)lrInput );
-	if ( Keyboard::OnKeyDown( KEY_SPACE ) )
+	if ( Keyboard::IsKeyDown( KEY_SPACE ) )
 	{
 		mPlayer->Jump();
 	}
@@ -140,7 +146,6 @@ void Sandbox::Process( FrameTime t )
     mCamera->SetPosition( mCamera->GetPosition() * (1.0f - CAMERA_LERP_RATE) + target * CAMERA_LERP_RATE );
 
 	// Update fps text
-	mFpsText->SetPosition( glm::floor( 6.0f-mCamera->GetWidth() / 2.0f ), glm::floor( -mCamera->GetHeight() / 2.0f ) );
 	mFpsText->SetText( BuildFPSString() );
 }
 
@@ -178,6 +183,7 @@ void Sandbox::OnWindowChanged( const InputEvent& ev )
 {
 	PROCYON_DEBUG( "Sandbox", "OnWindowChanged <%i, %i>", ev.width, ev.height );
 	mCamera->OrthographicProj( -ev.width / 2.0f, ev.width / 2.0f, -ev.height / 2.0f, ev.height / 2.0f );
+	mFpsText->SetPosition( glm::floor( 6.0f-mCamera->GetWidth() / 2.0f ), glm::floor( -mCamera->GetHeight() / 2.0f ) );
 }
 
 Map* Sandbox::LoadMap( std::string filePath )

@@ -69,7 +69,6 @@ SoundBuffer*    SandboxAssets::sJumpSound       = NULL;
 void SandboxAssets::Load()
 {
 	sMainFont 		= new FontFace( "fonts/arial.ttf", 20);
-	//sMainFont 	= new FontFace( "fonts/Economica-Regular.ttf", 20 );
     sWindowIcon     = new FileImage( "sprites/tile.png" );
     sPlayerTexture  = Texture::Allocate( "sprites/raccoon.jpg" );
     sTileTexture    = Texture::Allocate( "sprites/tile.png" );

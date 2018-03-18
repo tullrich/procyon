@@ -40,8 +40,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #define PLAYER_DEFAULT_SPEED (PIXELS_PER_METER*2.0f)
 #define PLAYER_AIR_CONTROL_RATIO 0.6f
-#define PLAYER_JUMP_VELOCITY (PIXELS_PER_METER*4.0f)
-#define PLAYER_GRAVITY -9.8f
+#define PLAYER_JUMP_VELOCITY (PIXELS_PER_METER*8.0f)
+#define PLAYER_GRAVITY -17.5f
 #define PLAYER_GRAVITY_PIXELS (PIXELS_PER_METER*PLAYER_GRAVITY)
 #define PLAYER_MAX_SPEED (glm::vec2(PLAYER_DEFAULT_SPEED, -PLAYER_GRAVITY_PIXELS))
 
@@ -54,6 +54,7 @@ namespace Procyon {
 	class Tile;
 	class Contact;
 	class Sound;
+	class Text;
 }
 
 class Player
@@ -71,6 +72,7 @@ public:
 
 	// input
 	void 				Jump();
+	void				Teleport( const glm::vec2& pos );
 	void 				SetLeftRightInput( float input );
 
 protected:
@@ -88,6 +90,7 @@ protected:
 	Procyon::Sprite* 	mSprite;
 	glm::vec2 			mPenetrationCorrection;
 	Procyon::Sound*		mJumpSnd;
+	Procyon::Text*		mPlayerText;
 	bool				mGrounded;
 };
 
