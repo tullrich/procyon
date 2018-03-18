@@ -50,12 +50,12 @@ namespace Procyon {
 	protected:
         virtual void 	HandleInputEvent( const InputEvent& ev );
     	double 			SecsSinceLaunch() const;
-	    void    		Frame();
+	    void    		Frame( float dt );
 
 	    virtual void    Process( FrameTime t ) { };
 	    virtual void    Render() { };
 
-	    //
+	    // IInputEventListener
 	    virtual void    OnKeyDown( const InputEvent& ev ) {};
 	    virtual void    OnKeyRepeat( const InputEvent& ev ) { };
 	    virtual void    OnKeyUp( const InputEvent& ev ) { };
@@ -69,7 +69,7 @@ namespace Procyon {
 	    AudioDevice*    mAudioDev;
 
 		uint32_t		mFrame;
-	    FrameTime       mPrevTime;
+	    FrameTime       mSimTime;
 	    double			mStartTime;
 	    double 			mAvgFPS;
 	};

@@ -49,8 +49,8 @@ namespace Procyon {
 		, mFrame( 0 )
 	{
         mStartTime      = Now();
-        mPrevTime.tsl   = 0.0f;
-		mPrevTime.dt    = 0.0f;
+        mSimTime.tsl   = 0.0f;
+		mSimTime.dt    = 0.0f;
 
 		mWindow = IWindow::Allocate( windowTitle, width, height );
 
@@ -153,37 +153,48 @@ namespace Procyon {
 
 	void MainLoop::Run()
 	{
+		float prevFrameStart = 0.0f;
         while ( mWindow->IsOpen() )
         {
-            double before = SecsSinceLaunch();
+			float frameStart = (float)SecsSinceLaunch();
+			float frameDelta = 0.0f;
+			if ( mFrame != 0 )
+			{
+				frameDelta = frameStart - prevFrameStart;
 
-            Frame();
+				// Update average fps lerp
+				mAvgFPS = mAvgFPS * 0.9 + ( 1.0 / frameDelta ) * 0.1;
+			}
+			prevFrameStart = frameStart;
 
-            double framerate =  1.0 / ( SecsSinceLaunch() - before );
-			mAvgFPS = mAvgFPS * 0.9 + framerate * 0.1;
+            Frame( frameDelta );
+
+			// Framerate limit
+			float processDelta = (float)SecsSinceLaunch() - frameStart;
+			if ( processDelta < TARGET_HZ )
+			{
+				int sleepmicros = (int)( ( TARGET_HZ - processDelta ) * 1.0e6 );
+				PROCYON_DEBUG( "MainLoop", "Sleeping for %i", sleepmicros );
+				std::this_thread::sleep_for( std::chrono::microseconds( sleepmicros ) );
+			}
+
         }
 	}
 
-	void MainLoop::Frame()
+	void MainLoop::Frame( float dt )
 	{
-        FrameTime t;
 		if ( mFrame != 0 )
 		{
-			t.dt = glm::min( (float) SecsSinceLaunch() - mPrevTime.tsl, MAX_DT );
-			t.tsl = mPrevTime.tsl + t.dt;
-			mPrevTime = t;
+			mSimTime.dt = glm::clamp( dt, 0.0f, MAX_DT );
+			mSimTime.tsl += mSimTime.dt;
 		} 
-		else
-		{
-			t.dt = t.tsl = 0.0f;
-		}
 
 		mWindow->PollEvents();
 		Keyboard::Poll();
 		Mouse::Poll();
 
-		Console_Process( t );
-		Process( t );
+		Console_Process( mSimTime );
+		Process( mSimTime );
 
 		mRenderer->BeginRender();
 			Render();
@@ -191,16 +202,6 @@ namespace Procyon {
 		mRenderer->EndRender();
 
 		mFrame++;
-
-		float processRenderTime = (float)SecsSinceLaunch() - t.tsl;
-
-		// framerate limit
-		if ( processRenderTime < TARGET_HZ )
-		{
-			int sleepmicros = (int)( ( TARGET_HZ - processRenderTime ) * 1.0e6 );
-			PROCYON_DEBUG( "MainLoop", "Sleeping for %i", sleepmicros );
-			std::this_thread::sleep_for( std::chrono::microseconds( sleepmicros ) );
-		}
 	}
 
 } /* namespace Procyon */
