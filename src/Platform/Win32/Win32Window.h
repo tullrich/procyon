@@ -47,6 +47,8 @@ namespace Win32 {
 		virtual void SetTitle( const std::string& title );
 		virtual void SetIcon( const IImage& icon );
 		virtual GL::IGLContext* GetGLContext();
+		virtual void* GetNativeHandle() const;
+		virtual glm::ivec2 GetSize() const;
 
 		GLFWwindow* GetInternal() { return mWindow; }
 

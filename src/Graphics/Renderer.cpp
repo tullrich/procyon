@@ -26,14 +26,22 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "RenderCore.h"
 #include "Renderable.h"
 #include "Texture.h"
+#include "Platform/Window.h"
+#include "Graphics/GL/GLContext.h"
 
 namespace Procyon {
 
 	bool sDebugLines = false;
 
-	Renderer::Renderer()
-		: mRenderCore( RenderCore::Allocate() )
+	Renderer::Renderer( IWindow* window )
+		: mWindow( window )
+		, mClearColor( 0.0f, 1.0f, 0.0f, 1.0f )
 	{
+		if ( mWindow )
+		{
+			mWindow->GetGLContext();
+		}
+		mRenderCore = RenderCore::Allocate();
 		ResetCameras();
 	}
 
@@ -85,8 +93,31 @@ namespace Procyon {
 		mCameras.push( camera );
 	}
 
+	void Renderer::SetClearColor( const glm::vec4 color )
+	{
+		mClearColor = color;
+	}
+
+	const glm::vec4& Renderer::GetClearColor() const
+	{
+		return mClearColor;
+	}
+
 	void Renderer::BeginRender()
 	{
+		if ( mWindow )
+		{
+			mWindow->GetGLContext()->MakeCurrent();
+			glViewport( 0, 0, mWindow->GetWidth(), mWindow->GetHeight() );
+		}
+
+		glClearColor( mClearColor.r, mClearColor.g, mClearColor.b, mClearColor.a );
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glEnable( GL_BLEND );
+		glDisable( GL_MULTISAMPLE );
+
 		mRenderCore->ResetStats();
 	}
 
@@ -116,6 +147,11 @@ namespace Procyon {
 	void Renderer::EndRender()
 	{
 		mRenderCore->Flush( mCameras.top() );
+
+		if ( mWindow )
+		{
+			mWindow->GetGLContext()->SwapBuffers();
+		}
 	}
 
 	const RenderCore* Renderer::GetRenderCore() const

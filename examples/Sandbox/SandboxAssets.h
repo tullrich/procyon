@@ -30,18 +30,16 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Collision/World.h"
 #include "Audio/SoundBuffer.h"
 
-using namespace Procyon;
-
 class SandboxAssets
 {
 public:
-	static FontFace*	sMainFont;
-	static Map* 		sMap;
-    static IImage*      sWindowIcon;
-    static Texture*		sPlayerTexture;
-    static Texture*		sTileTexture;
-    static Texture*		sTestTexture;
-    static SoundBuffer* sJumpSound;
+	static Procyon::FontFace*		sMainFont;
+	static Procyon::Map* 			sMap;
+    static Procyon::IImage*			sWindowIcon;
+    static Procyon::Texture*		sPlayerTexture;
+    static Procyon::Texture*		sTileTexture;
+    static Procyon::Texture*		sTestTexture;
+    static Procyon::SoundBuffer*	sJumpSound;
 
 	static void Load();
 	static void Destroy();

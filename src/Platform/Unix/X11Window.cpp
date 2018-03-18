@@ -588,6 +588,11 @@ void X11Window::SetIcon( const IImage& icon )
 	xcb_free_gc( mConnection, gc );
 }
 
+glm::ivec2 X11Window::GetSize() const
+{
+	return glm::ivec2( mWidth, mHeight );
+}
+
 Display* X11Window::GetXDisplay()
 {
 	return mDisplay;
@@ -767,7 +772,7 @@ unsigned X11Window::TranslateKeyState( uint state )
 	return modifier;
 }
 
-MouseButton X11Window::TranslateMouseButton( xcb_button_t state )
+ProcyonMouseButton X11Window::TranslateMouseButton( xcb_button_t state )
 {
 	switch( state )
 	{
@@ -789,7 +794,7 @@ MouseButton X11Window::TranslateMouseButton( xcb_button_t state )
 
 namespace Procyon {
 
-IWindow* Window_Create( const std::string& title, unsigned height, unsigned width )
+IWindow* IWindow::Allocate( const std::string& title, unsigned height, unsigned width )
 {
 	return new Unix::X11Window( title, height, width );
 }

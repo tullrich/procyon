@@ -22,34 +22,46 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
+#include "KeyCodes.h"
 
-#include "Window.h"
+#define KEY_CODE_STR_TABLE(typ) typ##_name_table
+
+#undef KEY_ENUM_BEGIN
+#define KEY_ENUM_BEGIN(typ) const char* KEY_CODE_STR_TABLE( typ )[] = {
+
+#undef KEY_ENUM
+#define KEY_ENUM(nam) #nam
+
+#undef KEY_ENUM_END
+#define KEY_ENUM_END(typ) };
+
+#undef _KEY_CODES_H
+#include "KeyCodes.h"
 
 namespace Procyon {
 
-	WindowBase::WindowBase()
-		: mListener( nullptr )
+	const char* ProcyonKeyCodeToStr( ProcyonKeyCode kc )
 	{
+		if( (unsigned)kc >= PROCYON_KEY_CODE_COUNT )
+			kc = KEY_UNKNOWN;
+
+		return KEY_CODE_STR_TABLE( ProcyonKeyCode )[ (unsigned)kc ];
 	}
 
-	void WindowBase::SetEventListener( IInputEventListener* listener )
+	const char* ProcyonJoyButtonToStr( ProcyonJoyButton jb )
 	{
-		mListener = listener;
+		if( (unsigned)jb >= PROCYON_JOY_BUTTON_COUNT )
+			jb = JOY_BTN_UNKNOWN;
+
+		return KEY_CODE_STR_TABLE( ProcyonJoyButton )[ (unsigned)jb ];
 	}
 
-	uint32_t WindowBase::GetHeight() const
+	const char* ProcyonMouseButtonToStr( ProcyonMouseButton mb )
 	{
-		return GetSize().y;
-	}
+		if( (unsigned)mb >= PROCYON_MOUSE_BUTTON_COUNT )
+			mb = MOUSE_BTN_UNKNOWN;
 
-	uint32_t WindowBase::GetWidth() const
-	{
-		return GetSize().x;
-	}
-
-	IInputEventListener* WindowBase::GetEventListener()
-	{
-		return mListener;
+		return KEY_CODE_STR_TABLE( ProcyonMouseButton )[ (unsigned)mb ];
 	}
 
 } /* namespace Procyon */

@@ -187,7 +187,8 @@ void ProcyonCanvas::initializeGL()
     mTimer      = new QTimer(this);
 
     // Create the renderer
-    mRenderer   = new Renderer();
+    mRenderer   = new Renderer( NULL );
+	mRenderer->SetClearColor( glm::vec4(121.0f/255.0f, 121.0f/255.0f, 121.0f/255.0f, 1.0f ) );
 
     // Setup the viewport camera
     mCamera     = new Procyon::Camera2D();
@@ -228,16 +229,8 @@ void ProcyonCanvas::paintGL()
     // Advance the Console
     Console_Process( ft );
 
-    //TODO: Clear the screen
-	int hex = 0xc797979;
-    glClearColor( ((hex >> 16)&0xff)/255.0f, ((hex >> 8)&0xff)/255.0f, (hex&0xff)/255.0f, 1.0f );
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-    //TODO: Enable some required gl settings
+    // Enable some required gl settings
 	glViewport( 0, 0, mCamera->GetWidth(), mCamera->GetHeight() );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glEnable( GL_BLEND );
-    glEnable( GL_MULTISAMPLE );
 
     // Render the scene
     mRenderer->BeginRender();
@@ -302,11 +295,11 @@ void ProcyonCanvas::keyPressEvent( QKeyEvent* event )
         // Move the camera
         switch( ev.keysym )
         {
-            case KEY_LEFT:  MoveCamera(  -kCameraSpeed,  0.0f ); break;
-            case KEY_RIGHT: MoveCamera(  kCameraSpeed,  0.0f ); break;
-            case KEY_UP:    MoveCamera(  0.0f,  kCameraSpeed ); break;
-            case KEY_DOWN:  MoveCamera(  0.0f, -kCameraSpeed ); break;
-            case KEY_TILDE: Console_Toggle(); break;
+            case KEY_LEFT:  MoveCamera( -kCameraSpeed,  0.0f ); break;
+            case KEY_RIGHT: MoveCamera( kCameraSpeed,  0.0f ); break;
+            case KEY_UP:    MoveCamera( 0.0f,  kCameraSpeed ); break;
+            case KEY_DOWN:  MoveCamera( 0.0f, -kCameraSpeed ); break;
+            case KEY_GRAVE: Console_Toggle(); break;
         }
     }
 }

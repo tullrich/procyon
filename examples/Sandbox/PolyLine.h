@@ -22,23 +22,26 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
+#ifndef _POLY_LINE_H
+#define _POLY_LINE_H
 
-#include "Sandbox.h"
+#include "ProcyonCommon.h"
 
-int main( int argc, char *argv[] )
+namespace Procyon
 {
-	LOGOG_INITIALIZE();
-	{
-		logog::Cout err;
-        logog::GetFilterDefault().Group( "Mouse" );
-
-        Sandbox sb;
-        sb.Initialize( argc, argv );
-        sb.Run();
-        sb.Cleanup();
-	}
-
-    LOGOG_SHUTDOWN();
-
-	return 0;
+	class Renderer;
 }
+
+class Player;
+
+class PolyLine
+{
+public:
+    PolyLine();
+
+	void Process( Procyon::FrameTime t, Player* player );
+	void Draw( Procyon::Renderer* r ) const;
+	void SetEndpoint( const glm::vec2& point );
+};
+
+#endif /* _POLY_LINE_H */

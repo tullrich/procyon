@@ -23,7 +23,11 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "MainLoop.h"
+#include "Audio/AudioDevice.h"
 #include "Platform/Window.h"
+#include "Platform/Keyboard.h"
+#include "Platform/Mouse.h"
+#include "Graphics/Renderer.h"
 #include "Graphics/GL/GLContext.h"
 #include "Image.h"
 #include "Console.h"
@@ -48,10 +52,18 @@ namespace Procyon {
         mPrevTime.tsl   = 0.0;
 		mPrevTime.dt    = 0.0;
 
-        mWindow         = Window_Create( windowTitle, width, height );
-        mContext        = mWindow->GetGLContext();
+		mWindow = IWindow::Allocate( windowTitle, width, height );
 
-        mWindow->SetEventListener( this );
+		mWindow->SetEventListener( this );
+
+		// Create the audio device
+		mAudioDev = new AudioDevice();
+
+		// Create the renderer
+		mRenderer = new Renderer( mWindow );
+
+		// Initialize console
+		Console_Init();
 	}
 
     double MainLoop::SecsSinceLaunch() const
@@ -61,9 +73,11 @@ namespace Procyon {
 
 	MainLoop::~MainLoop()
 	{
-        delete mWindow;
-        mWindow = NULL;
-        mContext = NULL;
+		Console_Destroy();
+
+		delete mRenderer;
+		delete mAudioDev;
+		delete mWindow;
     }
 
     void MainLoop::HandleInputEvent( const InputEvent& ev )
@@ -143,12 +157,10 @@ namespace Procyon {
         {
             double before = SecsSinceLaunch();
 
-			mWindow->PollEvents();
-
             Frame();
 
             double framerate =  1.0 / ( SecsSinceLaunch() - before );
-			mAvgFPS = mAvgFPS * 0.5 + framerate * 0.5;
+			mAvgFPS = mAvgFPS * 0.9 + framerate * 0.1;
         }
 	}
 
@@ -166,22 +178,28 @@ namespace Procyon {
 		}
         mPrevTime = t;
 
-	    Process( t );
-	    Render();
+		mWindow->PollEvents();
+		Keyboard::Poll();
+		Mouse::Poll();
 
+		Console_Process( t );
+		Process( t );
+
+		mRenderer->BeginRender();
+			Render();
+			Console_Render( mRenderer );
+		mRenderer->EndRender();
 		mFrame++;
 
-        float processRenderTime = (float)SecsSinceLaunch() - t.tsl;
+		float processRenderTime = (float)SecsSinceLaunch() - t.tsl;
 
-        // framerate limit
-        if ( processRenderTime < TARGET_HZ )
-        {
-            int sleepmicros = (int)( ( TARGET_HZ - processRenderTime ) * 1.0e6 );
-            PROCYON_DEBUG( "MainLoop", "Sleeping for %i", sleepmicros );
+		// framerate limit
+		if ( processRenderTime < TARGET_HZ )
+		{
+			int sleepmicros = (int)( ( TARGET_HZ - processRenderTime ) * 1.0e6 );
+			PROCYON_DEBUG( "MainLoop", "Sleeping for %i", sleepmicros );
 			std::this_thread::sleep_for( std::chrono::microseconds( sleepmicros ) );
-        }
-
-
+		}
 	}
 
 } /* namespace Procyon */

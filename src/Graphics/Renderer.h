@@ -34,6 +34,7 @@ namespace Procyon {
 	class Renderable;
 	class Texture;
 	class Camera2D;
+	class IWindow;
 
 	enum class PolyLineJoinMode
 	{
@@ -52,7 +53,7 @@ namespace Procyon {
 	class Renderer
 	{
 	public:
-	   						Renderer();
+	   						Renderer( IWindow* window );
 	   						~Renderer();
 
 		const Camera2D& 	PushCamera();
@@ -60,6 +61,9 @@ namespace Procyon {
 		void 				PopCamera();
 		const Camera2D& 	GetCamera();
 		void 				ResetCameras( const Camera2D& camera = Camera2D() );
+
+		void 				SetClearColor( const glm::vec4 color );
+		const glm::vec4&	GetClearColor() const;
 
 		void 				BeginRender();
 		void 				Draw( const Renderable* r );
@@ -83,6 +87,8 @@ namespace Procyon {
 		void 				Flush();
 
 		std::stack< Camera2D > 	mCameras;
+		IWindow* 				mWindow;
+		glm::vec4				mClearColor;
 		RenderCore* 			mRenderCore;
 	};
 

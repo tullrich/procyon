@@ -33,9 +33,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-	namespace GL {
-		class IGLContext;
-	}
+	class Renderer;
+	class AudioDevice;
 
 	class MainLoop : public IInputEventListener
 	{
@@ -65,7 +64,8 @@ namespace Procyon {
 	    virtual void    OnWindowChanged( const InputEvent& ev ) { };
 
 	    IWindow*      	mWindow;
-	    GL::IGLContext* mContext;
+	    Renderer*       mRenderer;
+	    AudioDevice*    mAudioDev;
 
 		uint32_t		mFrame;
 	    FrameTime       mPrevTime;

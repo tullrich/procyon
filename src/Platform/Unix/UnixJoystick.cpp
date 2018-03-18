@@ -58,28 +58,28 @@ namespace Unix {
 
 	/*
 	================
-	EvKeyCodeToProcyonKeyCode
+	EvKeyCodeToProcyonJoyButton
 
-	Convert an evdev EV_KEY code to an ordinal in ProcyonKeyCode or -1 if the code indicates an
+	Convert an evdev EV_KEY code to an ordinal in ProcyonJoyButton or -1 if the code indicates an
 	unsupported key. If this function does not return -1, the result may be safely cast to a ProcyonKeyCode.
 	================
 	*/
-	static int EvKeyCodeToProcyonKeyCode( ushort code )
+	static ProcyonJoyButton EvKeyCodeToProcyonJoyButton( ushort code )
 	{
 		switch( code )
 		{
-			case BTN_NORTH: 	return KEY_JOY_NORTH;
-			case BTN_EAST: 		return KEY_JOY_EAST;
-			case BTN_WEST: 		return KEY_JOY_WEST;
-			case BTN_SOUTH: 	return KEY_JOY_SOUTH;
-			case BTN_THUMBL: 	return KEY_JOY_THUMBL;
-			case BTN_THUMBR: 	return KEY_JOY_THUMBR;
-			case BTN_TL: 		return KEY_JOY_TOPL;
-			case BTN_TR: 		return KEY_JOY_TOPR;
-			case BTN_SELECT: 	return KEY_JOY_SELECT;
-			case BTN_START: 	return KEY_JOY_START;
-			case BTN_MODE: 		return KEY_JOY_MODE;
-			default: 			return -1;
+			case BTN_NORTH: 	return JOY_BTN_NORTH;
+			case BTN_EAST: 		return JOY_BTN_EAST;
+			case BTN_WEST: 		return JOY_BTN_WEST;
+			case BTN_SOUTH: 	return JOY_BTN_SOUTH;
+			case BTN_THUMBL: 	return JOY_BTN_THUMBL;
+			case BTN_THUMBR: 	return JOY_BTN_THUMBR;
+			case BTN_TL: 		return JOY_BTN_TOPL;
+			case BTN_TR: 		return JOY_BTN_TOPR;
+			case BTN_SELECT: 	return JOY_BTN_SELECT;
+			case BTN_START: 	return JOY_BTN_START;
+			case BTN_MODE: 		return JOY_BTN_MODE;
+			default: 			return JOY_BTN_UNKNOWN;
 		}
 	}
 
@@ -389,12 +389,9 @@ namespace Unix {
 		PROCYON_DEBUG( "Joystick", "HandleEvent Type: %s Code: %s Value: %i"
 			, EvTypeToString( ev.type ), EvCodeToString( ev.type, ev.code ), ev.value );
 
-		int ret = EvKeyCodeToProcyonKeyCode( ev.code );
-		if ( ret == -1 )
-			return false; // no event
-
-		out.type = ( ev.value == 0 ) ? JOY_EVENT_KEY_UP : JOY_EVENT_KEY_DOWN;
-		out.key = (ProcyonKeyCode)ret;
+		int ret = EvKeyCodeToProcyonJoyButton( ev.code );
+		out.type = ( ev.value == 0 ) ? JOY_EVENT_BTN_UP : JOY_EVENT_BTN_DOWN;
+		out.btn = (ProcyonJoyButton)ret;
 		return true;
 	}
 

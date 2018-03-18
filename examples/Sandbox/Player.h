@@ -54,42 +54,41 @@ namespace Procyon {
 	class Tile;
 	class Contact;
 	class Sound;
+}
 
-	class Player
-	{
-	public:
-							Player( World* world );
-							~Player();
+class Player
+{
+public:
+						Player( Procyon::World* world );
+						~Player();
 
-		void 				Process( FrameTime ft );
+	void 				Process( Procyon::FrameTime ft );
 
-		void				Draw( Renderer* r ) const;
+	void				Draw( Procyon::Renderer* r ) const;
 
-		glm::vec2			GetPosition() const;
-		Aabb				GetBounds() const;
+	glm::vec2			GetPosition() const;
+	Procyon::Aabb		GetBounds() const;
 
-		// input
-		void 				Jump();
-		void 				SetLeftRightInput( float input );
+	// input
+	void 				Jump();
+	void 				SetLeftRightInput( float input );
 
-	protected:
-		void 				UpdatePosition( FrameTime ft );
+protected:
+	void 				UpdatePosition( Procyon::FrameTime ft );
 
-		void 				CollideTile( const glm::ivec2& t, FrameTime ft );
-		void 				Collide( const Aabb& other, FrameTime ft );
+	void 				CollideTile( const glm::ivec2& t, Procyon::FrameTime ft );
+	void 				Collide( const Procyon::Aabb& other, Procyon::FrameTime ft );
 
-		void 				CollisionResponse( const Contact& c, FrameTime ft );
+	void 				CollisionResponse( const Procyon::Contact& c, Procyon::FrameTime ft );
 
-		World* 		mWorld;
-		Aabb		mBounds;
-		glm::vec2	mInput;
-		glm::vec2 	mVelocity;
-		Sprite* 	mSprite;
-		glm::vec2 	mPenetrationCorrection;
-		Sound*		mJumpSnd;
-		bool		mGrounded;
-	};
-	
-} /* namespace Procyon */
+	Procyon::World* 	mWorld;
+	Procyon::Aabb		mBounds;
+	glm::vec2			mInput;
+	glm::vec2 			mVelocity;
+	Procyon::Sprite* 	mSprite;
+	glm::vec2 			mPenetrationCorrection;
+	Procyon::Sound*		mJumpSnd;
+	bool				mGrounded;
+};
 
 #endif /* _PLAYER_H */

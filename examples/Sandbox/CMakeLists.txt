@@ -8,10 +8,16 @@ endif()
 
 add_executable( Sandbox
 	main.cpp
+	Sandbox.h
 	Sandbox.cpp
+	Player.h
 	Player.cpp
+	SandboxAssets.h
 	SandboxAssets.cpp
+	XmlMap.h
 	XmlMap.cpp
+	PolyLine.h
+	PolyLine.cpp
 	${CMAKE_SOURCE_DIR}/editor/Grid.cpp
 )
 

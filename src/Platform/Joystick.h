@@ -58,8 +58,8 @@ namespace Procyon {
 	*/
 	enum JoystickEventType
 	{
-		JOY_EVENT_KEY_DOWN,
-		JOY_EVENT_KEY_UP,
+		JOY_EVENT_BTN_DOWN,
+		JOY_EVENT_BTN_UP,
 		JOY_EVENT_AXIS
 	};
 
@@ -76,9 +76,9 @@ namespace Procyon {
 
 		union
 		{
-			struct // JOY_EVENT_KEY_DOWN and JOY_EVENT_KEY_UP
+			struct // JOY_EVENT_BTN_DOWN and JOY_EVENT_BTN_UP
 			{
-				ProcyonKeyCode key;
+				ProcyonJoyButton btn;
 			};
 			struct // JOY_EVENT_AXIS
 			{
@@ -88,7 +88,7 @@ namespace Procyon {
 			};
 		};
 	};
-	
+
 	/*
 	================
 	IJoystick
@@ -118,7 +118,7 @@ namespace Procyon {
 	================
 	*/
 	IJoystick* Joystick_Open( const std::string& devPath );
-	
+
 } /* namespace Procyon */
 
 #endif /* _JOYSTICK_H */

@@ -22,23 +22,27 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
+#ifndef _PLATFORM_INPUT_H
+#define _PLATFORM_INPUT_H
 
-#include "Sandbox.h"
+#include "ProcyonCommon.h"
 
-int main( int argc, char *argv[] )
-{
-	LOGOG_INITIALIZE();
+namespace Procyon {
+
+	struct KeyboardState;
+	struct MouseState;
+	class IWindow;
+
+	class PlatformInput
 	{
-		logog::Cout err;
-        logog::GetFilterDefault().Group( "Mouse" );
+	public:
+		static void PollKeyboardState( KeyboardState* out );
+		static void PollMouseState( MouseState* out );
+	    static glm::ivec2 GetMousePosition();
+	    static glm::ivec2 GetMousePosition( const IWindow* relative );
+		static void SetMousePosition( const glm::ivec2& position );
+		static void SetMousePosition( const glm::ivec2& position, const IWindow* relative );
+	};
+} /* namespace Procyon */
 
-        Sandbox sb;
-        sb.Initialize( argc, argv );
-        sb.Run();
-        sb.Cleanup();
-	}
-
-    LOGOG_SHUTDOWN();
-
-	return 0;
-}
+#endif /* _PLATFORM_INPUT_H */

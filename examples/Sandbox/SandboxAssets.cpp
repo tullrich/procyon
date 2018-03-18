@@ -24,6 +24,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "SandboxAssets.h"
 
+using namespace Procyon;
+
 #define WORLD_HEIGHT 10
 #define WORLD_WIDTH 10
 

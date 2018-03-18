@@ -22,34 +22,40 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
+#ifndef _MOUSE_H
+#define _MOUSE_H
 
-#include "Window.h"
+#include "ProcyonCommon.h"
+#include "KeyCodes.h"
 
 namespace Procyon {
 
-	WindowBase::WindowBase()
-		: mListener( nullptr )
-	{
-	}
+	class IWindow;
 
-	void WindowBase::SetEventListener( IInputEventListener* listener )
+	struct MouseState
 	{
-		mListener = listener;
-	}
+		bool btns[ PROCYON_MOUSE_BUTTON_COUNT ];
+	};
 
-	uint32_t WindowBase::GetHeight() const
+	class Mouse
 	{
-		return GetSize().y;
-	}
+	public:
+		static void Reset();
+		static void Poll();
+		static bool	IsButtonUp( ProcyonMouseButton key );
+		static bool	IsButtonDown( ProcyonMouseButton key );
+		static bool	OnButtonUp( ProcyonMouseButton key);
+		static bool	OnButtonDown( ProcyonMouseButton key );
 
-	uint32_t WindowBase::GetWidth() const
-	{
-		return GetSize().x;
-	}
+	    static glm::ivec2 GetPosition();
+	    static glm::ivec2 GetPosition( const IWindow* relative );
+	    static void SetPosition( const glm::ivec2& position );
+	    static void SetPosition( const glm::ivec2& position, const IWindow* relative );
 
-	IInputEventListener* WindowBase::GetEventListener()
-	{
-		return mListener;
-	}
-
+	protected:
+		static MouseState sCurrentMouseState;
+		static MouseState sPrevMouseState;
+	};
 } /* namespace Procyon */
+
+#endif /* _MOUSE_H */

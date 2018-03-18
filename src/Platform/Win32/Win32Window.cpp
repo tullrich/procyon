@@ -28,42 +28,17 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GLFW/glfw3.h>
 
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+
 namespace Procyon {
 namespace Win32 {
 
 #define GLFW_TRANSLATE_CASE(glfwkey, procyonkey)	\
 	case glfwkey: return procyonkey;
 
-	static ProcyonKeyCode TranslateGLFWKey( int key, int mods )
+	static ProcyonKeyCode TranslateGLFWKey( int key )
 	{
-		if ( mods & GLFW_MOD_SHIFT )
-		{
-			switch( key )
-			{
-				GLFW_TRANSLATE_CASE( GLFW_KEY_1, KEY_EXCLAM )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_2, KEY_AT )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_3, KEY_NUM_SIGN )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_4, KEY_DOLLAR )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_5, KEY_PERCENT )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_7, KEY_AMPERSAND )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_8, KEY_ASTERISK )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_9, KEY_PAREN_LEFT )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_0, KEY_PAREN_RIGHT )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_MINUS, KEY_UNDERSCORE )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_EQUAL, KEY_PLUS )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_SEMICOLON, KEY_COLON )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_APOSTROPHE, KEY_QUOTE_DBL )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_COMMA, KEY_LESS )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_PERIOD, KEY_GREATER )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_SLASH, KEY_QUESTION )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_LEFT_BRACKET, KEY_BRACE_LEFT )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_RIGHT_BRACKET, KEY_BRACE_RIGHT )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_BACKSLASH, KEY_BAR )
-				GLFW_TRANSLATE_CASE( GLFW_KEY_GRAVE_ACCENT, KEY_TILDE )
-				//GLFW_TRANSLATE_CASE( KEY_CIRCUM )
-			}
-		}
-
 		switch ( key )
 		{
 			GLFW_TRANSLATE_CASE( GLFW_KEY_0, KEY_0 )
@@ -137,8 +112,6 @@ namespace Win32 {
 			GLFW_TRANSLATE_CASE( GLFW_KEY_LEFT_SUPER, KEY_SUPER_L )
 			GLFW_TRANSLATE_CASE( GLFW_KEY_RIGHT_SUPER, KEY_SUPER_R )
 			GLFW_TRANSLATE_CASE( GLFW_KEY_CAPS_LOCK, KEY_CAPS_LOCK )
-			//GLFW_TRANSLATE_CASE( KEY_META_L )
-			//GLFW_TRANSLATE_CASE( KEY_META_R )
 
 			GLFW_TRANSLATE_CASE( GLFW_KEY_UP, KEY_UP )
 			GLFW_TRANSLATE_CASE( GLFW_KEY_DOWN, KEY_DOWN )
@@ -151,6 +124,27 @@ namespace Win32 {
 			GLFW_TRANSLATE_CASE( GLFW_KEY_PAUSE, KEY_PAUSE )
 			GLFW_TRANSLATE_CASE( GLFW_KEY_ESCAPE, KEY_ESCAPE )
 			GLFW_TRANSLATE_CASE( GLFW_KEY_DELETE, KEY_DELETE )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_HOME, KEY_HOME )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_INSERT, KEY_INSERT )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_END, KEY_END )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_PAGE_UP, KEY_PAGE_UP )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_PAGE_DOWN, KEY_PAGE_DOWN )
+
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_0, KEY_NUMPAD_0 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_1, KEY_NUMPAD_1 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_2, KEY_NUMPAD_2 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_3, KEY_NUMPAD_3 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_4, KEY_NUMPAD_4 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_5, KEY_NUMPAD_5 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_6, KEY_NUMPAD_6 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_7, KEY_NUMPAD_7 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_8, KEY_NUMPAD_8 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_9, KEY_NUMPAD_9 )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_ADD, KEY_NUMPAD_ADD )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_SUBTRACT, KEY_NUMPAD_SUBTRACT )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_MULTIPLY, KEY_NUMPAD_MULTIPLY )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_DIVIDE, KEY_NUMPAD_DIVIDE )
+			GLFW_TRANSLATE_CASE( GLFW_KEY_KP_DECIMAL, KEY_NUMPAD_DECIMAL )
 
 			default: return KEY_UNKNOWN;
 		}
@@ -166,7 +160,7 @@ namespace Win32 {
 		return ( KeyEventModifiers)procMods;
 	}
 
-	static MouseButton TranslateGLFWMouseButton( int button )
+	static ProcyonMouseButton TranslateGLFWMouseButton( int button )
 	{
 		switch ( button )
 		{
@@ -198,7 +192,7 @@ namespace Win32 {
 			{
 				InputEvent ievent( EVENT_KEY_DOWN );
 				ievent.scancode = (unsigned)scancode;
-				ievent.keysym = TranslateGLFWKey( key, mods );
+				ievent.keysym = TranslateGLFWKey( key );
 				ievent.modifiers = TranslateGLFWModifiers( mods );
 				listener->HandleInputEvent( ievent );
 				break;
@@ -207,7 +201,7 @@ namespace Win32 {
 			{
 				InputEvent ievent( EVENT_KEY_UP );
                 ievent.scancode = ( unsigned )scancode;
-                ievent.keysym = TranslateGLFWKey( key, mods );
+                ievent.keysym = TranslateGLFWKey( key );
                 ievent.modifiers = TranslateGLFWModifiers( mods );
                 listener->HandleInputEvent( ievent );
 				break;
@@ -216,7 +210,7 @@ namespace Win32 {
 			{
                 InputEvent ievent( EVENT_KEY_REPEAT );
                 ievent.scancode = ( unsigned )scancode;
-                ievent.keysym = TranslateGLFWKey( key, mods );
+                ievent.keysym = TranslateGLFWKey( key );
                 ievent.modifiers = TranslateGLFWModifiers( mods );
                 listener->HandleInputEvent( ievent );
                 break;
@@ -429,12 +423,24 @@ namespace Win32 {
 		return mContext;
 	}
 
+	void* Win32Window::GetNativeHandle() const
+	{
+		return glfwGetWin32Window( mWindow );
+	}
+
+	glm::ivec2 Win32Window::GetSize() const
+	{
+		int width, height;
+		glfwGetWindowSize( mWindow, &width, &height );
+		return glm::ivec2( width, height );
+	}
+
 } /* namespace Win32 */
 } /* namespace Procyon */
 
 namespace Procyon {
 
-	IWindow* Window_Create( const std::string& title, unsigned height, unsigned width )
+	IWindow* IWindow::Allocate( const std::string& title, unsigned height, unsigned width )
 	{
 		return new Win32::Win32Window( title, height, width );
 	}

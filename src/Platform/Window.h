@@ -38,8 +38,6 @@ namespace Procyon {
 		class IGLContext;
 	}
 
-	const char* ProcyonKeyCodeToStr( ProcyonKeyCode kc );
-
 	enum InputEventType
 	{
 		EVENT_UNKNOWN,
@@ -84,20 +82,6 @@ namespace Procyon {
 		MODIFIER_CAPS 		= BIT( 13 )
 	};
 
-	enum MouseButton
-	{
-		MOUSE_BTN_UNKNOWN,
-		MOUSE_BTN_LEFT,
-		MOUSE_BTN_RIGHT,
-		MOUSE_BTN_MIDDLE,
-		MOUSE_BTN_FORWARD,
-		MOUSE_BTN_BACK,
-		MOUSE_SCROLL_UP,
-		MOUSE_SCROLL_DOWN,
-		MOUSE_SCROLL_LEFT,
-		MOUSE_SCROLL_RIGHT
-	};
-
 	struct InputEvent
 	{
 		InputEventType type;
@@ -116,11 +100,11 @@ namespace Procyon {
 			};
 			struct // EVENT_MOUSE_DOWN, EVENT_MOUSE_UP, and EVENT_MOUSE_MOVE
 			{
-				MouseButton	mousebutton;
-				int 		rawx;
-				int 		rawy;
-				float 		mousex;
-				float 		mousey;
+				ProcyonMouseButton	mousebutton;
+				int 				rawx;
+				int 				rawy;
+				float 				mousex;
+				float 				mousey;
 			};
 			struct // EVENT_WINDOW_CHANGED
 			{
@@ -159,6 +143,12 @@ namespace Procyon {
 		virtual void SetTitle( const std::string& title ) = 0;
 		virtual void SetIcon( const IImage& icon ) = 0;
 		virtual GL::IGLContext* GetGLContext() = 0;
+		virtual void* GetNativeHandle() const = 0;
+		virtual glm::ivec2 GetSize() const = 0;
+		virtual uint32_t GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+
+		static IWindow*	Allocate( const std::string& title, unsigned height, unsigned width );
 	};
 
 	class WindowBase : public IWindow
@@ -167,12 +157,14 @@ namespace Procyon {
 		WindowBase();
 
 		virtual void SetEventListener( IInputEventListener* listener );
+		virtual uint32_t GetHeight() const;
+		virtual uint32_t GetWidth() const;
+
 		IInputEventListener* GetEventListener();
 	protected:
 		IInputEventListener* mListener;
 	};
 
-	IWindow* Window_Create( const std::string& title, unsigned height, unsigned width );
 } /* namespace Procyon */
 
 #endif /* _WINDOW_H */

@@ -76,38 +76,17 @@ ProcyonKeyCode ProcyonQtUtil::TranslateKeyCode( int keycode )
 
 		// Misc Latin keys
 		case Qt::Key_Space: 		return KEY_SPACE;
-		case Qt::Key_Exclam: 		return KEY_EXCLAM;
-		case Qt::Key_QuoteDbl: 		return KEY_QUOTE_DBL;
-		case Qt::Key_NumberSign: 	return KEY_NUM_SIGN;
-		case Qt::Key_Dollar: 		return KEY_DOLLAR;
-		case Qt::Key_Percent: 		return KEY_PERCENT;
-		case Qt::Key_Ampersand: 	return KEY_AMPERSAND;
 		case Qt::Key_Apostrophe: 	return KEY_APOSTROPHE;
-		case Qt::Key_ParenLeft: 	return KEY_PAREN_LEFT;
-		case Qt::Key_ParenRight: 	return KEY_PAREN_RIGHT;
-		case Qt::Key_Asterisk: 		return KEY_ASTERISK;
-		case Qt::Key_Plus: 			return KEY_PLUS;
 		case Qt::Key_Comma: 		return KEY_COMMA;
 		case Qt::Key_Minus: 		return KEY_MINUS;
 		case Qt::Key_Period: 		return KEY_PERIOD;
 		case Qt::Key_Slash: 		return KEY_SLASH;
-		case Qt::Key_Colon: 		return KEY_COLON;
 		case Qt::Key_Semicolon: 	return KEY_SEMICOLON;
-		case Qt::Key_Less: 			return KEY_LESS;
 		case Qt::Key_Equal: 		return KEY_EQUAL;
-		case Qt::Key_Greater: 		return KEY_GREATER;
-		case Qt::Key_Question: 		return KEY_QUESTION;
-		case Qt::Key_At: 			return KEY_AT;
 		case Qt::Key_BracketLeft: 	return KEY_BRACKET_LEFT;
 		case Qt::Key_Backslash: 	return KEY_BACK_SLASH;
 		case Qt::Key_BracketRight: 	return KEY_BRACKET_RIGHT;
-		case Qt::Key_AsciiCircum: 	return KEY_CIRCUM;
-		case Qt::Key_Underscore: 	return KEY_UNDERSCORE;
 		case Qt::Key_Agrave: 		return KEY_GRAVE;
-		case Qt::Key_BraceLeft: 	return KEY_BRACE_LEFT;
-		case Qt::Key_Bar: 			return KEY_BAR;
-		case Qt::Key_BraceRight: 	return KEY_BRACE_RIGHT;
-		case Qt::Key_AsciiTilde: 	return KEY_TILDE;
 
 		// Function keys
 		case Qt::Key_F1: 			return KEY_F1;
@@ -124,7 +103,6 @@ ProcyonKeyCode ProcyonQtUtil::TranslateKeyCode( int keycode )
 		// Modifier keys
 		case Qt::Key_Shift: 		return KEY_SHIFT_L; // No KEY_SHIFT_R
 		case Qt::Key_Control: 		return KEY_CTRL_L; // No KEY_CTRL_R
-		case Qt::Key_Meta: 			return KEY_META_L; // No KEY_META_R
 		case Qt::Key_Alt: 			return KEY_ALT_L; // No KEY_ALT_R
 		case Qt::Key_Super_L:		return KEY_SUPER_L;
 		case Qt::Key_Super_R: 		return KEY_SUPER_R;
@@ -142,7 +120,28 @@ ProcyonKeyCode ProcyonQtUtil::TranslateKeyCode( int keycode )
 		case Qt::Key_Return: 		return KEY_RETURN;
 		case Qt::Key_Pause: 		return KEY_PAUSE;
 		case Qt::Key_Escape: 		return KEY_ESCAPE;
+
+		case Qt::Key_Home: 			return KEY_HOME;
+		case Qt::Key_Insert: 		return KEY_INSERT;
 		case Qt::Key_Delete: 		return KEY_DELETE;
+		case Qt::Key_End: 			return KEY_END;
+		case Qt::Key_PageUp: 		return KEY_PAGE_UP;
+		case Qt::Key_PageDown: 		return KEY_PAGE_DOWN;
+
+		/*case Qt::Key_Delete: 		return KEY_NUMPAD_0;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_1;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_2;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_3;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_5;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_6;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_7;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_8;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_9;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_ADD;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_SUBTRACT;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_MULTIPLY;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_DIVIDE;
+		case Qt::Key_Delete: 		return KEY_NUMPAD_DECIMAL;*/
 
 		case Qt::Key_unknown: return KEY_UNKNOWN;
 		default: return KEY_UNKNOWN;

@@ -55,6 +55,7 @@ namespace Unix {
 		virtual void 	PollEvents();
 		virtual void 	SetTitle( const std::string& title );
 		virtual void 	SetIcon( const IImage& icon );
+		virtual glm::ivec2 GetSize() const;
 
 		Display* 		GetXDisplay();
 		xcb_window_t 	GetXWindow();

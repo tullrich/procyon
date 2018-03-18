@@ -28,16 +28,16 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "ProcyonCommon.h"
 #include "MainLoop.h"
 #include "Platform/Joystick.h"
-#include "Audio/AudioDevice.h"
 #include "Graphics/Camera.h"
+#include "Graphics/Text.h"
+#include "Collision/World.h"
 #include "Player.h"
+#include "PolyLine.h"
 
-namespace Procyon 
+namespace Procyon
 {
-    class Renderer;
     class Map;
 }
-class Grid;
 
 using namespace Procyon::GL;
 using namespace Procyon;
@@ -57,11 +57,6 @@ public:
     virtual void    Process( FrameTime t );
     virtual void    Render();
 
-    virtual void    OnKeyDown( const InputEvent& ev );
-    virtual void    OnKeyUp( const InputEvent& ev );
-
-    virtual void    OnMouseDown( const InputEvent& ev );
-    virtual void    OnMouseUp( const InputEvent& ev );
     virtual void    OnMouseMoved( const InputEvent& ev );
 
     virtual void    OnWindowChanged( const InputEvent& ev );
@@ -71,11 +66,12 @@ protected:
 
     IJoystick*      mJoyStick;
     Player*         mPlayer;
-    Renderer*       mRenderer;
-    AudioDevice*    mAudioDev;
     Camera2D*       mCamera;
     Map*            mCustomMap;
+	Text*           mFpsText;
+	PolyLine		mPolyLine;
+	World*          mWorld;
 
 };
-	
+
 #endif /* _SANDBOX_H */

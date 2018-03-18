@@ -22,23 +22,32 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
+#ifndef _KEYBOARD_H
+#define _KEYBOARD_H
 
-#include "Sandbox.h"
+#include "KeyCodes.h"
 
-int main( int argc, char *argv[] )
-{
-	LOGOG_INITIALIZE();
+namespace Procyon {
+
+	struct KeyboardState
 	{
-		logog::Cout err;
-        logog::GetFilterDefault().Group( "Mouse" );
+		bool keys[ PROCYON_KEY_CODE_COUNT ];
+	};
 
-        Sandbox sb;
-        sb.Initialize( argc, argv );
-        sb.Run();
-        sb.Cleanup();
-	}
+	class Keyboard
+	{
+	public:
+		static void Reset();
+		static void Poll();
+		static bool	IsKeyUp( ProcyonKeyCode key );
+		static bool	IsKeyDown( ProcyonKeyCode key );
+		static bool	OnKeyUp( ProcyonKeyCode key);
+		static bool	OnKeyDown( ProcyonKeyCode key );
 
-    LOGOG_SHUTDOWN();
+	protected:
+		static KeyboardState sCurrentKeyState;
+		static KeyboardState sPrevKeyState;
+	};
+} /* namespace Procyon */
 
-	return 0;
-}
+#endif /* _KEYBOARD_H */

@@ -126,34 +126,17 @@ public:
 
     virtual void Render()
     {
-    	mContext->MakeCurrent();
-
-    	int hex = 0x99CCFF;
-	    glClearColor( ((hex >> 16)&0xff)/255.0f, ((hex >> 8)&0xff)/255.0f, (hex&0xff)/255.0f, 1.0f );
-	    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-	    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	    glEnable( GL_BLEND );
-
-        mRenderer->BeginRender();
-	    {
-            mRenderer->ResetCameras( *mCamera );
-
-	        for( auto pair : mSpriteBodies )
-	        {
-	            mRenderer->Draw( pair.first );
-	        }
-	    }
-	    mRenderer->EndRender();
-
-    	mContext->SwapBuffers();
+		for( auto pair : mSpriteBodies )
+		{
+		    mRenderer->Draw( pair.first );
+		}
     }
 
     virtual void OnMouseDown( const InputEvent& ev )
     {
     	if( ev.mousebutton == MOUSE_BTN_RIGHT || ev.mousebutton == MOUSE_BTN_LEFT )
 	    {
-	        glm::vec2 worldpos = mCamera->ScreenToWorld( 
+	        glm::vec2 worldpos = mCamera->ScreenToWorld(
 	            glm::vec2( ( ev.mousex - 0.5f ) / 0.5f, -( ev.mousey - 0.5f ) / 0.5f ) );
 
 	        Sprite* s = new SpinningBox();
@@ -197,7 +180,7 @@ int main( int argc, char *argv[] )
         b2t.Run();
         b2t.Cleanup();
 	}
-	
+
     LOGOG_SHUTDOWN();
 
 	return 0;
