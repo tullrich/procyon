@@ -33,6 +33,12 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "XmlMap.h"
 #include "SandboxAssets.h"
 
+static glm::vec2 PixelToWorld(const glm::ivec2& pixel, const glm::ivec2& winSize, const Camera2D* cam)
+{
+	return glm::vec2( glm::inverse( cam->GetViewProjection() ) *
+		glm::vec3( pixel.x / ( float )winSize.x * 2.0f - 1.0f, -pixel.y / ( float )winSize.y * 2.0f + 1.0f, 1.0f ) );
+}
+
 Sandbox::Sandbox()
     : MainLoop( "Sandbox", SANDBOX_WINDOW_WIDTH, SANDBOX_WINDOW_HEIGHT )
     , mJoyStick( NULL )
@@ -56,19 +62,13 @@ void Sandbox::Initialize( int argc, char *argv[] )
     mWindow->SetIcon( *SandboxAssets::sWindowIcon );
 	mRenderer->SetClearColor( glm::vec4( 42.0f/225.0f, 47.0f/255.0f, 67.0f/255.0f, 1.0f ) );
 
+	// Fps Text
 	mFpsText = new Text( SandboxAssets::sMainFont, 18 );
 	mFpsText->SetColor( glm::vec3( 1.0f ) );
 
+	// Create the tile map
 	mWorld = new World();
-
-    if ( mCustomMap )
-    {
-		mWorld->LoadMap( mCustomMap );
-    }
-    else
-    {
-		mWorld->LoadMap( SandboxAssets::sMap );
-    }
+	mWorld->LoadMap( ( mCustomMap ) ? mCustomMap : SandboxAssets::sMap );
 
 	// Create the player
 	mPlayer   = new Player( mWorld );
@@ -126,27 +126,22 @@ void Sandbox::Process( FrameTime t )
 
 	int lrInput = (int)Keyboard::IsKeyDown( KEY_D ) - (int)Keyboard::IsKeyDown( KEY_A );
     mPlayer->SetLeftRightInput( (float)lrInput );
-	if ( Mouse::OnButtonDown( MOUSE_BTN_FORWARD ) )
+	if ( Keyboard::OnKeyDown( KEY_SPACE ) )
 	{
 		mPlayer->Jump();
-		Mouse::SetPosition( glm::ivec2( mPlayer->GetPosition() ), mWindow );
 	}
 
     mPlayer->Process( t );
 
 	mPolyLine.Process( t, mPlayer );
 
-    const float kCameraLerpSpeed = 0.25f;
-
+	// Move camera
 	glm::vec2 target = mPlayer->GetPosition() + glm::vec2(0.0f, CAMERA_VERTICAL_OFFSET);
-    mCamera->SetPosition( mCamera->GetPosition() * (1.0f - kCameraLerpSpeed) + target * kCameraLerpSpeed );
+    mCamera->SetPosition( mCamera->GetPosition() * (1.0f - CAMERA_LERP_RATE) + target * CAMERA_LERP_RATE );
 
-    const RenderFrameStats& stats = mRenderer->GetRenderCore()->GetFrameStats();
-    std::stringstream builder;
+	// Update fps text
 	mFpsText->SetPosition( glm::floor( 6.0f-mCamera->GetWidth() / 2.0f ), glm::floor( -mCamera->GetHeight() / 2.0f ) );
-    builder << "fps " << (int)mAvgFPS << " batches " << stats.batches << " quads " << stats.totalquads;
-    builder << " [min " << stats.batchmin << " max " << stats.batchmax << "]";
-	mFpsText->SetText( builder.str() );
+	mFpsText->SetText( BuildFPSString() );
 }
 
 void Sandbox::Render()
@@ -157,7 +152,8 @@ void Sandbox::Render()
 
 	mPlayer->Draw( mRenderer );
 
-	mRenderer->DrawRectShape( glm::vec2( Mouse::GetPosition( mWindow ) ),
+	mRenderer->DrawRectShape(
+		PixelToWorld( Mouse::GetPosition( mWindow ), mWindow->GetSize(), mCamera ),
 		glm::vec2( 5.0f ),
 		0.0f,
 		glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ) );
@@ -193,4 +189,13 @@ Map* Sandbox::LoadMap( std::string filePath )
         return nullptr;
     }
     return map;
+}
+
+std::string Sandbox::BuildFPSString() const
+{
+    const RenderFrameStats& stats = mRenderer->GetRenderCore()->GetFrameStats();
+	std::stringstream builder;
+    builder << "fps " << (int)mAvgFPS << " batches " << stats.batches << " quads " << stats.totalquads;
+    builder << " [min " << stats.batchmin << " max " << stats.batchmax << "]";
+	return builder.str();
 }

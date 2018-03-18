@@ -45,6 +45,7 @@ using namespace Procyon;
 #define SANDBOX_WINDOW_WIDTH 1280
 #define SANDBOX_WINDOW_HEIGHT 800
 #define CAMERA_VERTICAL_OFFSET 250.0f
+#define CAMERA_LERP_RATE 0.25f
 
 class Sandbox : public MainLoop
 {
@@ -63,6 +64,7 @@ public:
 
 protected:
     Map*            LoadMap( std::string filePath );
+	std::string 	BuildFPSString() const;
 
     IJoystick*      mJoyStick;
     Player*         mPlayer;
