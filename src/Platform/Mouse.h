@@ -41,7 +41,7 @@ namespace Procyon {
 	{
 	public:
 		static void Reset();
-		static void Poll();
+		static void Poll( bool hasFocus );
 		static bool	IsButtonUp( ProcyonMouseButton key );
 		static bool	IsButtonDown( ProcyonMouseButton key );
 		static bool	OnButtonUp( ProcyonMouseButton key);

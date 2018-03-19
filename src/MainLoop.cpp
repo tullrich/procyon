@@ -187,11 +187,11 @@ namespace Procyon {
 		{
 			mSimTime.dt = glm::clamp( dt, 0.0f, MAX_DT );
 			mSimTime.tsl += mSimTime.dt;
-		} 
+		}
 
 		mWindow->PollEvents();
-		Keyboard::Poll();
-		Mouse::Poll();
+		Keyboard::Poll( mWindow->HasFocus() );
+		Mouse::Poll( mWindow->HasFocus() );
 
 		Console_Process( mSimTime );
 		Process( mSimTime );

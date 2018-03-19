@@ -354,7 +354,15 @@ namespace Win32 {
 		ievent.windowx = xpos;
 		ievent.windowy = ypos;
 		listener->HandleInputEvent( ievent );
+	}
 
+	static void GLFWWindowFocusCallback( GLFWwindow* window, int focused )
+	{
+		Win32Window* procyonWin = reinterpret_cast< Win32Window* >( glfwGetWindowUserPointer( window ) );
+		if ( !procyonWin )
+			return;
+
+		//TODO: Emit focus changed event
 	}
 
 	Win32Window::Win32Window( const std::string& title, unsigned height, unsigned width )
@@ -383,6 +391,7 @@ namespace Win32 {
 		glfwSetWindowSizeCallback( mWindow, GLFWWindowSizeCallback );
 		glfwSetWindowCloseCallback( mWindow, GLFWWindowCloseCallback );
 		glfwSetWindowPosCallback( mWindow, GLFWWindowPosCallback);
+		glfwSetWindowFocusCallback( mWindow, GLFWWindowFocusCallback );
 	}
 
 	Win32Window::~Win32Window()
@@ -433,6 +442,11 @@ namespace Win32 {
 		int width, height;
 		glfwGetWindowSize( mWindow, &width, &height );
 		return glm::ivec2( width, height );
+	}
+
+	bool Win32Window::HasFocus() const
+	{
+		return glfwGetWindowAttrib( mWindow, GLFW_FOCUSED ) == 1;
 	}
 
 } /* namespace Win32 */

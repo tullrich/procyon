@@ -38,10 +38,15 @@ namespace Procyon {
 		memset( &sPrevKeyState, 0, sizeof( KeyboardState ) );
 	}
 
-	/* static */ void Keyboard::Poll()
+	/* static */ void Keyboard::Poll( bool hasFocus )
 	{
 		sPrevKeyState = sCurrentKeyState;
 		PlatformInput::PollKeyboardState( &sCurrentKeyState );
+
+		if ( !hasFocus )
+		{
+			memset( &sCurrentKeyState, 0, sizeof( KeyboardState ) );
+		}
 	}
 
 	/* static */ bool Keyboard::IsKeyUp( ProcyonKeyCode key )

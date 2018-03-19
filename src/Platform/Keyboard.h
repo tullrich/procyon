@@ -38,7 +38,7 @@ namespace Procyon {
 	{
 	public:
 		static void Reset();
-		static void Poll();
+		static void Poll( bool hasFocus );
 		static bool	IsKeyUp( ProcyonKeyCode key );
 		static bool	IsKeyDown( ProcyonKeyCode key );
 		static bool	OnKeyUp( ProcyonKeyCode key);

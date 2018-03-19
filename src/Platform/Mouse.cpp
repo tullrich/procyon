@@ -39,10 +39,15 @@ namespace Procyon {
 		memset( &sPrevMouseState, 0, sizeof( MouseState ) );
 	}
 
-	/* static */ void Mouse::Poll()
+	/* static */ void Mouse::Poll( bool hasFocus )
 	{
 		sPrevMouseState = sCurrentMouseState;
 		PlatformInput::PollMouseState( &sCurrentMouseState );
+
+		if ( !hasFocus )
+		{
+			memset( &sCurrentMouseState, 0, sizeof( MouseState ) );
+		}
 	}
 
 	/* static */ bool Mouse::IsButtonUp( ProcyonMouseButton key )
