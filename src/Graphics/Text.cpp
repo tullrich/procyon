@@ -69,6 +69,7 @@ namespace Procyon {
 		vsnprintf( dest, 1024, format, argptr );
 		va_end( argptr );
 		mText = dest;
+		RecalculateDimensions();
 	}
 
 	void Text::Append( const std::string& str )
