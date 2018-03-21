@@ -25,7 +25,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Sandbox.h"
 
 #include "Console.h"
-#include "Audio/AudioDevice.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/RenderCore.h"
 #include "Platform/Keyboard.h"
