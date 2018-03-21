@@ -32,6 +32,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <QListWidget>
 #include <QUndoGroup>
 
+#include "Collision/World.h"
+
 class QLabel;
 
 namespace Ui {
@@ -57,6 +59,7 @@ public:
     virtual ~Editor();
 
     RecentFileList* GetRecent() { return mRecentFiles; }
+	Procyon::TileId GetSelectedTileId() const;
 
 signals:
     void ActiveDocumentChanged(MapDocument *doc);

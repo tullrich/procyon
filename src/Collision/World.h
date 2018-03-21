@@ -40,16 +40,36 @@ namespace Procyon {
 	class World;
 	class Contact;
 
-	typedef int TileId;
+	// TileId type
+	typedef uint32_t TileId;
+
+	enum TileType
+	{
+	 	TILETYPE_AIR,		// Empty
+		TILETYPE_SOLID,		// Solid block
+		TILETYPE_ONE_WAY	// "Jump-through" one-way platform
+	};
 
 	struct TileDef
 	{
+		// Filepath for the texture
 		std::string filepath;
+
+		// Loaded texture for rendering
 		Texture* texture = nullptr;
+
+		// If low this tile is ignored for the purpose of collision checks
 		bool collidable = false;
+
+		// Type of this tile
+		TileType type = TILETYPE_AIR;
+
+		static TileType StringToTileType(const std::string& typeStr );
+		static const char* TileTypeToString( TileType type );
 
 		static TileDef Empty;
 	};
+
 
 	class TileSet
 	{

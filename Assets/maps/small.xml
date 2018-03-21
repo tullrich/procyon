@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Map>
     <TileSet>
-        <TileDef filepath="sprites/tile.png"/>
-        <TileDef filepath="sprites/uv_map.png"/>
+        <TileDef filepath="sprites/tile.png" type="Solid"/>
+        <TileDef filepath="sprites/uv_map.png" type="Solid"/>
     </TileSet>
     <Camera x="229" y="162.75" zoom="1"/>
     <Tiles width="10" height="10">

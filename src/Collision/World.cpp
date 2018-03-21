@@ -38,6 +38,25 @@ namespace Procyon {
 
 	TileDef TileDef::Empty;
 
+	/* static */ TileType TileDef::StringToTileType(const std::string& typeStr )
+	{
+		if ( typeStr == "Air" ) return TILETYPE_AIR;
+		if ( typeStr == "Solid" ) return TILETYPE_SOLID;
+		if ( typeStr == "OneWay" ) return TILETYPE_ONE_WAY;
+		return TILETYPE_AIR; // unknown
+	}
+
+	/* static */ const char* TileDef::TileTypeToString( TileType type )
+	{
+		switch ( type )
+		{
+			case TILETYPE_SOLID: return "Solid";
+			case TILETYPE_ONE_WAY: return "OneWay";
+			case TILETYPE_AIR: // intentionall fall-through
+			default: return  "Air";
+		}
+	}
+
 	TileId TileSet::AddTileDef( const TileDef& tile )
 	{
 		mTileDefs.emplace_back( tile );
@@ -96,12 +115,25 @@ namespace Procyon {
 		FOREACH_TILE_INDEX( mTiles )
 		{
 			const TileDef& tt = mTileSet->GetTileDef( mTiles[ TILE_INDEX( x, y ) ] );
-			if ( tt.texture )
+
+			switch ( tt.type )
 			{
-				glm::vec2 pos = glm::vec2( (float)x , (float)y ) * (float)TILE_PIXEL_SIZE + HALF_TILE_SIZE;
-				glm::vec2 dim( (float)TILE_PIXEL_SIZE );
-				r->DrawRectShape(pos, dim, 0.0f, glm::vec4(92/255.0f, 172/255.0f, 144/255.0f, 1.f));
-				//r->DrawTexture( tt.texture, pos, dim, 0 );
+				case TILETYPE_SOLID:
+				{
+					glm::vec2 dims( (float)TILE_PIXEL_SIZE );
+					glm::vec2 pos = glm::vec2( (float)x , (float)y ) * (float)TILE_PIXEL_SIZE + HALF_TILE_SIZE;
+					r->DrawRectShape(pos, dims, 0.0f, glm::vec4(92/255.0f, 172/255.0f, 144/255.0f, 1.f));
+					//r->DrawTexture( tt.texture, pos, dim, 0 );
+					break;
+				}
+				case TILETYPE_ONE_WAY:
+				{
+					glm::vec2 dims( (float)TILE_PIXEL_SIZE, 5.0f  );
+					glm::vec2 pos = glm::vec2( (float)x , (float)y ) * (float)TILE_PIXEL_SIZE + dims/2.0f;
+					pos.y += (TILE_PIXEL_SIZE - dims.y);
+					r->DrawRectShape(pos, dims, 0.0f, glm::vec4(247/255.0f, 186/255.0f, 81/255.0f, 1.f));
+					break;
+				}
 			}
 		}
 	}

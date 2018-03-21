@@ -147,6 +147,13 @@ namespace Procyon {
                         def.texture = Texture::Allocate( filepath );
                         def.collidable = true;
                     }
+
+					const char* type = tileDef->ToElement()->Attribute("type");
+                    if ( type )
+                    {
+						def.type = TileDef::StringToTileType( type );
+					}
+					
                     mTileSet.AddTileDef( def );
 				}
 			}

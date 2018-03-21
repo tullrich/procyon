@@ -106,7 +106,7 @@ Editor::Editor( QWidget *parent )
     mUi->centralwidget->layout()->addWidget( mScrollArea );
 
     // Init central canvas
-    mCanvas = new ProcyonCanvas( mScrollArea->viewport() );
+    mCanvas = new ProcyonCanvas( mScrollArea->viewport(), this );
     scrollAreaLayout->addWidget( mCanvas );
     connect( mScrollArea->horizontalScrollBar(), &QScrollBar::valueChanged, [ this ]( int value ) {
         if ( mActiveDocument )
@@ -159,7 +159,7 @@ Editor::Editor( QWidget *parent )
     mUi->menuToolbars->addAction( mUi->fileToolbar->toggleViewAction() );
     mUi->menuToolbars->addAction( mUi->viewToolbar->toggleViewAction() );
 
-    // Setup the Edit->Undo/Redo 
+    // Setup the Edit->Undo/Redo
     QAction* undoAction = mUndoGroup->createUndoAction( this, tr( "&Undo" ) );
     undoAction->setShortcuts( QKeySequence::Undo );
     mUi->menuEdit->addAction( undoAction );
@@ -230,6 +230,14 @@ Editor::Editor( QWidget *parent )
 Editor::~Editor()
 {
     delete mUi;
+}
+
+Procyon::TileId Editor::GetSelectedTileId() const
+{
+	if ( !mTileSetsView->currentItem() )
+		return 0;
+		
+	return (Procyon::TileId)mTileSetsView->currentRow();
 }
 
 void Editor::SetupOutputLog()
@@ -583,7 +591,7 @@ void Editor::OnSceneTreeContextMenuRequested( const QPoint& point )
 {
     if ( !mActiveDocument )
         return;
-	
+
     QModelIndex filteredIndex = mUi->sceneTree->indexAt( point );
     QSortFilterProxyModel* proxyModel = ( QSortFilterProxyModel* )mUi->sceneTree->model();
     QModelIndex index = proxyModel->mapToSource( filteredIndex );

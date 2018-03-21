@@ -78,16 +78,16 @@ static bool TestAabbAxis( const glm::vec2& axis, float minA, float maxA, float m
     float d0 = (maxB - minA);   // 'Left' side
     float d1 = (maxA - minB);   // 'Right' side
 
-	if (d0 <= 0.0f || d1 <= 0.0f)
+	if ( d0 <= 0.0f || d1 <= 0.0f )
 	{
 		return false;
 	}
 
-    float overlap = (d0 < d1) ? d0 : -d1;
+    float overlap = ( d0 < d1 ) ? d0 : -d1;
 
 	glm::vec2 seperation = axis * overlap;
 
-    float sepLengthSquared = glm::dot(seperation, seperation);
+    float sepLengthSquared = glm::dot( seperation, seperation );
 	if ( sepLengthSquared < *mtvDist )
 	{
 		*mtvDist = sepLengthSquared;
@@ -119,7 +119,26 @@ static bool QueryAabbVsAabb( const Aabb& a, const Aabb& b, Contact* out )
 	out->normal = glm::normalize(mtvAxis);
 	out->distance = sqrt(mtvDist) * -1.001f;
 
-		return true;
+	return true;
+}
+
+static bool QueryAabbVsTopPlane( const glm::vec2& delta, const Aabb& a, const Aabb& b, Contact* out )
+{
+	float d0 = ( b.GetMax().y - a.GetMin().y );
+    float d1 = ( a.GetMax().y - b.GetMax().y );
+	float delta0 = d0 + delta.y;
+
+	if ( d0 <= 0.0f || d1 <= 0.0f || delta0 >= 0.0f )
+	{
+		return false;
+	}
+
+	float overlap = ( d0 < d1 ) ? d0 : -d1;
+	glm::vec2 seperation = glm::vec2( 0.0f, 1.0f ) * overlap;
+	out->normal = glm::normalize( seperation );
+	out->distance = sqrt( glm::dot( seperation, seperation ) ) * -1.001f;
+
+	return true;
 }
 
 Player::Player( World* world )
@@ -166,13 +185,14 @@ void Player::Process( FrameTime ft )
 	}
 	else
 	{
-		mVelocity.x = mVelocity.x * 0.95f; // Damping
-		mVelocity.x += 3.5f * PLAYER_DEFAULT_SPEED * mInput.x * ft.dt;
+		mVelocity.x *= (1.f - PLAYER_ARIAL_DAMPING); // Damping
+		mVelocity.x += PLAYER_ARIAL_ACCELERATION * ft.dt * mInput.x;
 	}
 	mVelocity.y += PLAYER_GRAVITY_PIXELS * ft.dt;
 	mVelocity = glm::clamp(mVelocity, -PLAYER_MAX_SPEED, PLAYER_MAX_SPEED);
 
-	mBounds.mCenter += mVelocity * ft.dt;
+	glm::vec2 delta = mVelocity * ft.dt;
+	mBounds.mCenter += delta;
 
 	std::vector<glm::ivec2> intersecting;
 	mWorld->TileIntersection( mBounds, intersecting );
@@ -180,12 +200,7 @@ void Player::Process( FrameTime ft )
 	mGrounded = false;
 	for ( auto& t : intersecting )
 	{
-		CollideTile( t, ft );
-	}
-
-	if ( mGrounded )
-	{
-		//mVelocity.y = 0.0f;
+		CollideTile( delta, t, ft );
 	}
 
 	mInput = glm::vec2(0.0f);
@@ -195,22 +210,49 @@ void Player::Process( FrameTime ft )
 
 void Player::Draw( Renderer* r ) const
 {
-	r->DrawRectShape(GetPosition(), PLAYER_DIMS, 0.0f, glm::vec4(245/255.0f, 121/255.0f, 79/255.0f, 1.f));
+	glm::vec4 color(245/255.0f, 121/255.0f, 79/255.0f, 1.f);
+	if (!mGrounded && mVelocity.y < 0.0f )
+	{
+		color *= 1.5f;
+	}
+	r->DrawRectShape( GetPosition(), PLAYER_DIMS, 0.0f, color );
 	r->Draw( mPlayerText );
 }
 
-void Player::CollideTile( const glm::ivec2& t, FrameTime ft )
+void Player::CollideTile( const glm::vec2& delta, const glm::ivec2& t, FrameTime ft )
 {
 	Aabb tileBounds( ( glm::vec2( t ) + glm::vec2( 0.5f ) ) * (float)TILE_PIXEL_SIZE
 		, glm::vec2( HALF_TILE_SIZE ) );
 
+	const TileDef& tile = mWorld->GetTileDef( t );
+
 	Contact c;
-	if ( QueryAabbVsAabb( mBounds, tileBounds, &c ) && !mWorld->IsInternalCollision( t, c ) )
+
+	switch ( tile.type )
 	{
-		PROCYON_DEBUG( "PlayerCollision", "Contact with tile center <%i, %i>" \
-			" normal <%.2f, %.2f> distance %.20f"
-			, t.x, t.y, c.normal.x, c.normal.y, c.distance * 100.0f );
-		CollisionResponse( c, ft );
+		case TILETYPE_SOLID:
+		{
+			if ( QueryAabbVsAabb( mBounds, tileBounds, &c ) && !mWorld->IsInternalCollision( t, c ) )
+			{
+				PROCYON_DEBUG( "PlayerCollision", "Contact with tile center <%i, %i>" \
+					" normal <%.2f, %.2f> distance %.20f"
+					, t.x, t.y, c.normal.x, c.normal.y, c.distance * 100.0f );
+				CollisionResponse( c, ft );
+			}
+			break;
+		}
+		case TILETYPE_ONE_WAY:
+		{
+			if ( QueryAabbVsTopPlane( delta, mBounds, tileBounds, &c ) )
+			{
+				PROCYON_DEBUG( "PlayerCollision", "Contact with tile top plane <%i, %i>" \
+					" normal <%.2f, %.2f> distance %.20f"
+					, t.x, t.y, c.normal.x, c.normal.y, c.distance * 100.0f );
+				CollisionResponse( c, ft );
+			}
+			break;
+		}
+		default: break;
 	}
 }
 
@@ -239,14 +281,14 @@ void Player::CollisionResponse( const Contact& c, FrameTime ft )
 	{
 		mVelocity -= c.normal * normVel;
 
-		// friction
 		if ( c.normal.y > 0.0f )
 		{
 			mGrounded = true;
-			glm::vec2 tangent( -c.normal.y, c.normal.x );
-			float tanVelocity = glm::dot( mVelocity, tangent ) * 0.2f; // friction
-			//mVelocity -= tangent  * tanVelocity;
 
+			// friction
+			//glm::vec2 tangent( -c.normal.y, c.normal.x );
+			//float tanVelocity = glm::dot( mVelocity, tangent ) * 0.2f; // friction
+			//mVelocity -= tangent  * tanVelocity;
 		}
 	}
 }
@@ -275,6 +317,7 @@ void Player::Jump()
 void Player::Teleport( const glm::vec2& pos )
 {
 	mBounds.mCenter = pos;
+	mVelocity = glm::vec2();
 }
 
 void Player::SetLeftRightInput( float input )

@@ -27,16 +27,6 @@ MapDocument::MapDocument()
     mSelectionModel = new QItemSelectionModel( mListModel, this );
 
     mUndoStack->setUndoLimit( MAP_DOCUMENT_UNDO_LIMIT );
-
-	Procyon::TileDef td;
-	td.filepath = "sprites/tile.png";
-	td.texture = EditorAssets::sTileTexture;
-	td.collidable = true;
-	mTileSet->AddTileDef( td );
-
-	td.filepath = "sprites/uv_map.png";
-	td.texture = Procyon::Texture::Allocate( "sprites/uv_map.png" );
-	mTileSet->AddTileDef( td );
 }
 
 MapDocument::~MapDocument()
@@ -107,6 +97,7 @@ bool MapDocument::Save( const QString& filename )
 		{
 			writer.writeStartElement( "TileDef" );
 			writer.writeAttribute( "filepath", mTileSet->GetTileDef( i ).filepath.c_str() );
+			writer.writeAttribute( "type", Procyon::TileDef::TileTypeToString( mTileSet->GetTileDef( i ).type ) );
 			writer.writeEndElement(); // TileDef
 		}
 		writer.writeEndElement(); // TileSet
@@ -219,17 +210,21 @@ bool MapDocument::Load( const QString& filename )
             while ( !domtTileDef.isNull() )
             {
                 QString filepath = domtTileDef.attribute( "filepath" );
+
+                Procyon::TileDef def;
                 if ( !filepath.isEmpty() )
                 {
-                    Procyon::TileDef def;
                     def.filepath = filepath.toUtf8();
-                    mTileSet->AddTileDef( def );
-                }
-                else
-                {
-                    mTileSet->AddTileDef( Procyon::TileDef::Empty );
+					def.collidable = true;
                 }
 
+	            QString type = domtTileDef.attribute( "type" );
+                if ( !type.isEmpty() )
+				{
+					def.type = Procyon::TileDef::StringToTileType( type.toUtf8().data() );
+				}
+
+				mTileSet->AddTileDef( def );
                 domtTileDef = domtTileDef.nextSiblingElement( "TileDef" );
             }
         }
@@ -320,7 +315,23 @@ bool MapDocument::Load( const QString& filename )
 
 void MapDocument::NewWorld( int sizeX, int sizeY )
 {
+	mTileSet->Clear();
+
+	Procyon::TileDef td;
+	td.filepath = "sprites/tile.png";
+	td.texture = EditorAssets::sTileTexture;
+	td.type = Procyon::TILETYPE_SOLID;
+	td.collidable = true;
+	mTileSet->AddTileDef( td );
+
+	td.filepath = "sprites/uv_map.png";
+	td.texture = Procyon::Texture::Allocate( "sprites/uv_map.png" );
+	td.type = Procyon::TILETYPE_ONE_WAY;
+	mTileSet->AddTileDef( td );
+
     mWorld->NewWorld( glm::ivec2( sizeX, sizeY ), mTileSet );
+
+	SetModified( true );
 }
 
 void MapDocument::RestoreCameraState( Procyon::Camera2D *camera ) const

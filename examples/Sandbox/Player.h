@@ -44,6 +44,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define PLAYER_GRAVITY -17.5f
 #define PLAYER_GRAVITY_PIXELS (PIXELS_PER_METER*PLAYER_GRAVITY)
 #define PLAYER_MAX_SPEED (glm::vec2(PLAYER_DEFAULT_SPEED, -PLAYER_GRAVITY_PIXELS))
+#define PLAYER_ARIAL_DAMPING (0.05f)
+#define PLAYER_ARIAL_ACCELERATION (PLAYER_DEFAULT_SPEED*3.5f)
 
 namespace Procyon {
 
@@ -78,7 +80,7 @@ public:
 protected:
 	void 				UpdatePosition( Procyon::FrameTime ft );
 
-	void 				CollideTile( const glm::ivec2& t, Procyon::FrameTime ft );
+	void 				CollideTile( const glm::vec2& delta, const glm::ivec2& t, Procyon::FrameTime ft );
 	void 				Collide( const Procyon::Aabb& other, Procyon::FrameTime ft );
 
 	void 				CollisionResponse( const Procyon::Contact& c, Procyon::FrameTime ft );

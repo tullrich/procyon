@@ -36,6 +36,7 @@ namespace Procyon {
     class Sprite;
     class World;
 }
+class Editor;
 class Grid;
 class MapDocument;
 class QTimer;
@@ -46,7 +47,7 @@ class ProcyonCanvas : public QGLWidget
 
 public:
 
-            ProcyonCanvas( QWidget* Parent );
+            ProcyonCanvas( QWidget* Parent, Editor* editor );
     virtual ~ProcyonCanvas();
 
     // Set the render grid tile size
@@ -100,6 +101,9 @@ protected:
     // Custom implemented event handlers.
     void OnMouseDrag( QMouseEvent* event );
     void OnMouseMove( QMouseEvent* event );
+
+	// The global editor
+	Editor				*mEditor;
 
     // repaint timer
     QTimer              *mTimer;
