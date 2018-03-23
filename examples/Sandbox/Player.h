@@ -49,7 +49,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-	class Sprite;
 	class Renderable;
 	class Renderer;
 	class World;
@@ -58,6 +57,8 @@ namespace Procyon {
 	class Sound;
 	class Text;
 }
+
+class AnimatedSprite;
 
 class Player
 {
@@ -89,7 +90,7 @@ protected:
 	Procyon::Aabb		mBounds;
 	glm::vec2			mInput;
 	glm::vec2 			mVelocity;
-	Procyon::Sprite* 	mSprite;
+	AnimatedSprite* 	mSprite;
 	glm::vec2 			mPenetrationCorrection;
 	Procyon::Sound*		mJumpSnd;
 	Procyon::Text*		mPlayerText;

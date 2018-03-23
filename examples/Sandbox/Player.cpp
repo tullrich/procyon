@@ -30,8 +30,14 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Audio/Sound.h"
 #include "Player.h"
 #include "SandboxAssets.h"
+#include "AnimatedSprite.h"
 
 using namespace Procyon;
+
+template <typename T> 
+static int Sign(T val) {
+	return (T(0) < val) - (val < T(0));
+}
 
 static bool AabbVsAabb( const Aabb& aabb1, const Aabb& aabb2 )
 {
@@ -147,9 +153,9 @@ Player::Player( World* world )
 	, mBounds( glm::vec2( TILE_PIXEL_SIZE / 1.25f ) + 4.0f*TILE_PIXEL_SIZE, glm::vec2( PLAYER_PIXEL_WIDTH, PLAYER_PIXEL_HEIGHT ) / 2.0f - .0001f )
 	, mGrounded( true )
 {
-	mSprite = new Sprite( SandboxAssets::sPlayerTexture );
+	mSprite = new AnimatedSprite( SandboxAssets::sPlayerTexture );
 	mSprite->SetOrigin( 0.5f, 0.5f );
-	mSprite->SetDimensions( mBounds.mHalfExtent * 2.0f );
+	mSprite->SetDimensions( glm::vec2( 32.0f ) * 2.0f );
 	mSprite->SetPosition( mBounds.mCenter );
 
 	mJumpSnd = new Sound( SandboxAssets::sJumpSound );
@@ -205,6 +211,22 @@ void Player::Process( FrameTime ft )
 
 	mInput = glm::vec2(0.0f);
 
+
+	mSprite->SetPosition( mBounds.mCenter );
+
+	if ( mVelocity.x != 0.0f )
+	{
+		mSprite->Play();
+		if ( Sign( mSprite->GetDimensions().x ) != Sign( mVelocity.x ) )
+		{
+			mSprite->SetDimensions( 2.0f * glm::vec2( 32.0f * (float)Sign( mVelocity.x ), 32.0f ) );
+		}
+	}
+	else
+	{
+		mSprite->Stop();
+	}
+	mSprite->Process( ft );
 	mPlayerText->SetText( "Velocity <%.2f, %.2f>", mVelocity.x, mVelocity.y );
 }
 
@@ -215,7 +237,8 @@ void Player::Draw( Renderer* r ) const
 	{
 		color *= 1.5f;
 	}
-	r->DrawRectShape( GetPosition(), PLAYER_DIMS, 0.0f, color );
+	//r->DrawRectShape( GetPosition(), PLAYER_DIMS, 0.0f, color );
+	r->Draw( mSprite );
 	r->Draw( mPlayerText );
 }
 

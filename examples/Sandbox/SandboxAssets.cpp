@@ -70,7 +70,7 @@ void SandboxAssets::Load()
 {
 	sMainFont 		= new FontFace( "fonts/arial.ttf", 20);
     sWindowIcon     = new FileImage( "sprites/tile.png" );
-    sPlayerTexture  = Texture::Allocate( "sprites/raccoon.jpg" );
+    sPlayerTexture  = Texture::Allocate( "sprites/Raccoon_Spritesheet.png" );
     sTileTexture    = Texture::Allocate( "sprites/tile.png" );
     sTestTexture    = Texture::Allocate( "tinyTest.png" );
     sJumpSound      =  new SoundBuffer( "audio/jump4.wav" );
