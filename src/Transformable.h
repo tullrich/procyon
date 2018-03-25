@@ -37,22 +37,21 @@ namespace Procyon {
 		glm::vec2			GetPosition() const;
 	    void 				SetPosition( float x, float y );
 	    void				SetPosition( const glm::vec2& pos );
-	    
+
 	    void				Move( float deltax, float deltay );
 	    void				Move( const glm::vec2& delta );
 
 	    void				SetOrientation( float angle );
 	    void				Rotate( float deltaAngle );
 
-	    glm::vec2			GetDimensions() const;
-    	float 				GetWidth() const;
-    	float 				GetHeight() const;
-    	
+	    glm::vec2			GetScale() const;
+    	float 				GetScaleX() const;
+    	float 				GetScaleY() const;
+	    void				SetScale( float width, float height );
+	    void				SetScale( const glm::vec2& dim );
+
 	    void 				SetOrigin( float x, float y );
 	    void 				SetOrigin( const glm::vec2& origin );
-
-	    void				SetDimensions( float width, float height );
-	    void				SetDimensions( const glm::vec2& dim );
 
 	    virtual glm::mat3 	GetTransform() const;
 
@@ -60,7 +59,7 @@ namespace Procyon {
 	    float       			mOrientation;
 	    glm::vec2   			mPosition;
 	    glm::vec2   			mOrigin;
-	    glm::vec2   			mDimensions;
+	    glm::vec2   			mScale;
 	};
 
 } /* namespace Procyon */

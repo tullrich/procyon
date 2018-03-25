@@ -34,8 +34,9 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace Procyon;
 
-template <typename T> 
-static int Sign(T val) {
+template <typename T>
+static int Sign(T val)
+{
 	return (T(0) < val) - (val < T(0));
 }
 
@@ -155,7 +156,7 @@ Player::Player( World* world )
 {
 	mSprite = new AnimatedSprite( SandboxAssets::sPlayerTexture );
 	mSprite->SetOrigin( 0.5f, 0.5f );
-	mSprite->SetDimensions( glm::vec2( 32.0f ) * 2.0f );
+	mSprite->SetScale( glm::vec2( 32.0f ) * 2.0f );
 	mSprite->SetPosition( mBounds.mCenter );
 
 	mJumpSnd = new Sound( SandboxAssets::sJumpSound );
@@ -217,9 +218,9 @@ void Player::Process( FrameTime ft )
 	if ( mVelocity.x != 0.0f )
 	{
 		mSprite->Play();
-		if ( Sign( mSprite->GetDimensions().x ) != Sign( mVelocity.x ) )
+		if ( Sign( mSprite->GetScale().x ) != Sign( mVelocity.x ) )
 		{
-			mSprite->SetDimensions( 2.0f * glm::vec2( 32.0f * (float)Sign( mVelocity.x ), 32.0f ) );
+			mSprite->SetScale( 2.0f * glm::vec2( 32.0f * (float)Sign( mVelocity.x ), 32.0f ) );
 		}
 	}
 	else

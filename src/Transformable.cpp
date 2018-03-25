@@ -28,7 +28,7 @@ namespace Procyon {
 
 	Transformable::Transformable()
 		: mOrientation( 0.0f )
-        , mDimensions( 1.0f, 1.0f )
+        , mScale( 1.0f, 1.0f )
 	{
 	}
 
@@ -51,7 +51,7 @@ namespace Procyon {
 	{
 		mPosition += glm::vec2( deltax, deltay );
 	}
-	
+
 	void Transformable::Move( const glm::vec2& delta )
 	{
 		mPosition += delta;
@@ -67,6 +67,31 @@ namespace Procyon {
 		mOrientation += deltaAngle;
 	}
 
+    glm::vec2 Transformable::GetScale() const
+    {
+    	return mScale;
+    }
+
+    float Transformable::GetScaleX() const
+    {
+    	return mScale.x;
+    }
+
+    float Transformable::GetScaleY() const
+    {
+    	return mScale.y;
+    }
+
+	void Transformable::SetScale( float scaleX, float scaleY )
+	{
+		SetScale( glm::vec2( scaleX, scaleY ) );
+	}
+
+	void Transformable::SetScale( const glm::vec2& dim )
+	{
+		mScale = dim;
+	}
+
     void Transformable::SetOrigin( float x, float y )
     {
         SetOrigin( glm::vec2( x, y ) );
@@ -77,39 +102,14 @@ namespace Procyon {
         mOrigin = origin;
     }
 
-	void Transformable::SetDimensions( float width, float height )
-	{
-        SetDimensions( glm::vec2( width, height ) );
-	}
-
-	void Transformable::SetDimensions( const glm::vec2& dim )
-	{
-		mDimensions = dim;
-	}
-
-    glm::vec2 Transformable::GetDimensions() const
-    {
-    	return mDimensions;
-    }
-
-    float Transformable::GetWidth() const
-    {
-    	return mDimensions.x;
-    }
-
-    float Transformable::GetHeight() const
-    {
-    	return mDimensions.y;
-    }
-
     glm::mat3 Transformable::GetTransform() const
     {
-        return glm::translate( glm::mat3(), mPosition ) * glm::rotate( glm::mat3(), mOrientation ) 
-            * glm::scale( glm::mat3(), mDimensions )
+        return glm::translate( glm::mat3(), mPosition ) * glm::rotate( glm::mat3(), mOrientation )
+            * glm::scale( glm::mat3(), mScale )
             * glm::inverse( glm::translate( glm::mat3(), glm::vec2( mOrigin.x, -mOrigin.y ) ) );
         //return glm::translate( glm::rotate( glm::mat3(), mOrientation ), mPosition );
-        //return glm::translate( glm::scale( glm::rotate( glm::translate( 
-        //    glm::mat3(), mPosition ), mOrientation ), mDimensions ), mOrigin );
+        //return glm::translate( glm::scale( glm::rotate( glm::translate(
+        //    glm::mat3(), mPosition ), mOrientation ), mScale ), mOrigin );
     }
 
 } /* namespace Procyon */
