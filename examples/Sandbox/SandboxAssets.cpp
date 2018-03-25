@@ -62,6 +62,9 @@ FontFace*       SandboxAssets::sMainFont        = NULL;
 Map*            SandboxAssets::sMap             = NULL;
 IImage*         SandboxAssets::sWindowIcon      = NULL;
 Texture*		SandboxAssets::sPlayerTexture   = NULL;
+Texture*		SandboxAssets::sDumpsterTexture   = NULL;
+Texture*		SandboxAssets::sLightPostTexture   = NULL;
+Texture*		SandboxAssets::sLightPostBeamTexture   = NULL;
 Texture*		SandboxAssets::sTileTexture     = NULL;
 Texture*		SandboxAssets::sTestTexture     = NULL;
 SoundBuffer*    SandboxAssets::sJumpSound       = NULL;
@@ -71,6 +74,9 @@ void SandboxAssets::Load()
 	sMainFont 		= new FontFace( "fonts/arial.ttf", 20);
     sWindowIcon     = new FileImage( "sprites/tile.png" );
     sPlayerTexture  = Texture::Allocate( "sprites/Raccoon_Spritesheet.png" );
+    sDumpsterTexture  = Texture::Allocate( "sprites/dumpster.png" );
+    sLightPostTexture  = Texture::Allocate( "sprites/lightpole_Post.png" );
+    sLightPostBeamTexture  = Texture::Allocate( "sprites/lightpole_Light.png" );
     sTileTexture    = Texture::Allocate( "sprites/tile.png" );
     sTestTexture    = Texture::Allocate( "tinyTest.png" );
     sJumpSound      =  new SoundBuffer( "audio/jump4.wav" );
@@ -89,6 +95,7 @@ void SandboxAssets::Destroy()
 	delete sMap;
     delete sWindowIcon;
     delete sPlayerTexture;
+    delete sDumpsterTexture;
     delete sTileTexture;
     delete sTestTexture;
     delete sJumpSound;

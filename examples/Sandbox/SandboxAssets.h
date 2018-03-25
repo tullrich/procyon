@@ -37,6 +37,9 @@ public:
 	static Procyon::Map* 			sMap;
     static Procyon::IImage*			sWindowIcon;
     static Procyon::Texture*		sPlayerTexture;
+    static Procyon::Texture*		sDumpsterTexture;
+	static Procyon::Texture*		sLightPostTexture;
+	static Procyon::Texture*		sLightPostBeamTexture;
     static Procyon::Texture*		sTileTexture;
     static Procyon::Texture*		sTestTexture;
     static Procyon::SoundBuffer*	sJumpSound;

@@ -26,6 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Console.h"
 #include "Graphics/Renderer.h"
+#include "Graphics/Sprite.h"
 #include "Graphics/RenderCore.h"
 #include "Platform/Keyboard.h"
 #include "Platform/Mouse.h"
@@ -67,6 +68,37 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
 	// Create the player
 	mPlayer   = new Player( mWorld );
+
+	// Poles
+	for ( int i = 0; i < 3; i++ )
+	{
+		Sprite* lightpost = new Sprite( SandboxAssets::sLightPostTexture );
+		lightpost->SetOrigin( 0.5f, 0.5f );
+		lightpost->SetPosition( glm::vec2( TILE_PIXEL_SIZE * (6.0f + 6.0f * i), TILE_PIXEL_SIZE * 4.5f ) - TILE_PIXEL_SIZE/2.0f );
+		lightpost->SetScale( SandboxAssets::sLightPostTexture->GetDimensions() );
+		mStaticSprites.push_back( lightpost );
+	}
+
+	// Dumpsters
+	for ( int i = 0; i < 3; i++ )
+	{
+		Sprite* dumpster = new Sprite( SandboxAssets::sDumpsterTexture );
+		dumpster->SetOrigin( 0.5f, 0.5f );
+		dumpster->SetPosition( glm::vec2( TILE_PIXEL_SIZE * (12.0f + i * 3.0f), TILE_PIXEL_SIZE * 3.0f ) - TILE_PIXEL_SIZE/2.0f );
+		dumpster->SetScale( SandboxAssets::sDumpsterTexture->GetDimensions() );
+		mStaticSprites.push_back( dumpster );
+	}
+
+	// Beams
+	for ( int i = 0; i < 3; i++ )
+	{
+		Sprite* lightpost_beam = new Sprite( SandboxAssets::sLightPostBeamTexture );
+		lightpost_beam->SetOrigin( 0.5f, 0.5f );
+		lightpost_beam->SetPosition( glm::vec2( TILE_PIXEL_SIZE * (6.0f + 6.0f * i), TILE_PIXEL_SIZE * 4.5f ) - TILE_PIXEL_SIZE/2.0f );
+		lightpost_beam->SetScale( SandboxAssets::sLightPostBeamTexture->GetDimensions() );
+		mStaticSprites.push_back( lightpost_beam );
+	}
+
 
     // Create the camera
     mCamera = new Camera2D();
@@ -153,6 +185,11 @@ void Sandbox::Render()
 	mRenderer->ResetCameras(*mCamera);
 
 	mWorld->Render( mRenderer );
+
+	for ( auto iter : mStaticSprites )
+	{
+		mRenderer->Draw( iter );
+	}
 
 	mPlayer->Draw( mRenderer );
 

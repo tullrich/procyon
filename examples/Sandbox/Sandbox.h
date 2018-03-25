@@ -37,6 +37,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 namespace Procyon
 {
     class Map;
+	class Sprite;
 }
 
 using namespace Procyon::GL;
@@ -73,6 +74,7 @@ protected:
 	Text*           mFpsText;
 	PolyLine		mPolyLine;
 	World*          mWorld;
+	std::vector< Procyon::Sprite* > mStaticSprites;
 
 };
 
