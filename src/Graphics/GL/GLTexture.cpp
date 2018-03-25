@@ -83,9 +83,8 @@ namespace GL {
 	    glTexParameteri( mTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 		glTexImage2D( mTarget, mipLevel, format, img.Width(), img.Height(), 0, format, GL_UNSIGNED_BYTE, img.Data() );
-	    glGenerateMipmap( mTarget);
 
-	    mDimensions = glm::vec2( img.Width(), img.Height() );
+	    mDimensions = glm::ivec2( img.Width(), img.Height() );
         glBindTexture( mTarget, 0 );
 	}
 
@@ -127,8 +126,13 @@ namespace GL {
 		SetMagFilter( mag );
 	}
 
-} /* namespace GL */
+	void GLTexture::GenerateMipmap()
+	{
+		glBindTexture( mTarget, mTextureId );
+		glGenerateMipmap( mTarget );
+	}
 
+}
 
 	/*static*/ Texture* Texture::Allocate(const std::string& filepath, int mipLevel /* = 0 */)
 	{

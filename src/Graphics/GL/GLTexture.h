@@ -45,6 +45,7 @@ namespace GL {
 		virtual void 	SetMinFilter( TextureFilterMode min );
 		virtual void 	SetMagFilter( TextureFilterMode mag );
 		virtual void	SetMinMagFilter( TextureFilterMode min, TextureFilterMode mag );
+		virtual void 	GenerateMipmap();
 
 	protected:
 		void 		SetData(const IImage& img, int mipLevel = 0);
