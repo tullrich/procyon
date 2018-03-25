@@ -56,9 +56,18 @@ namespace GL {
 
 	bool operator==( const RenderCommand& rc1, const RenderCommand& rc2 )
 	{
-	    return rc1.op == rc2.op
-	    	&& rc1.texture == rc2.texture
-	    	&& rc1.flags == rc2.flags;
+		if ( rc1.op == rc2.op && rc1.flags == rc2.flags)
+		{
+			switch ( rc1.op )
+			{
+			case RENDER_OP_QUAD: return rc1.texture == rc2.texture;
+			case RENDER_OP_PRIMITIVE: return rc1.primmode == rc2.primmode && memcmp( rc1.color, rc2.color, 16 ) == 0;
+			case RENDER_OP_POLYGON:
+			case RENDER_OP_AA_LINE:
+			default: false;
+			}
+		}
+		return false;
 	}
 
 	static GLenum TranslatePrimitiveMode( PrimitiveMode pm )
@@ -74,6 +83,14 @@ namespace GL {
 		return GL_INVALID_ENUM;
 	}
 
+	static RenderCommand TransformPrimitiveQuadCommand( const RenderCommand& cmd )
+	{
+		RenderCommand ret = cmd;
+		ret.primmode = PRIMITIVE_TRIANGLE;
+		ret.vertcount = 6 * ( cmd.vertcount / 4 );
+		return ret;
+	}
+
 	GLRenderCore::GLRenderCore()
 		: mRenderCommandCount( 0 )
 	{
@@ -84,10 +101,8 @@ namespace GL {
 		mOffBuffer 		= new GLBuffer( sizeof(gVertexAttribData), gVertexAttribData, GL_STREAM_DRAW );
 
    		mDefaultProg    = new GLProgram( "shaders/quadbatch.vert", "shaders/quadbatch.frag" );
-   		mDefaultPrimitiveProg
-   						= new GLProgram( "shaders/primitive.vert", "shaders/primitive.frag" );
-   		mDefaultPolygonProg
-   						= new GLProgram( "shaders/polygon.vert", "shaders/polygon.frag" );
+   		mDefaultPrimitiveProg = new GLProgram( "shaders/primitive.vert", "shaders/primitive.frag" );
+   		mDefaultPolygonProg = new GLProgram( "shaders/polygon.vert", "shaders/polygon.frag" );
 		mDefaultLineProg = new GLProgram( "shaders/line.vert", "shaders/line.frag" );
 
 		ResetStats();
@@ -127,7 +142,34 @@ namespace GL {
 			case RENDER_OP_QUAD:
 				return PushData( (const unsigned char*)rc.quaddata, rc.instancecount * sizeof( BatchedQuad ) );
 			case RENDER_OP_PRIMITIVE:
-				return PushData( (const unsigned char*)rc.verts, rc.vertcount * sizeof( PrimitiveVertex ) );
+			{
+				if ( rc.primmode == PRIMITIVE_QUAD )
+				{
+					size_t size = sizeof(PrimitiveVertex) * 6 * rc.vertcount/4;
+					if ( gVertexDataWriteOffset + size >= MAX_VERTEX_ATTRIB_BYTES )
+					{
+						return false;
+					}
+
+					for ( int i = 0; i < rc.vertcount/4; i++ )
+					{
+						size_t vert_start = i * 4;
+						PrimitiveVertex verts[ 6 ];
+						verts[ 0 ] = rc.verts[ vert_start];
+						verts[ 1 ] = rc.verts[ vert_start+1 ];
+						verts[ 2 ] = rc.verts[ vert_start+2 ];
+						verts[ 3 ] = rc.verts[ vert_start+1 ];
+						verts[ 4 ] = rc.verts[ vert_start+3 ];
+						verts[ 5 ] = rc.verts[ vert_start+2 ];
+						PushData( (const unsigned char*)verts, 6 * sizeof( PrimitiveVertex ) );
+					}
+					return true;
+				}
+				else
+				{
+					return PushData( (const unsigned char*)rc.verts, rc.vertcount * sizeof( PrimitiveVertex ) );
+				}
+			}
 			case RENDER_OP_POLYGON:
 				return PushData( (const unsigned char*)rc.colorverts, rc.colorvertcount * sizeof( ColorVertex ) );
 			case RENDER_OP_AA_LINE:
@@ -150,14 +192,24 @@ namespace GL {
 		rc = cmd;
 		rc.offset = gVertexDataWriteOffset;
 
-		if ( PushCommandData(cmd ) )
+		if ( PushCommandData( cmd ) )
 		{
 			mRenderCommandCount++;
 		}
 	}
 
-	void GLRenderCore::AddOrAppendCommand( const RenderCommand& cmd )
+	void GLRenderCore::AddOrAppendCommand( const RenderCommand& raw )
 	{
+		RenderCommand cmd;
+		if ( raw.op == RENDER_OP_PRIMITIVE && raw.primmode == PRIMITIVE_QUAD )
+		{
+			cmd = TransformPrimitiveQuadCommand( raw );
+		}
+		else
+		{
+			cmd = raw;
+		}
+
 		if ( cmd.op == RENDER_OP_QUAD && mRenderCommandCount > 0 )
 		{
 			RenderCommand& prev = mCmdBuffer[ mRenderCommandCount - 1 ];
@@ -171,13 +223,14 @@ namespace GL {
 				return;
 			}
 		}
-		if ( cmd.op == RENDER_OP_PRIMITIVE && mRenderCommandCount > 0 )
+		else if ( cmd.op == RENDER_OP_PRIMITIVE && mRenderCommandCount > 0 )
 		{
+
 			RenderCommand& prev = mCmdBuffer[ mRenderCommandCount - 1 ];
 			if ( prev == cmd )
 			{
 				// append
-				if ( PushCommandData( cmd ) )
+				if ( PushCommandData( raw ) )
 				{
 					prev.vertcount += cmd.vertcount;
 				}
@@ -318,26 +371,7 @@ namespace GL {
 	    GLint vertPosLoc = program->GetAttributeLocation( "vertPosition" );
     	glVertexAttribPointer( vertPosLoc, 2, GL_FLOAT, GL_FALSE, 0, (const void*)(long)rc.offset );
 	    glEnableVertexAttribArray( vertPosLoc );
-
-    	if ( rc.primmode == PRIMITIVE_QUAD )
-    	{
-    		// GL_QUADS is deprecated and my dev machine does not support GL_PRIMITIVE_RESTART...
-    		int quadCount = rc.vertcount / 4;
-            assert( quadCount <= 2048 );
-    		GLint indices[ 2048 ];
-    		GLint counts[ 2048 ];
-    		for ( int i = 0; i < quadCount; i++ )
-    		{
-    			indices[i] = i * 4;
-    			counts[i] = 4;
-    		}
-    		// draws every 4 verts as a two triangle quad, simulates primitive restart
-    		glMultiDrawArrays( GL_TRIANGLE_STRIP, indices, counts, quadCount );
-    	}
-    	else
-    	{
-    		glDrawArrays( TranslatePrimitiveMode( rc.primmode ), 0, rc.vertcount );
-    	}
+    	glDrawArrays( TranslatePrimitiveMode( rc.primmode ), 0, rc.vertcount );
 
     	mFrameStats.batches++;
 		mFrameStats.totalprimitives++;

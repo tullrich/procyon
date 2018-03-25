@@ -249,29 +249,6 @@ namespace Procyon {
 
             prev = c;
 		}
-
-	    glm::vec2 quaddata[] =
-	    {
-	        glm::vec2( mPosition.x, mPosition.y + 32.0f ), // v0
-	        glm::vec2( mPosition.x + 32.0f, mPosition.y + 32.0f ), // v1
-	        glm::vec2( mPosition.x, mPosition.y ), // v2
-	        glm::vec2( mPosition.x + 32.0f, mPosition.y ), // v3
-	    };
-
-	    // v0, v1, v2
-	    // v2, v1, v3
-
-	    RenderCommand cmd;
-	    cmd.op               = RENDER_OP_PRIMITIVE;
-	    cmd.primmode         = PRIMITIVE_QUAD;
-	    cmd.verts            = (PrimitiveVertex*) &quaddata[0];
-	    cmd.vertcount        = 4;
-	    cmd.flags            = RENDER_SCREEN_SPACE;
-	    cmd.color[0]         = mColor.x;
-	    cmd.color[1]         = mColor.y;
-	    cmd.color[2]         = mColor.z;
-	    cmd.color[3]         = 1.0f;
-	    //rc->AddOrAppendCommand( cmd );
 	}
 
 } /* namespace Procyon */
