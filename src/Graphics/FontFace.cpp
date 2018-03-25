@@ -206,9 +206,8 @@ namespace Procyon {
 			}
 
             Glyph& glyph = glyphs[ r.id ];
-            glyph.pixel_offset = glm::vec2( r.x + 1, r.y + 1 );
-            glyph.uvoff = glm::vec2( glyph.pixel_offset ) / glm::vec2( dims );
-            glyph.uvsize = glm::vec2( r.w - 2, r.h - 2 ) / glm::vec2( dims );
+            glyph.atlas_offset = glm::ivec2( r.x + 1, r.y + 1 );
+            glyph.atlas_size = glm::ivec2( r.w - 2, r.h - 2 );
 		}
 
         return true;
@@ -239,7 +238,7 @@ namespace Procyon {
             {
                 for ( int h = 0; h < g.size.y; ++h )
                 {
-                    data[ (h + (int)g.pixel_offset.y) * dims.x + w + (int)g.pixel_offset.x ] = bitmap.buffer[ h * bitmap.pitch + w ];
+                    data[ (h + (int)g.atlas_offset.y) * dims.x + w + (int)g.atlas_offset.x ] = bitmap.buffer[ h * bitmap.pitch + w ];
                 }
             }
             //PROCYON_DEBUG( "FontFace", "Rasterized glyph '%c' uvoff <%f, %f> uvsize <%f, %f>"

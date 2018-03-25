@@ -229,10 +229,10 @@ namespace Procyon {
 	        quaddata.size[0]     = g->size.x;
 	        quaddata.size[1]     = g->size.y;
 	        quaddata.rotation    = mOrientation;
-	        quaddata.uvoffset[0] = g->uvoff.s;
-	        quaddata.uvoffset[1] = g->uvoff.t;
-	        quaddata.uvsize[0]   = g->uvsize.s;
-	        quaddata.uvsize[1]   = g->uvsize.t;
+	        quaddata.uvoffset[0] = (float)g->atlas_offset.s;
+	        quaddata.uvoffset[1] = (float)g->atlas_offset.t;
+	        quaddata.uvsize[0]   = (float)g->atlas_size.s;
+	        quaddata.uvsize[1]   = (float)g->atlas_size.t;
 	        quaddata.tint[0] 	 = mColor.x;
 	        quaddata.tint[1] 	 = mColor.y;
 	        quaddata.tint[2] 	 = mColor.z;

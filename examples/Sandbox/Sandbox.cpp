@@ -142,7 +142,7 @@ void Sandbox::Process( FrameTime t )
 
 	// Move camera
 	glm::vec2 target = mPlayer->GetPosition() + glm::vec2(0.0f, CAMERA_VERTICAL_OFFSET);
-    mCamera->SetPosition( mCamera->GetPosition() * (1.0f - CAMERA_LERP_RATE) + target * CAMERA_LERP_RATE );
+    mCamera->SetPosition( glm::floor( mCamera->GetPosition() * (1.0f - CAMERA_LERP_RATE) + target * CAMERA_LERP_RATE ) );
 
 	// Update fps text
 	mFpsText->SetText( BuildFPSString() );

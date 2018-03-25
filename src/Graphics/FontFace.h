@@ -40,12 +40,9 @@ namespace Procyon {
 	{
 		glm::vec2 	center;	// glyph center, baseline relative
 		glm::vec2 	size;	// glyph size, baseline relative (?)
-        glm::ivec2  pixel_offset;
-
-		glm::vec2 	uvoff;	// uv offset, bottom-left?
-		glm::vec2 	uvsize;	// uv box size
-
-		float 		    advance;// x-axis advance
+        glm::ivec2  atlas_offset;
+        glm::ivec2  atlas_size;
+		float 		advance;// x-axis advance
 	};
 
     struct FontMetrics

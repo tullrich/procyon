@@ -60,7 +60,7 @@ namespace GL {
 
 	        	glVertexAttribPointer(attribLoc, attribute.components, attribute.type
 	        		, attribute.normalize, attribute.stride
-	        		, reinterpret_cast<const void*>( attribute.offset) );
+	        		, reinterpret_cast<const void*>( attribute.offset ) );
 
 	        	glEnableVertexAttribArray(attribLoc);
         	}

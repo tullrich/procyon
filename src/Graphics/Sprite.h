@@ -36,16 +36,18 @@ namespace Procyon {
 	class Sprite : public Transformable, public Renderable
 	{
 	public:
+							Sprite();
 	    					Sprite( const Texture* tex );
 
-   		void 				SetTextureRect( const Rect& texRect );
-    	const Rect&  		GetTextureRect() const;
+   		void 				SetTextureRect( const IntRect& texRect );
+    	const IntRect&  	GetTextureRect() const;
     	glm::mat3 			GetUVTransform() const;
+		void				SetTexture( const Texture* tex );
 
     	virtual void 		PostRenderCommands( Renderer* r, RenderCore* rc ) const;
 	protected:
-	    const Texture* 			mTexture;
-	    Rect 					mTextureRect;
+	    const Texture*		mTexture;
+	    IntRect 			mTextureRect;
 	};
 
 } /* namespace Procyon */

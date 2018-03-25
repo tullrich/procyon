@@ -48,19 +48,17 @@ void AnimatedSprite::Stop()
 
 void AnimatedSprite::Process( FrameTime t )
 {
-	glm::vec2 texDims = mTexture->GetDimensions();
-
 	if ( mPlaying )
 	{
 	    mLifespan += t.dt;
 	}
 
     const float frameTime = 0.1f;
-    const int numColumns = 2;
+	const glm::ivec2 atlasDims( 2, 2 );
+	const glm::ivec2 frameDims( 32, 32 );
 
-    int atlasIdx    = (int)( mLifespan / frameTime ) % 4;
-    int columnIdx   = atlasIdx % numColumns;
-    int rowIdx      = atlasIdx / numColumns;
-	SetTextureRect( Rect( columnIdx * 32.0f / texDims.x, rowIdx * 32.0f / texDims.y
-		, 32.0f / texDims.x, 32.0f / texDims.y ) );
+    int atlasIdx    = (int)( mLifespan / frameTime ) % (atlasDims.x * atlasDims.y);
+    int columnIdx   = atlasIdx % atlasDims.y;
+    int rowIdx      = atlasIdx / atlasDims.y;
+	SetTextureRect( IntRect( glm::ivec2( columnIdx, rowIdx ) * frameDims, frameDims ) );
 }

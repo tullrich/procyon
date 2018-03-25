@@ -229,12 +229,12 @@ namespace Procyon {
 
 	static std::vector< glm::vec2 > BasicArc( const glm::vec2& P, float r, float dangle, float angle1, float angle2 )
 	{
-		float mod_diff = std::fmod( angle2 - angle1, 2.0f * M_PI );
+		float mod_diff = std::fmodf( angle2 - angle1, 2.0f * (float)M_PI );
 		float signed_dist = mod_diff;
-		if ( signed_dist > M_PI )
-			signed_dist -= 2.0f * M_PI;
-		else if ( signed_dist < -M_PI )
-			signed_dist += 2.0f * M_PI;
+		if ( signed_dist > (float)M_PI )
+			signed_dist -= 2.0f * (float)M_PI;
+		else if ( signed_dist < (float)-M_PI )
+			signed_dist += 2.0f * (float)M_PI;
 
 		PROCYON_DEBUG( "PolyLine", "angle1 %f, angle2 %f, signed_dist %f"
 	 		, angle1, angle2, signed_dist );
@@ -506,7 +506,7 @@ namespace Procyon {
 	        cmd.flags            = RENDER_SCREEN_SPACE;
 	        cmd.colorprimmode    = PRIMITIVE_TRIANGLE;
 	        cmd.colorverts       = (ColorVertex*) geometry.mVerts2.data();
-	        cmd.colorvertcount   = geometry.mVerts2.size();
+	        cmd.colorvertcount   = (int)geometry.mVerts2.size();
 	        mRenderCore->AddOrAppendCommand( cmd );
 		}
 		else
@@ -580,7 +580,7 @@ namespace Procyon {
 	}
 
 
-	void Renderer::DrawTexture( const Texture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, struct Rect textureRect /*= Rect() */ )
+	void Renderer::DrawTexture( const Texture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, Rect textureRect /*= Rect() */ )
 	{
         BatchedQuad quaddata;
         quaddata.position[0] = pos.x;

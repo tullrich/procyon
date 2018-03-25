@@ -74,7 +74,7 @@ namespace Procyon {
 		void 				DrawPolyLine( const std::vector< glm::vec2 >& points, const glm::vec4& color
 								, float width, PolyLineJoinMode joinMode, PolyLineCapMode capMode, float miterLimit = 1.0f );
 		void				DrawWorldLine( const glm::vec2& start, const glm::vec2& end, const glm::vec4& color );
-		void 				DrawTexture( const Texture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, struct Rect textureRect = Rect() );
+		void 				DrawTexture( const Texture* tex, const glm::vec2& pos, const glm::vec2& dim, float orient, Rect textureRect = Rect() );
         void                DrawFullscreenTexture( const Texture* tex );
 		void 				DrawRectShape( const glm::vec2& pos, const glm::vec2& dim, float orient, const glm::vec4& color );
 		void 				EndRender();

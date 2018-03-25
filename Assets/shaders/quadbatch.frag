@@ -9,5 +9,6 @@ out vec4 outColor;
 
 void main()
 {
-	outColor = texture( tex, uvcoords ) + vec4( tint, 0.0f );
+	vec2 texDims = vec2( textureSize( tex, 0 ) );
+	outColor = texture( tex, uvcoords / texDims ) + vec4( tint, 0.0f );
 }

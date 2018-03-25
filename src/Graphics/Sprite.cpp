@@ -25,21 +25,32 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Sprite.h"
 #include "Texture.h"
 #include "Renderer.h"
+#include "RenderCore.h"
 
 namespace Procyon {
 
-	Sprite::Sprite( const Texture* tex )
-        : mTexture( tex )
-        , mTextureRect( glm::vec2(), glm::vec2( 1.0f ) )
+	Sprite::Sprite()
+		: mTexture( NULL )
+		, mTextureRect( glm::ivec2( 0 ), glm::ivec2( 1 ) )
 	{
 	}
 
-    void Sprite::SetTextureRect( const Rect& texRect )
+	Sprite::Sprite( const Texture* tex )
+        : mTexture( tex )
+		, mTextureRect( glm::ivec2( 0 ), glm::ivec2( 1 ) )
+	{
+		if ( mTexture )
+		{
+			SetTextureRect( IntRect( glm::ivec2( 0 ), mTexture->GetDimensions() ) );
+		}
+	}
+
+    void Sprite::SetTextureRect( const IntRect& texRect )
     {
         mTextureRect = texRect;
     }
 
-    const Rect& Sprite::GetTextureRect() const
+    const IntRect& Sprite::GetTextureRect() const
     {
         return mTextureRect;
     }
@@ -49,9 +60,34 @@ namespace Procyon {
         return mTextureRect.GetTransform();
     }
 
+	void Sprite::SetTexture( const Texture* tex )
+	{
+		mTexture = tex;
+	}
+
     void Sprite::PostRenderCommands( Renderer* r, RenderCore* rc ) const
     {
-        r->DrawTexture( mTexture, mPosition, mDimensions, mOrientation, mTextureRect );
+        BatchedQuad quaddata;
+        quaddata.position[0] = mPosition.x;
+        quaddata.position[1] = mPosition.y;
+        quaddata.size[0]     = mScale.x;
+        quaddata.size[1]     = mScale.y;
+        quaddata.rotation    = mOrientation;
+        quaddata.uvoffset[0] = (float)mTextureRect.GetTopLeft().x;
+        quaddata.uvoffset[1] = (float)mTextureRect.GetTopLeft().y;
+        quaddata.uvsize[0]   = (float)mTextureRect.GetWidth();
+        quaddata.uvsize[1]   = (float)mTextureRect.GetHeight();
+        quaddata.tint[0]     = 0.0f;
+        quaddata.tint[1]     = 0.0f;
+        quaddata.tint[2]     = 0.0f;
+
+        RenderCommand cmd;
+        cmd.op               = RENDER_OP_QUAD;
+        cmd.flags            = 0;
+        cmd.texture          = mTexture;
+        cmd.instancecount    = 1;
+        cmd.quaddata         = &quaddata;
+        rc->AddOrAppendCommand( cmd );
     }
 
 } /* namespace Procyon */
