@@ -215,8 +215,16 @@ namespace Procyon {
 
     bool CachedFontSize::Rasterize( FT_Face face, glm::ivec2 dims )
     {
-        MutableImage img( dims.x, dims.y, 1 );
+        MutableImage img( dims.x, dims.y, 4 );
         unsigned char* data = img.MutableData();
+
+		for ( size_t i = 0; i < (dims.x * dims.y); i++ )
+        {
+            data[ i*4 ] = 255;
+            data[ i*4 + 1 ] = 255;
+            data[ i*4 + 2 ] = 255;
+            data[ i*4 + 3 ] = 0;
+        }
 
         for ( unsigned char code = 0; code < GLYPH_COUNT; code++ )
         {
@@ -238,7 +246,7 @@ namespace Procyon {
             {
                 for ( int h = 0; h < g.size.y; ++h )
                 {
-                    data[ (h + (int)g.atlas_offset.y) * dims.x + w + (int)g.atlas_offset.x ] = bitmap.buffer[ h * bitmap.pitch + w ];
+                    data[ ((h + (int)g.atlas_offset.y) * dims.x + w + (int)g.atlas_offset.x)*4 + 3 ] = bitmap.buffer[ h * bitmap.pitch + w ];
                 }
             }
             //PROCYON_DEBUG( "FontFace", "Rasterized glyph '%c' uvoff <%f, %f> uvsize <%f, %f>"

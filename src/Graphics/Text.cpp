@@ -102,12 +102,12 @@ namespace Procyon {
 		RecalculateDimensions();
 	}
 
-	void Text::SetColor( const glm::vec3& color )
+	void Text::SetColor( const glm::vec4& color )
 	{
 		mColor = color;
 	}
 
-	const glm::vec3& Text::GetColor() const
+	const glm::vec4& Text::GetColor() const
 	{
 		return mColor;
 	}
@@ -233,9 +233,10 @@ namespace Procyon {
 	        quaddata.uvoffset[1] = (float)g->atlas_offset.t;
 	        quaddata.uvsize[0]   = (float)g->atlas_size.s;
 	        quaddata.uvsize[1]   = (float)g->atlas_size.t;
-	        quaddata.tint[0] 	 = mColor.x;
-	        quaddata.tint[1] 	 = mColor.y;
-	        quaddata.tint[2] 	 = mColor.z;
+	        quaddata.color[0] 	 = mColor.x;
+	        quaddata.color[1] 	 = mColor.y;
+	        quaddata.color[2] 	 = mColor.z;
+			quaddata.color[3] 	 = mColor.w;
 
 	        RenderCommand cmd;
 	        cmd.op               = RENDER_OP_QUAD;

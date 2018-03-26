@@ -69,7 +69,8 @@ namespace GL {
 		GLint format;
 		switch( img.Components() )
 		{
-			case 1: format = GL_ALPHA; break;
+			case 1: format = GL_RED; break;
+			case 2: format = GL_RG; break;
 			case 3: format = GL_RGB; break;
 			case 4: format = GL_RGBA; break;
 			default: format = GL_RGBA; break; // unreachable
@@ -82,9 +83,9 @@ namespace GL {
 	    glTexParameteri( mTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 	    glTexParameteri( mTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-		glTexImage2D( mTarget, mipLevel, format, img.Width(), img.Height(), 0, format, GL_UNSIGNED_BYTE, img.Data() );
+		glTexImage2D( mTarget, mipLevel, format, img.GetWidth(), img.GetHeight(), 0, format, GL_UNSIGNED_BYTE, img.Data() );
 
-	    mDimensions = glm::ivec2( img.Width(), img.Height() );
+	    mDimensions = glm::ivec2( img.GetWidth(), img.GetHeight() );
         glBindTexture( mTarget, 0 );
 	}
 

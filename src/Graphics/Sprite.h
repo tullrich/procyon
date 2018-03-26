@@ -41,7 +41,6 @@ namespace Procyon {
 
    		void 				SetTextureRect( const IntRect& texRect );
     	const IntRect&  	GetTextureRect() const;
-    	glm::mat3 			GetUVTransform() const;
 		void				SetTexture( const Texture* tex );
 
     	virtual void 		PostRenderCommands( Renderer* r, RenderCore* rc ) const;

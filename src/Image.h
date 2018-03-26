@@ -32,8 +32,8 @@ namespace Procyon {
 	class IImage
 	{
 	public:
-		virtual int						Width() const = 0;
-		virtual int						Height() const = 0;
+		virtual int						GetWidth() const = 0;
+		virtual int						GetHeight() const = 0;
 		virtual int						Components() const = 0;
 		virtual const unsigned char* 	Data() const = 0;
 	};
@@ -44,8 +44,8 @@ namespace Procyon {
 										ImageBase();
 		virtual 						~ImageBase() { };
 
-		virtual int						Width() const;
-		virtual int						Height() const;
+		virtual int						GetWidth() const;
+		virtual int						GetHeight() const;
 		virtual int						Components() const;
 		virtual const unsigned char* 	Data() const;
 

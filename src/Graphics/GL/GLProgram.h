@@ -38,6 +38,7 @@ namespace GL {
 	public:
 		GLProgram();
 		GLProgram( const std::string& vertFilename, const std::string& fragFileName );
+		GLProgram( const std::string& vertFilename, const std::string& fragFileName, const std::vector< std::string >& defines );
 		~GLProgram();
 
 		void 	Link( GLShader* shader[], int count );

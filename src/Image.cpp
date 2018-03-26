@@ -36,12 +36,12 @@ namespace Procyon {
 	{
 	}
 
-	int ImageBase::Width() const
+	int ImageBase::GetWidth() const
 	{
 		return mWidth;
 	}
 
-	int ImageBase::Height() const
+	int ImageBase::GetHeight() const
 	{
 		return mHeight;
 	}
@@ -82,8 +82,8 @@ namespace Procyon {
 
 	MutableImage::MutableImage( const IImage& in, int components )
 	{
-		mWidth 		= in.Width();
-		mHeight 	= in.Height();
+		mWidth 		= in.GetWidth();
+		mHeight 	= in.GetHeight();
 		mComponents = glm::clamp<int>( components, 1, 4 );
 		mData 		= new unsigned char[ mWidth * mHeight * mComponents ]();
 

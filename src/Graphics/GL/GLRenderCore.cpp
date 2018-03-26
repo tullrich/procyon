@@ -75,20 +75,9 @@ namespace GL {
 		switch ( pm )
 		{
 			case PRIMITIVE_LINE: 			return GL_LINES;
-			case PRIMITIVE_LINE_STRIP: 		return GL_LINE_STRIP;
 			case PRIMITIVE_TRIANGLE: 		return GL_TRIANGLES;
-			case PRIMITIVE_TRIANGLE_STRIP: 	return GL_TRIANGLE_STRIP;
-			case PRIMITIVE_QUAD: 			return GL_TRIANGLE_STRIP;
 		}
 		return GL_INVALID_ENUM;
-	}
-
-	static RenderCommand TransformPrimitiveQuadCommand( const RenderCommand& cmd )
-	{
-		RenderCommand ret = cmd;
-		ret.primmode = PRIMITIVE_TRIANGLE;
-		ret.vertcount = 6 * ( cmd.vertcount / 4 );
-		return ret;
 	}
 
 	GLRenderCore::GLRenderCore()
@@ -100,7 +89,8 @@ namespace GL {
 		mBuffer 		= new GLBuffer( sizeof(gVertexAttribData), gVertexAttribData, GL_STREAM_DRAW );
 		mOffBuffer 		= new GLBuffer( sizeof(gVertexAttribData), gVertexAttribData, GL_STREAM_DRAW );
 
-   		mDefaultProg    = new GLProgram( "shaders/quadbatch.vert", "shaders/quadbatch.frag" );
+   		mDefaultProg    = new GLProgram( "shaders/quadbatch.vert", "shaders/quadbatch.frag", { "UV0_ENABLED", "TEXTURE0_ENABLED" } );
+		mTexturelessProg    = new GLProgram( "shaders/quadbatch.vert", "shaders/quadbatch.frag" );
    		mDefaultPrimitiveProg = new GLProgram( "shaders/primitive.vert", "shaders/primitive.frag" );
    		mDefaultPolygonProg = new GLProgram( "shaders/polygon.vert", "shaders/polygon.frag" );
 		mDefaultLineProg = new GLProgram( "shaders/line.vert", "shaders/line.frag" );
@@ -114,6 +104,7 @@ namespace GL {
 		delete mDefaultLineProg;
 		delete mDefaultPrimitiveProg;
 		delete mDefaultProg;
+		delete mTexturelessProg;
 		delete mOffBuffer;
 		delete mBuffer;
 		delete mQuadIndices;
@@ -142,34 +133,7 @@ namespace GL {
 			case RENDER_OP_QUAD:
 				return PushData( (const unsigned char*)rc.quaddata, rc.instancecount * sizeof( BatchedQuad ) );
 			case RENDER_OP_PRIMITIVE:
-			{
-				if ( rc.primmode == PRIMITIVE_QUAD )
-				{
-					size_t size = sizeof(PrimitiveVertex) * 6 * rc.vertcount/4;
-					if ( gVertexDataWriteOffset + size >= MAX_VERTEX_ATTRIB_BYTES )
-					{
-						return false;
-					}
-
-					for ( int i = 0; i < rc.vertcount/4; i++ )
-					{
-						size_t vert_start = i * 4;
-						PrimitiveVertex verts[ 6 ];
-						verts[ 0 ] = rc.verts[ vert_start];
-						verts[ 1 ] = rc.verts[ vert_start+1 ];
-						verts[ 2 ] = rc.verts[ vert_start+2 ];
-						verts[ 3 ] = rc.verts[ vert_start+1 ];
-						verts[ 4 ] = rc.verts[ vert_start+3 ];
-						verts[ 5 ] = rc.verts[ vert_start+2 ];
-						PushData( (const unsigned char*)verts, 6 * sizeof( PrimitiveVertex ) );
-					}
-					return true;
-				}
-				else
-				{
-					return PushData( (const unsigned char*)rc.verts, rc.vertcount * sizeof( PrimitiveVertex ) );
-				}
-			}
+				return PushData( (const unsigned char*)rc.verts, rc.vertcount * sizeof( PrimitiveVertex ) );
 			case RENDER_OP_POLYGON:
 				return PushData( (const unsigned char*)rc.colorverts, rc.colorvertcount * sizeof( ColorVertex ) );
 			case RENDER_OP_AA_LINE:
@@ -198,18 +162,8 @@ namespace GL {
 		}
 	}
 
-	void GLRenderCore::AddOrAppendCommand( const RenderCommand& raw )
+	void GLRenderCore::AddOrAppendCommand( const RenderCommand& cmd )
 	{
-		RenderCommand cmd;
-		if ( raw.op == RENDER_OP_PRIMITIVE && raw.primmode == PRIMITIVE_QUAD )
-		{
-			cmd = TransformPrimitiveQuadCommand( raw );
-		}
-		else
-		{
-			cmd = raw;
-		}
-
 		if ( cmd.op == RENDER_OP_QUAD && mRenderCommandCount > 0 )
 		{
 			RenderCommand& prev = mCmdBuffer[ mRenderCommandCount - 1 ];
@@ -230,7 +184,7 @@ namespace GL {
 			if ( prev == cmd )
 			{
 				// append
-				if ( PushCommandData( raw ) )
+				if ( PushCommandData( cmd ) )
 				{
 					prev.vertcount += cmd.vertcount;
 				}
@@ -244,7 +198,7 @@ namespace GL {
 
 	void GLRenderCore::RenderQuadBatch( const RenderCommand& rc, const Camera2D& camera  )
 	{
-		const GLProgram* program = mDefaultProg;
+		const GLProgram* program = ( rc.texture ) ? mDefaultProg : mTexturelessProg;
 		program->Bind();
 
 		GLint sstLoc = program->GetUniformLocation( "screenSpaceTransform" );
@@ -265,10 +219,13 @@ namespace GL {
 		glUniform2f( dimsLoc, screenDims.x, screenDims.y );
 
 		// Bind the texture
-	    GLint texLoc = program->GetUniformLocation( "tex" );
-		glUniform1i( texLoc, 0 );
-		//glActiveTexture( GL_TEXTURE0 );
-		rc.texture->Bind();
+		if ( rc.texture )
+		{
+			GLint texLoc = program->GetUniformLocation( "tex" );
+			glUniform1i( texLoc, 0 );
+			//glActiveTexture( GL_TEXTURE0 );
+			rc.texture->Bind();
+		}
 
 		// Bind the immuatable quad position data
 		mQuadIndices->Bind( GL_ELEMENT_ARRAY_BUFFER );
@@ -276,9 +233,13 @@ namespace GL {
 	    GLint vertPosLoc = program->GetAttributeLocation( "vertPosition" );
     	glVertexAttribPointer( vertPosLoc, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0 );
 	    glEnableVertexAttribArray( vertPosLoc );
-	    GLint uvLoc = program->GetAttributeLocation( "uv" );
-    	glVertexAttribPointer( uvLoc, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (const void*)(sizeof(float) * 2)  );
-	    glEnableVertexAttribArray( uvLoc );
+
+		if ( rc.texture )
+		{
+			GLint uvLoc = program->GetAttributeLocation( "uv" );
+    		glVertexAttribPointer( uvLoc, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (const void*)(sizeof(float) * 2)  );
+			glEnableVertexAttribArray( uvLoc );
+		}
 
 		mBuffer->Bind( GL_ARRAY_BUFFER );
 
@@ -300,21 +261,24 @@ namespace GL {
     	glVertexAttribDivisor( quadRotLoc, 1 );
 	    glEnableVertexAttribArray( quadRotLoc );
 
-	    // Bind the quadbatch uv position
-	    GLint quadUVOffsetLoc = program->GetAttributeLocation( "quadUVOffset" );
-    	glVertexAttribPointer( quadUVOffsetLoc, 2, GL_FLOAT, GL_FALSE, BATCH_STRIDE, (const void*)(sizeof(float) * 5 + rc.offset) );
-    	glVertexAttribDivisor( quadUVOffsetLoc, 1 );
-	    glEnableVertexAttribArray( quadUVOffsetLoc );
+		GLint quadUVOffsetLoc = program->GetAttributeLocation( "quadUVOffset" );
+		GLint quadUVSizeLoc = program->GetAttributeLocation( "quadUVSize" );
+		if ( rc.texture )
+		{
+			// Bind the quadbatch uv position
+			glVertexAttribPointer( quadUVOffsetLoc, 2, GL_FLOAT, GL_FALSE, BATCH_STRIDE, (const void*)(sizeof(float) * 5 + rc.offset) );
+			glVertexAttribDivisor( quadUVOffsetLoc, 1 );
+			glEnableVertexAttribArray( quadUVOffsetLoc );
 
-	    // Bind the quadbatch uv sizes
-	    GLint quadUVSizeLoc = program->GetAttributeLocation( "quadUVSize" );
-    	glVertexAttribPointer( quadUVSizeLoc, 2, GL_FLOAT, GL_FALSE, BATCH_STRIDE, (const void*)(sizeof(float) * 7 + rc.offset) );
-    	glVertexAttribDivisor( quadUVSizeLoc, 1 );
-	    glEnableVertexAttribArray( quadUVSizeLoc );
+			// Bind the quadbatch uv sizes
+			glVertexAttribPointer( quadUVSizeLoc, 2, GL_FLOAT, GL_FALSE, BATCH_STRIDE, (const void*)(sizeof(float) * 7 + rc.offset) );
+			glVertexAttribDivisor( quadUVSizeLoc, 1 );
+			glEnableVertexAttribArray( quadUVSizeLoc );
+		}
 
 	    // Bind the quadbatch tint
 	    GLint quadTintLoc = program->GetAttributeLocation( "quadTint" );
-    	glVertexAttribPointer( quadTintLoc, 3, GL_FLOAT, GL_FALSE, BATCH_STRIDE, (const void*)(sizeof(float) * 9 + rc.offset) );
+    	glVertexAttribPointer( quadTintLoc, 4, GL_FLOAT, GL_FALSE, BATCH_STRIDE, (const void*)(sizeof(float) * 9 + rc.offset) );
     	glVertexAttribDivisor( quadTintLoc, 1 );
 	    glEnableVertexAttribArray( quadTintLoc );
 

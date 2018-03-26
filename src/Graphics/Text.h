@@ -50,8 +50,8 @@ namespace Procyon {
 		const FontFace* 	GetFont() const;
 		void 				SetFont( const FontFace* font );
 
-		void 				SetColor( const glm::vec3& color );
-		const glm::vec3& 	GetColor() const;
+		void 				SetColor( const glm::vec4& color );
+		const glm::vec4& 	GetColor() const;
 
 		void 				SetFontSize( unsigned int fontsize );
 		unsigned int 		GetFontSize() const;
@@ -66,7 +66,7 @@ namespace Procyon {
 
 		const FontFace* 	mFont;
 		std::string 		mText;
-		glm::vec3			mColor;
+		glm::vec4			mColor;
 		unsigned int 		mFontSize;
 		glm::vec2 			mDims;
 	};

@@ -78,6 +78,7 @@ namespace GL {
 		GLBuffer* 			mQuadIndices;
 
 		GLProgram* 			mDefaultProg;
+		GLProgram* 			mTexturelessProg;
 		GLProgram* 			mDefaultPrimitiveProg;
 		GLProgram* 			mDefaultPolygonProg;
 		GLProgram* 			mDefaultLineProg;

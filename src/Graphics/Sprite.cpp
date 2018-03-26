@@ -55,11 +55,6 @@ namespace Procyon {
         return mTextureRect;
     }
 
-    glm::mat3 Sprite::GetUVTransform() const
-    {
-        return mTextureRect.GetTransform();
-    }
-
 	void Sprite::SetTexture( const Texture* tex )
 	{
 		mTexture = tex;
@@ -77,9 +72,10 @@ namespace Procyon {
         quaddata.uvoffset[1] = (float)mTextureRect.GetTopLeft().y;
         quaddata.uvsize[0]   = (float)mTextureRect.GetWidth();
         quaddata.uvsize[1]   = (float)mTextureRect.GetHeight();
-        quaddata.tint[0]     = 0.0f;
-        quaddata.tint[1]     = 0.0f;
-        quaddata.tint[2]     = 0.0f;
+        quaddata.color[0]     = 1.0f;
+        quaddata.color[1]     = 1.0f;
+        quaddata.color[2]     = 1.0f;
+		quaddata.color[3]     = 1.0f;
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;

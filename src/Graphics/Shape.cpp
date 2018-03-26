@@ -59,26 +59,28 @@ namespace Procyon {
 
 	void Shape::PostRenderCommands(  Renderer* r, RenderCore* rc ) const
 	{
-		glm::mat3 tform = GetTransform();
-		glm::vec2 quaddata[] =
-		{
-			glm::vec2( tform * glm::vec3( 0.0f, 1.0f, 1.0f ) ), // v0
-			glm::vec2( tform * glm::vec3( 1.0f, 1.0f, 1.0f ) ), // v1
-			glm::vec2( tform * glm::vec3( 0.0f, 0.0f, 1.0f ) ), // v2
-			glm::vec2( tform * glm::vec3( 1.0f, 0.0f, 1.0f ) ), // v3
-		};
+        BatchedQuad quaddata;
+        quaddata.position[0] = mPosition.x;
+        quaddata.position[1] = mPosition.y;
+        quaddata.size[0]     = mScale.x;
+        quaddata.size[1]     = mScale.y;
+        quaddata.rotation    = mOrientation;
+        quaddata.uvoffset[0] = 0.0f;
+        quaddata.uvoffset[1] = 0.0f;0.0f;
+        quaddata.uvsize[0]   = 0.0f;
+        quaddata.uvsize[1]   = 0.0f;
+        quaddata.color[0]     = mColor.x;
+        quaddata.color[1]     = mColor.x;
+        quaddata.color[2]     = mColor.x;
+		quaddata.color[3]     = mColor.x;
 
-		RenderCommand cmd;
-		cmd.op               = RENDER_OP_PRIMITIVE;
-		cmd.primmode         = PRIMITIVE_QUAD;
-		cmd.verts            = (PrimitiveVertex*) &quaddata[0];
-		cmd.vertcount        = 4;
-		cmd.flags            = RENDER_SCREEN_SPACE;
-		cmd.color[0]         = mColor.x;
-		cmd.color[1]         = mColor.y;
-		cmd.color[2]         = mColor.z;
-		cmd.color[3]         = mColor.w;
-		rc->AddOrAppendCommand( cmd );
+        RenderCommand cmd;
+        cmd.op               = RENDER_OP_QUAD;
+        cmd.flags            = RENDER_SCREEN_SPACE;
+        cmd.texture          = NULL;
+        cmd.instancecount    = 1;
+        cmd.quaddata         = &quaddata;
+        rc->AddOrAppendCommand( cmd );
 	}
 
 } /* namespace Procyon */

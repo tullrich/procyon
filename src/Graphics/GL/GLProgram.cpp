@@ -46,6 +46,18 @@ GLProgram::GLProgram( const std::string& vertFilename, const std::string& fragFi
     Link( shaders, 2 );
 }
 
+GLProgram::GLProgram( const std::string& vertFilename, const std::string& fragFileName, const std::vector< std::string >& defines )
+{
+	mProgramId = glCreateProgram();
+
+	GLShader vertShader( GL_VERTEX_SHADER, vertFilename, defines );
+	GLShader fragShader( GL_FRAGMENT_SHADER, fragFileName, defines );
+
+	// link
+	GLShader* shaders[] = { &vertShader, &fragShader };
+	Link( shaders, 2 );
+}
+
 GLProgram::~GLProgram()
 {
 	glDeleteProgram( mProgramId );

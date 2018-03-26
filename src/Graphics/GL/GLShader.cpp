@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-namespace GL { 
+namespace GL {
 
 GLShader::GLShader( GLenum shaderType )
 {
@@ -36,12 +36,43 @@ GLShader::GLShader( GLenum shaderType )
 GLShader::GLShader( GLenum shaderType, const std::string& filepath )
 {
     mShaderId = glCreateShader( shaderType );
-    
+
     // Create vertex shader
     std::string shaderSrc;
     if( !ReadShaderSource( filepath, shaderSrc ) )
         throw std::runtime_error("Unable to parse shader");
 
+    PROCYON_DEBUG("GL", "Parsed ShaderSrc: %s ", shaderSrc.c_str() );
+
+    LoadShaderSource( shaderSrc );
+}
+
+GLShader::GLShader( GLenum shaderType, const std::string& filepath, const std::vector< std::string >& defines )
+{
+    mShaderId = glCreateShader( shaderType );
+
+    // Create vertex shader
+    std::string rawSrc;
+    if( !ReadShaderSource( filepath, rawSrc ) )
+        throw std::runtime_error("Unable to parse shader");
+
+	std::string shaderSrc = "#version 130\n";
+
+	// Extract and erase version line
+	if ( !rawSrc.compare(0, 8, "#version") )
+	{
+		std::istringstream iss(rawSrc);
+		std::getline( iss, shaderSrc );
+		shaderSrc += "\n";
+		rawSrc.erase(0, rawSrc.find("\n") + 1);
+	}
+
+	for ( size_t i = 0; i < defines.size(); i++ )
+	{
+		shaderSrc += "#define " + defines[ i ] + "\n";
+	}
+
+	shaderSrc += rawSrc;
     PROCYON_DEBUG("GL", "Parsed ShaderSrc: %s ", shaderSrc.c_str() );
 
     LoadShaderSource( shaderSrc );
@@ -92,7 +123,7 @@ bool GLShader::ReadShaderSource( const std::string &path, std::string &out )
     std::ifstream file( path );
     if( file )
     {
-        out.assign(std::istreambuf_iterator<char>( file ), 
+        out.assign(std::istreambuf_iterator<char>( file ),
             std::istreambuf_iterator<char>());
         return true;
     }

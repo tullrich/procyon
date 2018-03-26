@@ -592,9 +592,10 @@ namespace Procyon {
         quaddata.uvoffset[1] = textureRect.GetTopLeft().y;
         quaddata.uvsize[0]   = textureRect.GetWidth();
         quaddata.uvsize[1]   = textureRect.GetHeight();
-        quaddata.tint[0]     = 0.0f;
-        quaddata.tint[1]     = 0.0f;
-        quaddata.tint[2]     = 0.0f;
+        quaddata.color[0]     = 1.0f;
+        quaddata.color[1]     = 1.0f;
+        quaddata.color[2]     = 1.0f;
+		quaddata.color[3]     = 1.0f;
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;
@@ -617,9 +618,10 @@ namespace Procyon {
         quaddata.uvoffset[1] = 0.0f;
         quaddata.uvsize[0]   = 1.0f;
         quaddata.uvsize[1]   = 1.0f;
-        quaddata.tint[0]     = 0.0f;
-        quaddata.tint[1]     = 0.0f;
-        quaddata.tint[2]     = 0.0f;
+		quaddata.color[0]    = 1.0f;
+		quaddata.color[1]    = 1.0f;
+		quaddata.color[2]    = 1.0f;
+		quaddata.color[3]    = 1.0f;;
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;
@@ -633,29 +635,28 @@ namespace Procyon {
 
 	void Renderer::DrawRectShape( const glm::vec2& pos, const glm::vec2& dim, float orient, const glm::vec4& color )
 	{
-	    glm::mat3 tform =glm::translate( glm::mat3(), pos )
-				* glm::rotate( glm::mat3(), orient )
-	            * glm::scale( glm::mat3(), dim );
+		BatchedQuad quaddata;
+		quaddata.position[0] = pos.x;
+		quaddata.position[1] = pos.y;
+		quaddata.size[0]     = dim.x;
+		quaddata.size[1]     = dim.y;
+		quaddata.rotation    = orient;
+		quaddata.uvoffset[0] = 0.0f;
+		quaddata.uvoffset[1] = 0.0f;
+		quaddata.uvsize[0]   = 0.0f;
+		quaddata.uvsize[1]   = 0.0f;
+		quaddata.color[0]     = color.x;
+		quaddata.color[1]     = color.y;
+		quaddata.color[2]     = color.z;
+		quaddata.color[3]     = color.w;
 
-        glm::vec2 verts[] =
-        {
-            glm::vec2( tform * glm::vec3( -0.5f, 0.5f, 1.0f ) ), // v0
-            glm::vec2( tform * glm::vec3( 0.5f, 0.5f, 1.0f ) ), // v1
-            glm::vec2( tform * glm::vec3( -0.5f, -0.5f, 1.0f ) ), // v2
-            glm::vec2( tform * glm::vec3( 0.5f, -0.5f, 1.0f ) ), // v3
-        };
-
-        RenderCommand cmd;
-        cmd.op               = RENDER_OP_PRIMITIVE;
-        cmd.primmode         = PRIMITIVE_QUAD;
-        cmd.flags            = 0;
-        cmd.verts            = (PrimitiveVertex*) &verts[0];
-        cmd.vertcount        = 4;
-        cmd.color[0]         = color.x;
-        cmd.color[1]         = color.y;
-        cmd.color[2]         = color.z;
-        cmd.color[3]         = color.w;
-        mRenderCore->AddOrAppendCommand( cmd );
+		RenderCommand cmd;
+		cmd.op               = RENDER_OP_QUAD;
+		cmd.flags            = 0;
+		cmd.texture          = NULL;
+		cmd.instancecount    = 1;
+		cmd.quaddata         = &quaddata;
+		mRenderCore->AddOrAppendCommand( cmd );
 	}
 
 } /* namespace Procyon */

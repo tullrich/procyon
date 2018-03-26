@@ -29,13 +29,14 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 
-namespace GL { 
+namespace GL {
 
 	class GLShader
 	{
 	public:
 				GLShader( GLenum shaderType );
 				GLShader( GLenum shaderType, const std::string& filepath );
+				GLShader( GLenum shaderType, const std::string& filepath, const std::vector< std::string >& defines );
 				~GLShader();
 
 		void 	LoadShaderSource( const std::string& source );

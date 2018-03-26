@@ -110,7 +110,7 @@ void Sandbox::Initialize( int argc, char *argv[] )
 	// Fps Text
 	mFpsText = new Text( SandboxAssets::sMainFont, 18 );
 	mFpsText->SetPosition( glm::floor( 6.0f-mCamera->GetWidth() / 2.0f ), glm::floor( -mCamera->GetHeight() / 2.0f ) );
-	mFpsText->SetColor( glm::vec3( 1.0f ) );
+	mFpsText->SetColor( glm::vec4( 1.0f ) );
 
     // Create the optional joystick device (hardcoded for now)
     try

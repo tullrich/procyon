@@ -50,10 +50,7 @@ namespace Procyon {
 	enum PrimitiveMode
 	{
 		PRIMITIVE_LINE,
-		PRIMITIVE_LINE_STRIP,
 		PRIMITIVE_TRIANGLE,
-		PRIMITIVE_TRIANGLE_STRIP,
-		PRIMITIVE_QUAD,
 	};
 
 	struct BatchedQuad
@@ -63,7 +60,7 @@ namespace Procyon {
 		float rotation;
 		float uvoffset[2];
 		float uvsize[2];
-		float tint[3];
+		float color[4];
 	};
 
 	struct PrimitiveVertex

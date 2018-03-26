@@ -162,7 +162,7 @@ Player::Player( World* world )
 	mJumpSnd = new Sound( SandboxAssets::sJumpSound );
 
 	mPlayerText = new Text( SandboxAssets::sMainFont, 12 );
-	mPlayerText->SetColor( glm::vec3( 1.0f ) );
+	mPlayerText->SetColor( glm::vec4( 1.0f ) );
 }
 
 Player::~Player()

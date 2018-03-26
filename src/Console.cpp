@@ -92,16 +92,16 @@ Console style vars
 #define CONSOLE_INNER_PADDING 2.0f
 
 // prompt text color
-static const glm::vec3 	sPromptColor( 0.4f, 1.0f, 0.4f );
+static const glm::vec4 sPromptColor( 0.4f, 1.0f, 0.4f, 1.0f );
 
 // error text color
-static const glm::vec3 	sErrorColor( 1.0f, 0.7f, 0.7f );
+static const glm::vec4 sErrorColor( 1.0f, 0.7f, 0.7f, 1.0f );
 
 // system text color
-static const glm::vec3 	sSystemColor( 0.75f );
+static const glm::vec4 sSystemColor( 0.75f, 0.75f, 0.75f, 1.0f );
 
 // standard text print color
-static const glm::vec3 	sTextColor( 1.0f );
+static const glm::vec4 sTextColor( 1.0f );
 
 /*
 ================
@@ -215,7 +215,7 @@ namespace Procyon {
         const int promptSize = ( int )( sPromptText->GetTextDimensions().x + PROMPT_PADDING );
 
         sInputText = new Text( "", sConsoleFont, CONSOLE_FONT_HEIGHT );
-        sInputText->SetColor( glm::vec3( 1.0f, 1.0f, 1.0f ) );
+        sInputText->SetColor( glm::vec4( 1.0f ) );
         sInputText->SetPosition( TEXT_PADDING + promptSize, HeightForRow(-1) );
     }
 
@@ -380,7 +380,7 @@ namespace Procyon {
                 renderer->DrawLine(
                     glm::vec2( TEXT_PADDING + cursorX + 1.0f, TEXT_PADDING ),
                     glm::vec2( TEXT_PADDING + cursorX + 1.0f, TEXT_PADDING + metrics.line_height ),
-                    glm::vec4( sPromptColor, 1.0f ) );
+                    sPromptColor );
             }
 
             renderer->PopCamera();
@@ -394,7 +394,7 @@ namespace Procyon {
     Prints a massage to the console in the provided color. This advances the history by 1 and will drop previous messages off the end of the buffer.
     ================
     */
-    void Console_PrintLine( const std::string& msg, const glm::vec3& rgb )
+    void Console_PrintLine( const std::string& msg, const glm::vec4& rgb )
     {
         sHistory[ sNextHistoryLine ]->SetText( msg );
         sHistory[ sNextHistoryLine ]->SetColor( rgb );
