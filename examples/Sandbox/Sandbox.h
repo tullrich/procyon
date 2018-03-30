@@ -43,9 +43,11 @@ namespace Procyon
 using namespace Procyon::GL;
 using namespace Procyon;
 
-#define SANDBOX_WINDOW_WIDTH 1280
-#define SANDBOX_WINDOW_HEIGHT 800
-#define CAMERA_VERTICAL_OFFSET 250.0f
+#define SANDBOX_RESOLUTION_X 480
+#define SANDBOX_RESOLUTION_Y 270
+#define SANDBOX_WINDOW_WIDTH 960
+#define SANDBOX_WINDOW_HEIGHT 540
+#define CAMERA_VERTICAL_OFFSET 80.0f
 #define CAMERA_LERP_RATE 0.25f
 
 class Sandbox : public MainLoop

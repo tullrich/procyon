@@ -27,9 +27,11 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ProcyonCommon.h"
 
-#define TILE_PIXEL_SIZE 32
+#define TILE_PIXEL_SIZE 16
 #define HALF_TILE_SIZE (((float)TILE_PIXEL_SIZE)/2.0f)
-#define POINT_TO_TILE(x,y) glm::ivec2(x / TILE_PIXEL_SIZE, y / TILE_PIXEL_SIZE)
+#define TILE_TO_WORLD(x, y) ( glm::vec2( glm::ivec2( x, y ) * TILE_PIXEL_SIZE ) )
+#define TILE_CENTER_TO_WORLD(x, y) ( TILE_TO_WORLD(x, y) + HALF_TILE_SIZE )
+#define WORLD_TO_TILE(x,y) glm::ivec2(x / TILE_PIXEL_SIZE, y / TILE_PIXEL_SIZE)
 
 namespace Procyon {
 

@@ -380,12 +380,12 @@ void ProcyonCanvas::mousePressEvent( QMouseEvent* event )
     if ( event->buttons() & Qt::RightButton )
     {
         PROCYON_DEBUG( "ProcyonCanvas", "OnMousePress" );
-        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), mEditor->GetSelectedTileId(), mStroke );
+        mActiveDocument->SetTile( WORLD_TO_TILE( scr.x, scr.y ), mEditor->GetSelectedTileId(), mStroke );
     }
     else if ( event->buttons() & Qt::MiddleButton ) // Erase
     {
         PROCYON_DEBUG( "ProcyonCanvas", "OnMousePress" );
-        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 0, mStroke );
+        mActiveDocument->SetTile( WORLD_TO_TILE( scr.x, scr.y ), 0, mStroke );
     }
 }
 
@@ -436,12 +436,12 @@ void ProcyonCanvas::OnMouseDrag( QMouseEvent* event )
     else if ( event->buttons() & Qt::RightButton )
     {
         PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
-        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), mEditor->GetSelectedTileId(), mStroke );
+        mActiveDocument->SetTile( WORLD_TO_TILE( scr.x, scr.y ), mEditor->GetSelectedTileId(), mStroke );
     }
     else if ( event->buttons() & Qt::MiddleButton ) // Move the camera
     {
         PROCYON_DEBUG( "ProcyonCanvas", "OnMouseDrag" );
-        mActiveDocument->SetTile( POINT_TO_TILE( scr.x, scr.y ), 0, mStroke );
+        mActiveDocument->SetTile( WORLD_TO_TILE( scr.x, scr.y ), 0, mStroke );
     }
 
 	updateGL();

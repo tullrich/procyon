@@ -156,7 +156,7 @@ Player::Player( World* world )
 {
 	mSprite = new AnimatedSprite( SandboxAssets::sPlayerTexture );
 	mSprite->SetOrigin( 0.5f, 0.5f );
-	mSprite->SetScale( glm::vec2( 32.0f ) * 2.0f );
+	mSprite->SetScale( SandboxAssets::sPlayerTexture->GetDimensions() / 2 );
 	mSprite->SetPosition( mBounds.mCenter );
 
 	mJumpSnd = new Sound( SandboxAssets::sJumpSound );
@@ -220,7 +220,7 @@ void Player::Process( FrameTime ft )
 		mSprite->Play();
 		if ( Sign( mSprite->GetScale().x ) != Sign( mVelocity.x ) )
 		{
-			mSprite->SetScale( 2.0f * glm::vec2( 32.0f * (float)Sign( mVelocity.x ), 32.0f ) );
+			mSprite->SetScale( glm::vec2( fabs( mSprite->GetScale().x )* (float)Sign( mVelocity.x ), mSprite->GetScale().y ) );
 		}
 	}
 	else
@@ -267,7 +267,7 @@ void Player::CollideTile( const glm::vec2& delta, const glm::ivec2& t, FrameTime
 		}
 		case TILETYPE_ONE_WAY:
 		{
-			if ( QueryAabbVsTopPlane( delta, mBounds, tileBounds, &c ) )
+			if ( QueryAabbVsTopPlane( delta, mBounds, tileBounds, &c ) && !mWorld->IsInternalCollision( t, c ) )
 			{
 				PROCYON_DEBUG( "PlayerCollision", "Contact with tile top plane <%i, %i>" \
 					" normal <%.2f, %.2f> distance %.20f"

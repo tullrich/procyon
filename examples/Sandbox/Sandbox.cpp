@@ -74,7 +74,7 @@ void Sandbox::Initialize( int argc, char *argv[] )
 	{
 		Sprite* lightpost = new Sprite( SandboxAssets::sLightPostTexture );
 		lightpost->SetOrigin( 0.5f, 0.5f );
-		lightpost->SetPosition( glm::vec2( TILE_PIXEL_SIZE * (6.0f + 6.0f * i), TILE_PIXEL_SIZE * 4.5f ) - TILE_PIXEL_SIZE/2.0f );
+		lightpost->SetPosition( TILE_TO_WORLD( 6 + 6 * i, 7 ) );
 		lightpost->SetScale( SandboxAssets::sLightPostTexture->GetDimensions() );
 		mStaticSprites.push_back( lightpost );
 	}
@@ -84,7 +84,7 @@ void Sandbox::Initialize( int argc, char *argv[] )
 	{
 		Sprite* dumpster = new Sprite( SandboxAssets::sDumpsterTexture );
 		dumpster->SetOrigin( 0.5f, 0.5f );
-		dumpster->SetPosition( glm::vec2( TILE_PIXEL_SIZE * (12.0f + i * 3.0f), TILE_PIXEL_SIZE * 3.0f ) - TILE_PIXEL_SIZE/2.0f );
+		dumpster->SetPosition( TILE_TO_WORLD( 6 + 6 * i, 2 ));
 		dumpster->SetScale( SandboxAssets::sDumpsterTexture->GetDimensions() );
 		mStaticSprites.push_back( dumpster );
 	}
@@ -94,7 +94,7 @@ void Sandbox::Initialize( int argc, char *argv[] )
 	{
 		Sprite* lightpost_beam = new Sprite( SandboxAssets::sLightPostBeamTexture );
 		lightpost_beam->SetOrigin( 0.5f, 0.5f );
-		lightpost_beam->SetPosition( glm::vec2( TILE_PIXEL_SIZE * (6.0f + 6.0f * i), TILE_PIXEL_SIZE * 4.5f ) - TILE_PIXEL_SIZE/2.0f );
+		lightpost_beam->SetPosition( TILE_TO_WORLD( 6 + 6 * i, 7 ) );
 		lightpost_beam->SetScale( SandboxAssets::sLightPostBeamTexture->GetDimensions() );
 		mStaticSprites.push_back( lightpost_beam );
 	}
@@ -102,9 +102,7 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
     // Create the camera
     mCamera = new Camera2D();
-    mCamera->OrthographicProj(
-          -SANDBOX_WINDOW_WIDTH / 2.0f, SANDBOX_WINDOW_WIDTH / 2.0f
-        , -SANDBOX_WINDOW_HEIGHT / 2.0f, SANDBOX_WINDOW_HEIGHT / 2.0f );
+	mCamera->OrthographicProj( -SANDBOX_RESOLUTION_X / 2.0f, SANDBOX_RESOLUTION_X / 2.0f, -SANDBOX_RESOLUTION_Y / 2.0f, SANDBOX_RESOLUTION_Y / 2.0f );
 	mCamera->SetPosition( mPlayer->GetPosition() );
 
 	// Fps Text
@@ -182,7 +180,7 @@ void Sandbox::Process( FrameTime t )
 
 void Sandbox::Render()
 {
-	mRenderer->ResetCameras(*mCamera);
+	mRenderer->ResetCameras( *mCamera );
 
 	mWorld->Render( mRenderer );
 
@@ -218,7 +216,8 @@ void Sandbox::OnMouseMoved( const InputEvent& ev )
 void Sandbox::OnWindowChanged( const InputEvent& ev )
 {
 	PROCYON_DEBUG( "Sandbox", "OnWindowChanged <%i, %i>", ev.width, ev.height );
-	mCamera->OrthographicProj( -ev.width / 2.0f, ev.width / 2.0f, -ev.height / 2.0f, ev.height / 2.0f );
+
+	mCamera->OrthographicProj( -SANDBOX_RESOLUTION_X / 2.0f, SANDBOX_RESOLUTION_X / 2.0f, -SANDBOX_RESOLUTION_Y / 2.0f, SANDBOX_RESOLUTION_Y / 2.0f );
 	mFpsText->SetPosition( glm::floor( 6.0f-mCamera->GetWidth() / 2.0f ), glm::floor( -mCamera->GetHeight() / 2.0f ) );
 }
 

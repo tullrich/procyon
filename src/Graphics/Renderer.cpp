@@ -611,8 +611,8 @@ namespace Procyon {
         BatchedQuad quaddata;
         quaddata.position[0] = 0.0f;
         quaddata.position[1] = 0.0f;
-        quaddata.size[0]     = tex->Width();
-        quaddata.size[1]     = tex->Height();
+        quaddata.size[0]     = (float)tex->Width();
+        quaddata.size[1]     = (float)tex->Height();
         quaddata.rotation    = 0.0f;
         quaddata.uvoffset[0] = 0.0f;
         quaddata.uvoffset[1] = 0.0f;
