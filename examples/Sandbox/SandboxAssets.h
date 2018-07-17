@@ -40,6 +40,8 @@ public:
     static Procyon::Texture*		sDumpsterTexture;
 	static Procyon::Texture*		sLightPostTexture;
 	static Procyon::Texture*		sLightPostBeamTexture;
+	static Procyon::Texture*		sCityBgTexture;
+	static Procyon::Texture*		sCityBg2Texture;
     static Procyon::Texture*		sTileTexture;
     static Procyon::Texture*		sTestTexture;
     static Procyon::SoundBuffer*	sJumpSound;

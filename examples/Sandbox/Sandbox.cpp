@@ -47,6 +47,7 @@ Sandbox::Sandbox()
     , mCustomMap( NULL )
 	, mFpsText( NULL )
 	, mWorld( NULL )
+	, mBackground( NULL )
 {
 }
 
@@ -68,6 +69,20 @@ void Sandbox::Initialize( int argc, char *argv[] )
 
 	// Create the player
 	mPlayer   = new Player( mWorld );
+
+	// Create the background
+	Sprite* bg = new Sprite( SandboxAssets::sCityBgTexture );
+	bg->SetOrigin( 0.5f, 0.5f );
+	bg->SetPosition( TILE_TO_WORLD( 1, 1 ) );
+	mBackground.push_back( bg );
+	Sprite* bg2 = new Sprite( SandboxAssets::sCityBg2Texture );
+	bg2->SetOrigin( 0.5f, 0.5f );
+	bg2->SetPosition( TILE_TO_WORLD( 18, 1 ) );
+	mBackground.push_back( bg2 );
+	bg2 = new Sprite( SandboxAssets::sCityBg2Texture );
+	bg2->SetOrigin( 0.5f, 0.5f );
+	bg2->SetPosition( TILE_TO_WORLD( 26, 1 ) );
+	mBackground.push_back( bg2 );
 
 	// Poles
 	for ( int i = 0; i < 2; i++ )

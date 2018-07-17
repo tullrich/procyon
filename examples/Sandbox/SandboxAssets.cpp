@@ -65,6 +65,8 @@ Texture*		SandboxAssets::sPlayerTexture   = NULL;
 Texture*		SandboxAssets::sDumpsterTexture   = NULL;
 Texture*		SandboxAssets::sLightPostTexture   = NULL;
 Texture*		SandboxAssets::sLightPostBeamTexture   = NULL;
+Texture*		SandboxAssets::sCityBgTexture   = NULL;
+Texture*		SandboxAssets::sCityBg2Texture   = NULL;
 Texture*		SandboxAssets::sTileTexture     = NULL;
 Texture*		SandboxAssets::sTestTexture     = NULL;
 SoundBuffer*    SandboxAssets::sJumpSound       = NULL;
@@ -77,6 +79,8 @@ void SandboxAssets::Load()
     sDumpsterTexture  = Texture::Allocate( "sprites/dumpster.png" );
     sLightPostTexture  = Texture::Allocate( "sprites/lightpole_Post.png" );
     sLightPostBeamTexture  = Texture::Allocate( "sprites/lightpole_Light.png" );
+	sCityBgTexture  = Texture::Allocate( "sprites/buildings.png" );
+	sCityBg2Texture  = Texture::Allocate( "sprites/dirty-cement.png" );
     sTileTexture    = Texture::Allocate( "sprites/tile.png" );
     sTestTexture    = Texture::Allocate( "tinyTest.png" );
     sJumpSound      =  new SoundBuffer( "audio/jump4.wav" );
