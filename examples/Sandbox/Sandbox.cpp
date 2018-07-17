@@ -200,13 +200,15 @@ void Sandbox::Render()
 
 	mPlayer->Draw( mRenderer );
 
+	mPolyLine.Draw( mRenderer );
+
+	mRenderer->PopCamera();
+
 	mRenderer->DrawRectShape(
 		Mouse::GetPosition( mWindow ) * glm::ivec2( 1, -1 ),
 		glm::vec2( 5.0f ),
 		0.0f,
 		glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ) );
-
-	mPolyLine.Draw( mRenderer );
 
 	mRenderer->Draw( mFpsText );
 }
