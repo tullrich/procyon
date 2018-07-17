@@ -155,9 +155,7 @@ Player::Player( World* world )
 	, mGrounded( true )
 {
 	mSprite = new AnimatedSprite( SandboxAssets::sPlayerTexture );
-	mSprite->SetOrigin( 0.5f, 0.5f );
-	mSprite->SetScale( SandboxAssets::sPlayerTexture->GetDimensions() / 2 );
-	mSprite->SetPosition( mBounds.mCenter );
+	mSprite->SetPosition( glm::floor( mBounds.mCenter ) );
 
 	mJumpSnd = new Sound( SandboxAssets::sJumpSound );
 
@@ -171,19 +169,6 @@ Player::~Player()
 	delete mJumpSnd;
 }
 
-void Player::UpdatePosition( FrameTime ft )
-{
-	mBounds.mCenter += mVelocity * ft.dt;
-
-	if ( mPenetrationCorrection.length() > 0.0f )
-	{
-		mBounds.mCenter += mPenetrationCorrection;
-		mPenetrationCorrection = glm::vec2();
-	}
-
-	mSprite->SetPosition( mBounds.mCenter );
-}
-
 void Player::Process( FrameTime ft )
 {
 	if ( mGrounded )
@@ -195,7 +180,7 @@ void Player::Process( FrameTime ft )
 		mVelocity.x *= (1.f - PLAYER_ARIAL_DAMPING); // Damping
 		mVelocity.x += PLAYER_ARIAL_ACCELERATION * ft.dt * mInput.x;
 	}
-	mVelocity.y += PLAYER_GRAVITY_PIXELS * ft.dt;
+	mVelocity.y += PLAYER_GRAVITY * ft.dt;
 	mVelocity = glm::clamp(mVelocity, -PLAYER_MAX_SPEED, PLAYER_MAX_SPEED);
 
 	glm::vec2 delta = mVelocity * ft.dt;
@@ -210,10 +195,9 @@ void Player::Process( FrameTime ft )
 		CollideTile( delta, t, ft );
 	}
 
-	mInput = glm::vec2(0.0f);
+	mInput = glm::vec2( 0.0f );
 
-
-	mSprite->SetPosition( mBounds.mCenter );
+	mSprite->SetPosition( glm::floor( mBounds.mCenter ) );
 
 	if ( mVelocity.x != 0.0f )
 	{
@@ -233,14 +217,8 @@ void Player::Process( FrameTime ft )
 
 void Player::Draw( Renderer* r ) const
 {
-	glm::vec4 color(245/255.0f, 121/255.0f, 79/255.0f, 1.f);
-	if (!mGrounded && mVelocity.y < 0.0f )
-	{
-		color *= 1.5f;
-	}
-	//r->DrawRectShape( GetPosition(), PLAYER_DIMS, 0.0f, color );
 	r->Draw( mSprite );
-	r->Draw( mPlayerText );
+	//r->Draw( mPlayerText );
 }
 
 void Player::CollideTile( const glm::vec2& delta, const glm::ivec2& t, FrameTime ft )

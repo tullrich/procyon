@@ -123,12 +123,12 @@ namespace Procyon {
 					glm::vec2 dims( (float)TILE_PIXEL_SIZE );
 					glm::vec2 pos = glm::vec2( (float)x , (float)y ) * (float)TILE_PIXEL_SIZE + HALF_TILE_SIZE;
 					r->DrawRectShape(pos, dims, 0.0f, glm::vec4(92/255.0f, 172/255.0f, 144/255.0f, 1.f));
-					//r->DrawTexture( tt.texture, pos, dim, 0 );
+					//r->DrawTexture( tt.texture, pos, dims, 0 );
 					break;
 				}
 				case TILETYPE_ONE_WAY:
 				{
-					glm::vec2 dims( (float)TILE_PIXEL_SIZE, 5.0f  );
+					glm::vec2 dims( (float)TILE_PIXEL_SIZE, 8.0f  );
 					glm::vec2 pos = glm::vec2( (float)x , (float)y ) * (float)TILE_PIXEL_SIZE + dims/2.0f;
 					pos.y += (TILE_PIXEL_SIZE - dims.y);
 					r->DrawRectShape(pos, dims, 0.0f, glm::vec4(247/255.0f, 186/255.0f, 81/255.0f, 1.f));

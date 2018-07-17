@@ -28,7 +28,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "ProcyonCommon.h"
 #include "Aabb.h"
 
-#define PIXELS_PER_METER 64.0f
+#define PIXELS_PER_METER 32.0f
 #define PixelsToMeters( pixels ) 						\
 			(float)pixels / (float)PIXELS_PER_METER
 #define MetersToPixels( meters )						\
@@ -38,14 +38,13 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define PLAYER_PIXEL_WIDTH TILE_PIXEL_SIZE
 #define PLAYER_DIMS (glm::vec2(PLAYER_PIXEL_WIDTH, PLAYER_PIXEL_HEIGHT))
 
-#define PLAYER_DEFAULT_SPEED (PIXELS_PER_METER*2.0f)
+#define PLAYER_DEFAULT_SPEED (PIXELS_PER_METER*3.0f)
 #define PLAYER_AIR_CONTROL_RATIO 0.6f
-#define PLAYER_JUMP_VELOCITY (PIXELS_PER_METER*8.0f)
-#define PLAYER_GRAVITY -17.5f
-#define PLAYER_GRAVITY_PIXELS (PIXELS_PER_METER*PLAYER_GRAVITY)
-#define PLAYER_MAX_SPEED (glm::vec2(PLAYER_DEFAULT_SPEED, -PLAYER_GRAVITY_PIXELS))
+#define PLAYER_JUMP_VELOCITY (PIXELS_PER_METER*11.0f)
+#define PLAYER_GRAVITY (PIXELS_PER_METER*-27.5f)
+#define PLAYER_MAX_SPEED (glm::vec2(PLAYER_DEFAULT_SPEED, -PLAYER_GRAVITY))
 #define PLAYER_ARIAL_DAMPING (0.05f)
-#define PLAYER_ARIAL_ACCELERATION (PLAYER_DEFAULT_SPEED*3.5f)
+#define PLAYER_ARIAL_ACCELERATION (PLAYER_DEFAULT_SPEED*4.5f)
 
 namespace Procyon {
 
