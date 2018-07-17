@@ -214,7 +214,7 @@ bool MapDocument::Load( const QString& filename )
                 Procyon::TileDef def;
                 if ( !filepath.isEmpty() )
                 {
-                    def.filepath = filepath.toUtf8();
+                    def.filepath = filepath.toUtf8().data();
 					def.collidable = true;
                 }
 
