@@ -88,6 +88,12 @@ namespace Procyon {
             Console_Toggle();
             return;
         }
+		if ( ev.type == EVENT_KEY_DOWN &&
+             ev.keysym == KEY_F10 )
+        {
+            mWindow->SetFullscreen( !mWindow->GetFullscreen() );
+            return;
+        }
         if ( ev.type == EVENT_TEXT && ev.unicode == '`' )
         {
             return; // consume text `

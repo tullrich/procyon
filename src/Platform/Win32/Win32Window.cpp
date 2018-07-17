@@ -368,6 +368,7 @@ namespace Win32 {
 	Win32Window::Win32Window( const std::string& title, unsigned height, unsigned width )
 		: mWindow( nullptr )
 		, mContext( nullptr )
+		, mWindowedDimensions( width, height )
 	{
 		/* Initialize the library */
 		if ( !glfwInit() )
@@ -447,6 +448,50 @@ namespace Win32 {
 	bool Win32Window::HasFocus() const
 	{
 		return glfwGetWindowAttrib( mWindow, GLFW_FOCUSED ) == 1;
+	}
+
+	void Win32Window::SetFullscreen( bool toggle )
+	{
+		/*
+		int fboWidth, fboHeight;
+		glfwGetFramebufferSize( mWindow, &fboWidth, &fboHeight );
+		PROCYON_DEBUG( "GLFW", "FBO Dimensions <%i, %i", fboWidth, fboHeight );
+
+		int modesCount;
+		const GLFWvidmode* modes = glfwGetVideoModes( glfwGetPrimaryMonitor(), &modesCount ); 
+		PROCYON_DEBUG( "GLFW", "Video Modes (%i)", modesCount );
+		for ( int i = 0; i < modesCount; i++ )
+		{	
+			const GLFWvidmode* vid = &modes[ i ];
+			if ( vid->redBits != 8 || vid->greenBits != 8 || vid ->blueBits != 8 )
+				continue;
+
+			PROCYON_DEBUG( "GLFW", "%i: <%i, %i> RGB Depth: <%i, %i, %i > Refresh Rate: %i", i, vid->width, vid->height, vid->redBits, vid->greenBits, vid->blueBits, vid->refreshRate );
+		}*/
+
+		//const GLFWvidmode* vid = glfwGetVideoMode( glfwGetPrimaryMonitor() );
+		//PROCYON_DEBUG( "GLFW", "Current Before: <%i, %i> RGB Depth: <%i, %i, %i > Refresh Rate: %i", vid->width, vid->height, vid->redBits, vid->greenBits, vid->blueBits, vid->refreshRate );
+
+		bool isFullscreen = glfwGetWindowMonitor( mWindow ) != NULL;
+		if ( toggle == isFullscreen )
+		{
+			return; // Already set
+		}
+
+
+		if ( !isFullscreen )
+		{
+			mWindowedDimensions = glm::ivec2( GetSize() );
+		}
+
+		GLFWmonitor* monitor = ( toggle ) ? glfwGetPrimaryMonitor() : NULL;
+		glfwSetWindowMonitor( mWindow, monitor, 100, 100, mWindowedDimensions.x,  mWindowedDimensions.y, GLFW_DONT_CARE );
+
+	}
+
+	bool Win32Window::GetFullscreen() const
+	{
+		return glfwGetWindowMonitor( mWindow ) != NULL;
 	}
 
 } /* namespace Win32 */

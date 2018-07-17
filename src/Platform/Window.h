@@ -148,6 +148,8 @@ namespace Procyon {
 		virtual uint32_t GetHeight() const = 0;
 		virtual uint32_t GetWidth() const = 0;
 		virtual bool HasFocus() const = 0;
+		virtual void SetFullscreen( bool toggle ) = 0;
+		virtual bool GetFullscreen() const = 0;
 
 		static IWindow*	Allocate( const std::string& title, unsigned height, unsigned width );
 	};

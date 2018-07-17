@@ -50,11 +50,14 @@ namespace Win32 {
 		virtual void* GetNativeHandle() const;
 		virtual glm::ivec2 GetSize() const;
 		virtual bool HasFocus() const;
+		virtual void SetFullscreen( bool toggle );
+		virtual bool GetFullscreen() const;
 
 		GLFWwindow* GetInternal() { return mWindow; }
 	protected:
 		GLFWwindow* mWindow;
 		Win32GLContext* mContext;
+		glm::ivec2 mWindowedDimensions;
 	};
 
 } /* namespace Win32 */
