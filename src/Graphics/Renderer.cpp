@@ -229,7 +229,7 @@ namespace Procyon {
 
 	static std::vector< glm::vec2 > BasicArc( const glm::vec2& P, float r, float dangle, float angle1, float angle2 )
 	{
-		float mod_diff = std::fmodf( angle2 - angle1, 2.0f * (float)M_PI );
+		float mod_diff = std::fmod( angle2 - angle1, 2.0f * (float)M_PI );
 		float signed_dist = mod_diff;
 		if ( signed_dist > (float)M_PI )
 			signed_dist -= 2.0f * (float)M_PI;

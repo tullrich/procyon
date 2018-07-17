@@ -46,6 +46,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include <chrono>
 #include <iomanip>
 #include <stack>
+#include <cmath>
 
 #include "Logging.h"
 #include "Macros.h"
