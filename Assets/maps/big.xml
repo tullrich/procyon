@@ -4,27 +4,27 @@
         <TileDef filepath="sprites/tile.png" type="Solid"/>
         <TileDef filepath="sprites/uv_map.png" type="OneWay"/>
     </TileSet>
-    <Camera x="492" y="427.75" zoom="1"/>
+    <Camera x="661" y="303.75" zoom="1"/>
     <Tiles width="256" height="256">
         <TileRow index="0">
             <Tile index="0">1</Tile>
-            <Tile index="1">2</Tile>
+            <Tile index="1">1</Tile>
             <Tile index="2">1</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">1</Tile>
             <Tile index="4">1</Tile>
-            <Tile index="5">2</Tile>
+            <Tile index="5">1</Tile>
             <Tile index="6">1</Tile>
-            <Tile index="7">2</Tile>
+            <Tile index="7">1</Tile>
             <Tile index="8">1</Tile>
-            <Tile index="9">2</Tile>
+            <Tile index="9">1</Tile>
             <Tile index="10">1</Tile>
-            <Tile index="11">2</Tile>
+            <Tile index="11">1</Tile>
             <Tile index="12">1</Tile>
-            <Tile index="13">2</Tile>
+            <Tile index="13">1</Tile>
             <Tile index="14">1</Tile>
-            <Tile index="15">2</Tile>
+            <Tile index="15">1</Tile>
             <Tile index="16">1</Tile>
-            <Tile index="17">2</Tile>
+            <Tile index="17">1</Tile>
             <Tile index="18">1</Tile>
             <Tile index="19">0</Tile>
             <Tile index="20">0</Tile>
@@ -271,7 +271,7 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -529,7 +529,7 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -538,12 +538,12 @@
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
-            <Tile index="15">2</Tile>
+            <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
             <Tile index="17">0</Tile>
             <Tile index="18">0</Tile>
             <Tile index="19">0</Tile>
-            <Tile index="20">2</Tile>
+            <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
             <Tile index="23">0</Tile>
@@ -787,7 +787,7 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -1061,7 +1061,7 @@
             <Tile index="19">0</Tile>
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
-            <Tile index="22">2</Tile>
+            <Tile index="22">0</Tile>
             <Tile index="23">0</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
@@ -1301,7 +1301,7 @@
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
             <Tile index="3">0</Tile>
-            <Tile index="4">2</Tile>
+            <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
@@ -1558,7 +1558,7 @@
             <Tile index="0">1</Tile>
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -1570,7 +1570,7 @@
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
-            <Tile index="15">2</Tile>
+            <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
             <Tile index="17">0</Tile>
             <Tile index="18">0</Tile>
@@ -1816,7 +1816,7 @@
             <Tile index="0">1</Tile>
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -2074,7 +2074,7 @@
             <Tile index="0">1</Tile>
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -2332,7 +2332,7 @@
             <Tile index="0">1</Tile>
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -2592,7 +2592,7 @@
             <Tile index="2">0</Tile>
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
-            <Tile index="5">2</Tile>
+            <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
@@ -2602,7 +2602,7 @@
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
-            <Tile index="15">2</Tile>
+            <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
             <Tile index="17">0</Tile>
             <Tile index="18">0</Tile>
@@ -2851,7 +2851,7 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -3109,7 +3109,7 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -3367,7 +3367,7 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -3625,7 +3625,7 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -3634,7 +3634,7 @@
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
-            <Tile index="15">2</Tile>
+            <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
             <Tile index="17">0</Tile>
             <Tile index="18">0</Tile>
@@ -3883,7 +3883,7 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -4141,10 +4141,10 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
-            <Tile index="9">2</Tile>
+            <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
@@ -4158,7 +4158,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -4399,10 +4399,10 @@
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
-            <Tile index="6">2</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
-            <Tile index="9">2</Tile>
+            <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
@@ -4416,7 +4416,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -4660,12 +4660,12 @@
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
-            <Tile index="9">2</Tile>
+            <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
-            <Tile index="14">2</Tile>
+            <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
             <Tile index="17">0</Tile>
@@ -4918,7 +4918,7 @@
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
-            <Tile index="9">2</Tile>
+            <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
@@ -5170,13 +5170,13 @@
             <Tile index="0">1</Tile>
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
-            <Tile index="9">2</Tile>
+            <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
@@ -5428,7 +5428,7 @@
             <Tile index="0">1</Tile>
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -5686,7 +5686,7 @@
             <Tile index="0">1</Tile>
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -5695,7 +5695,7 @@
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
-            <Tile index="12">2</Tile>
+            <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -5944,7 +5944,7 @@
             <Tile index="0">1</Tile>
             <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
-            <Tile index="3">2</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -5953,7 +5953,7 @@
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
-            <Tile index="12">2</Tile>
+            <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -5964,7 +5964,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -6211,7 +6211,7 @@
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
-            <Tile index="12">2</Tile>
+            <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -6222,7 +6222,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -6469,7 +6469,7 @@
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
-            <Tile index="12">2</Tile>
+            <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -6480,7 +6480,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -6716,7 +6716,7 @@
         </TileRow>
         <TileRow index="26">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
+            <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
@@ -6727,7 +6727,7 @@
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
-            <Tile index="12">2</Tile>
+            <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -6974,8 +6974,8 @@
         </TileRow>
         <TileRow index="27">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
@@ -6985,7 +6985,7 @@
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
-            <Tile index="12">2</Tile>
+            <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -7232,9 +7232,9 @@
         </TileRow>
         <TileRow index="28">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -7243,7 +7243,7 @@
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
-            <Tile index="12">2</Tile>
+            <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -7254,7 +7254,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -7490,10 +7490,10 @@
         </TileRow>
         <TileRow index="29">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
@@ -7501,7 +7501,7 @@
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
-            <Tile index="12">2</Tile>
+            <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -7512,7 +7512,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -7748,11 +7748,11 @@
         </TileRow>
         <TileRow index="30">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
@@ -7770,7 +7770,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -8006,12 +8006,12 @@
         </TileRow>
         <TileRow index="31">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -8264,13 +8264,13 @@
         </TileRow>
         <TileRow index="32">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
@@ -8522,14 +8522,14 @@
         </TileRow>
         <TileRow index="33">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
-            <Tile index="8">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
@@ -8544,7 +8544,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -8780,15 +8780,15 @@
         </TileRow>
         <TileRow index="34">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
-            <Tile index="8">1</Tile>
-            <Tile index="9">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
@@ -8802,7 +8802,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -9038,16 +9038,16 @@
         </TileRow>
         <TileRow index="35">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
-            <Tile index="8">1</Tile>
-            <Tile index="9">1</Tile>
-            <Tile index="10">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+            <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
@@ -9060,7 +9060,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -9296,17 +9296,17 @@
         </TileRow>
         <TileRow index="36">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
-            <Tile index="8">1</Tile>
-            <Tile index="9">1</Tile>
-            <Tile index="10">1</Tile>
-            <Tile index="11">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+            <Tile index="10">0</Tile>
+            <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
@@ -9318,7 +9318,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -9554,18 +9554,18 @@
         </TileRow>
         <TileRow index="37">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
-            <Tile index="8">1</Tile>
-            <Tile index="9">1</Tile>
-            <Tile index="10">1</Tile>
-            <Tile index="11">1</Tile>
-            <Tile index="12">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+            <Tile index="10">0</Tile>
+            <Tile index="11">0</Tile>
+            <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -9576,7 +9576,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -9812,19 +9812,19 @@
         </TileRow>
         <TileRow index="38">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
-            <Tile index="8">1</Tile>
-            <Tile index="9">1</Tile>
-            <Tile index="10">1</Tile>
-            <Tile index="11">1</Tile>
-            <Tile index="12">1</Tile>
-            <Tile index="13">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
+            <Tile index="9">0</Tile>
+            <Tile index="10">0</Tile>
+            <Tile index="11">0</Tile>
+            <Tile index="12">0</Tile>
+            <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -9834,7 +9834,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -10092,7 +10092,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -10328,7 +10328,7 @@
         </TileRow>
         <TileRow index="40">
             <Tile index="0">1</Tile>
-            <Tile index="1">0</Tile>
+            <Tile index="1">1</Tile>
             <Tile index="2">0</Tile>
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
@@ -10350,7 +10350,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -10586,8 +10586,8 @@
         </TileRow>
         <TileRow index="41">
             <Tile index="0">1</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
+            <Tile index="1">1</Tile>
+            <Tile index="2">1</Tile>
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
@@ -10608,7 +10608,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -10844,9 +10844,9 @@
         </TileRow>
         <TileRow index="42">
             <Tile index="0">1</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
+            <Tile index="1">1</Tile>
+            <Tile index="2">1</Tile>
+            <Tile index="3">1</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -10866,7 +10866,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -11102,10 +11102,10 @@
         </TileRow>
         <TileRow index="43">
             <Tile index="0">1</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
+            <Tile index="1">1</Tile>
+            <Tile index="2">1</Tile>
+            <Tile index="3">1</Tile>
+            <Tile index="4">1</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
@@ -11124,7 +11124,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -11360,11 +11360,11 @@
         </TileRow>
         <TileRow index="44">
             <Tile index="0">1</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
-            <Tile index="5">0</Tile>
+            <Tile index="1">1</Tile>
+            <Tile index="2">1</Tile>
+            <Tile index="3">1</Tile>
+            <Tile index="4">1</Tile>
+            <Tile index="5">1</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
@@ -11382,7 +11382,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -11618,12 +11618,12 @@
         </TileRow>
         <TileRow index="45">
             <Tile index="0">1</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
-            <Tile index="5">0</Tile>
-            <Tile index="6">0</Tile>
+            <Tile index="1">1</Tile>
+            <Tile index="2">1</Tile>
+            <Tile index="3">1</Tile>
+            <Tile index="4">1</Tile>
+            <Tile index="5">1</Tile>
+            <Tile index="6">1</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -11640,7 +11640,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -11876,13 +11876,13 @@
         </TileRow>
         <TileRow index="46">
             <Tile index="0">1</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
-            <Tile index="5">0</Tile>
-            <Tile index="6">0</Tile>
-            <Tile index="7">0</Tile>
+            <Tile index="1">1</Tile>
+            <Tile index="2">1</Tile>
+            <Tile index="3">1</Tile>
+            <Tile index="4">1</Tile>
+            <Tile index="5">1</Tile>
+            <Tile index="6">1</Tile>
+            <Tile index="7">1</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
@@ -11898,7 +11898,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -12134,14 +12134,14 @@
         </TileRow>
         <TileRow index="47">
             <Tile index="0">1</Tile>
-            <Tile index="1">0</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
-            <Tile index="5">0</Tile>
-            <Tile index="6">0</Tile>
-            <Tile index="7">0</Tile>
-            <Tile index="8">0</Tile>
+            <Tile index="1">1</Tile>
+            <Tile index="2">1</Tile>
+            <Tile index="3">1</Tile>
+            <Tile index="4">1</Tile>
+            <Tile index="5">1</Tile>
+            <Tile index="6">1</Tile>
+            <Tile index="7">1</Tile>
+            <Tile index="8">1</Tile>
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
@@ -12156,7 +12156,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -12393,14 +12393,14 @@
         <TileRow index="48">
             <Tile index="0">1</Tile>
             <Tile index="1">1</Tile>
-            <Tile index="2">0</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
-            <Tile index="5">0</Tile>
-            <Tile index="6">0</Tile>
-            <Tile index="7">0</Tile>
-            <Tile index="8">0</Tile>
-            <Tile index="9">0</Tile>
+            <Tile index="2">1</Tile>
+            <Tile index="3">1</Tile>
+            <Tile index="4">1</Tile>
+            <Tile index="5">1</Tile>
+            <Tile index="6">1</Tile>
+            <Tile index="7">1</Tile>
+            <Tile index="8">1</Tile>
+            <Tile index="9">1</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
@@ -12414,7 +12414,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -12652,14 +12652,14 @@
             <Tile index="0">1</Tile>
             <Tile index="1">1</Tile>
             <Tile index="2">1</Tile>
-            <Tile index="3">0</Tile>
-            <Tile index="4">0</Tile>
-            <Tile index="5">0</Tile>
-            <Tile index="6">0</Tile>
-            <Tile index="7">0</Tile>
-            <Tile index="8">0</Tile>
-            <Tile index="9">0</Tile>
-            <Tile index="10">0</Tile>
+            <Tile index="3">1</Tile>
+            <Tile index="4">1</Tile>
+            <Tile index="5">1</Tile>
+            <Tile index="6">1</Tile>
+            <Tile index="7">1</Tile>
+            <Tile index="8">1</Tile>
+            <Tile index="9">1</Tile>
+            <Tile index="10">1</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
@@ -12672,7 +12672,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -12911,14 +12911,14 @@
             <Tile index="1">1</Tile>
             <Tile index="2">1</Tile>
             <Tile index="3">1</Tile>
-            <Tile index="4">0</Tile>
-            <Tile index="5">0</Tile>
-            <Tile index="6">0</Tile>
-            <Tile index="7">0</Tile>
-            <Tile index="8">0</Tile>
-            <Tile index="9">0</Tile>
-            <Tile index="10">0</Tile>
-            <Tile index="11">0</Tile>
+            <Tile index="4">1</Tile>
+            <Tile index="5">1</Tile>
+            <Tile index="6">1</Tile>
+            <Tile index="7">1</Tile>
+            <Tile index="8">1</Tile>
+            <Tile index="9">1</Tile>
+            <Tile index="10">1</Tile>
+            <Tile index="11">1</Tile>
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
@@ -12930,7 +12930,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -13170,14 +13170,14 @@
             <Tile index="2">1</Tile>
             <Tile index="3">1</Tile>
             <Tile index="4">1</Tile>
-            <Tile index="5">0</Tile>
-            <Tile index="6">0</Tile>
-            <Tile index="7">0</Tile>
-            <Tile index="8">0</Tile>
-            <Tile index="9">0</Tile>
-            <Tile index="10">0</Tile>
-            <Tile index="11">0</Tile>
-            <Tile index="12">0</Tile>
+            <Tile index="5">1</Tile>
+            <Tile index="6">1</Tile>
+            <Tile index="7">1</Tile>
+            <Tile index="8">1</Tile>
+            <Tile index="9">1</Tile>
+            <Tile index="10">1</Tile>
+            <Tile index="11">1</Tile>
+            <Tile index="12">1</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
@@ -13188,7 +13188,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -13429,14 +13429,14 @@
             <Tile index="3">1</Tile>
             <Tile index="4">1</Tile>
             <Tile index="5">1</Tile>
-            <Tile index="6">0</Tile>
-            <Tile index="7">0</Tile>
-            <Tile index="8">0</Tile>
-            <Tile index="9">0</Tile>
-            <Tile index="10">0</Tile>
-            <Tile index="11">0</Tile>
-            <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="6">1</Tile>
+            <Tile index="7">1</Tile>
+            <Tile index="8">1</Tile>
+            <Tile index="9">1</Tile>
+            <Tile index="10">1</Tile>
+            <Tile index="11">1</Tile>
+            <Tile index="12">1</Tile>
+            <Tile index="13">1</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -13446,7 +13446,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -13682,12 +13682,12 @@
         </TileRow>
         <TileRow index="53">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -13704,7 +13704,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -13940,13 +13940,13 @@
         </TileRow>
         <TileRow index="54">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
@@ -13962,7 +13962,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -14198,19 +14198,19 @@
         </TileRow>
         <TileRow index="55">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
-            <Tile index="8">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
+            <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -14220,7 +14220,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -14456,19 +14456,19 @@
         </TileRow>
         <TileRow index="56">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
-            <Tile index="7">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
+            <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -14478,7 +14478,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -14714,12 +14714,12 @@
         </TileRow>
         <TileRow index="57">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
-            <Tile index="6">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
+            <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
             <Tile index="9">0</Tile>
@@ -14736,7 +14736,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -14972,11 +14972,11 @@
         </TileRow>
         <TileRow index="58">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
-            <Tile index="5">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
+            <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
             <Tile index="8">0</Tile>
@@ -14994,7 +14994,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -15230,10 +15230,10 @@
         </TileRow>
         <TileRow index="59">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
-            <Tile index="4">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
+            <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
             <Tile index="7">0</Tile>
@@ -15242,7 +15242,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -15252,7 +15252,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -15488,9 +15488,9 @@
         </TileRow>
         <TileRow index="60">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
-            <Tile index="3">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
+            <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
             <Tile index="6">0</Tile>
@@ -15500,7 +15500,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -15510,7 +15510,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -15746,8 +15746,8 @@
         </TileRow>
         <TileRow index="61">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
-            <Tile index="2">1</Tile>
+            <Tile index="1">0</Tile>
+            <Tile index="2">0</Tile>
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
             <Tile index="5">0</Tile>
@@ -15768,7 +15768,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -16004,7 +16004,7 @@
         </TileRow>
         <TileRow index="62">
             <Tile index="0">1</Tile>
-            <Tile index="1">1</Tile>
+            <Tile index="1">0</Tile>
             <Tile index="2">0</Tile>
             <Tile index="3">0</Tile>
             <Tile index="4">0</Tile>
@@ -16026,7 +16026,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -16274,7 +16274,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -16284,7 +16284,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -16532,7 +16532,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -16542,7 +16542,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -16800,7 +16800,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -17058,7 +17058,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -17306,7 +17306,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -17316,7 +17316,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -17564,7 +17564,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -17574,7 +17574,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -17832,7 +17832,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -18090,7 +18090,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -18338,7 +18338,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -18348,7 +18348,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -18596,7 +18596,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -18606,7 +18606,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -18864,7 +18864,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -19122,7 +19122,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -19370,7 +19370,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -19380,7 +19380,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -19628,7 +19628,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -19638,7 +19638,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -19896,7 +19896,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -20154,7 +20154,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -20402,7 +20402,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -20412,7 +20412,7 @@
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
-            <Tile index="23">0</Tile>
+            <Tile index="23">2</Tile>
             <Tile index="24">0</Tile>
             <Tile index="25">0</Tile>
             <Tile index="26">0</Tile>
@@ -20660,7 +20660,7 @@
             <Tile index="10">0</Tile>
             <Tile index="11">0</Tile>
             <Tile index="12">0</Tile>
-            <Tile index="13">0</Tile>
+            <Tile index="13">2</Tile>
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
@@ -20926,7 +20926,7 @@
             <Tile index="18">0</Tile>
             <Tile index="19">0</Tile>
             <Tile index="20">0</Tile>
-            <Tile index="21">0</Tile>
+            <Tile index="21">2</Tile>
             <Tile index="22">0</Tile>
             <Tile index="23">0</Tile>
             <Tile index="24">0</Tile>
@@ -21184,7 +21184,7 @@
             <Tile index="18">0</Tile>
             <Tile index="19">0</Tile>
             <Tile index="20">0</Tile>
-            <Tile index="21">0</Tile>
+            <Tile index="21">2</Tile>
             <Tile index="22">0</Tile>
             <Tile index="23">0</Tile>
             <Tile index="24">0</Tile>
@@ -21436,11 +21436,11 @@
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
-            <Tile index="15">0</Tile>
+            <Tile index="15">2</Tile>
             <Tile index="16">0</Tile>
             <Tile index="17">0</Tile>
             <Tile index="18">0</Tile>
-            <Tile index="19">0</Tile>
+            <Tile index="19">2</Tile>
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
@@ -21694,11 +21694,11 @@
             <Tile index="12">0</Tile>
             <Tile index="13">0</Tile>
             <Tile index="14">0</Tile>
-            <Tile index="15">0</Tile>
+            <Tile index="15">2</Tile>
             <Tile index="16">0</Tile>
             <Tile index="17">0</Tile>
             <Tile index="18">0</Tile>
-            <Tile index="19">0</Tile>
+            <Tile index="19">2</Tile>
             <Tile index="20">0</Tile>
             <Tile index="21">0</Tile>
             <Tile index="22">0</Tile>
@@ -22212,7 +22212,7 @@
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
-            <Tile index="17">0</Tile>
+            <Tile index="17">2</Tile>
             <Tile index="18">0</Tile>
             <Tile index="19">0</Tile>
             <Tile index="20">0</Tile>
@@ -22470,7 +22470,7 @@
             <Tile index="14">0</Tile>
             <Tile index="15">0</Tile>
             <Tile index="16">0</Tile>
-            <Tile index="17">0</Tile>
+            <Tile index="17">2</Tile>
             <Tile index="18">0</Tile>
             <Tile index="19">0</Tile>
             <Tile index="20">0</Tile>
