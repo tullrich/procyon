@@ -66,13 +66,15 @@ namespace Procyon {
         quaddata.size[1]     = mScale.y;
         quaddata.rotation    = mOrientation;
         quaddata.uvoffset[0] = 0.0f;
-        quaddata.uvoffset[1] = 0.0f;0.0f;
+        quaddata.uvoffset[1] = 0.0f;
         quaddata.uvsize[0]   = 0.0f;
         quaddata.uvsize[1]   = 0.0f;
-        quaddata.color[0]     = mColor.x;
-        quaddata.color[1]     = mColor.x;
-        quaddata.color[2]     = mColor.x;
-		quaddata.color[3]     = mColor.x;
+        quaddata.color[0]    = mColor.r;
+        quaddata.color[1]    = mColor.g;
+        quaddata.color[2]    = mColor.b;
+		quaddata.color[3]    = mColor.w;
+		quaddata.origin[0]	 = mOrigin.x;
+		quaddata.origin[1]	 = mOrigin.y;
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;

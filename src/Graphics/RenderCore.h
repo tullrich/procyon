@@ -61,6 +61,7 @@ namespace Procyon {
 		float uvoffset[2];
 		float uvsize[2];
 		float color[4];
+		float origin[2];
 	};
 
 	struct PrimitiveVertex

@@ -72,10 +72,13 @@ protected:
     IJoystick*      mJoyStick;
     Player*         mPlayer;
     Camera2D*       mCamera;
+    Camera2D*       mScreenCamera;
     Map*            mCustomMap;
 	Text*           mFpsText;
 	PolyLine		mPolyLine;
 	World*          mWorld;
+
+	std::vector< Procyon::Sprite* > mBackground;
 	std::vector< Procyon::Sprite* > mStaticSprites;
 
 };

@@ -173,6 +173,7 @@ namespace Procyon {
         sBackground->SetColor( glm::vec4( 0.4f, 0.4, 0.4, 1.0f) );
         sBackground->SetPosition( 0.0f, CONSOLE_Y_RES );
         sBackground->SetScale( CONSOLE_X_RES, -CONSOLE_Y_RES );
+		sBackground->SetOrigin( glm::vec2( 0.5f ) );
 
         // the inner background
         sBackground2 = new Shape();
@@ -180,6 +181,7 @@ namespace Procyon {
         sBackground2->SetPosition( CONSOLE_BORDER_SIZE, CONSOLE_Y_RES );
         sBackground2->SetScale( CONSOLE_X_RES - 2.0f * CONSOLE_BORDER_SIZE
             , -CONSOLE_Y_RES + CONSOLE_BORDER_SIZE );
+		sBackground2->SetOrigin( glm::vec2( 0.5f ) );
     }
 
     /*

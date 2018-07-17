@@ -65,17 +65,19 @@ namespace Procyon {
         BatchedQuad quaddata;
         quaddata.position[0] = mPosition.x;
         quaddata.position[1] = mPosition.y;
-        quaddata.size[0]     = mScale.x;
-        quaddata.size[1]     = mScale.y;
+        quaddata.size[0]     = mScale.x * mTextureRect.GetWidth();
+        quaddata.size[1]     = mScale.y * mTextureRect.GetHeight();
         quaddata.rotation    = mOrientation;
         quaddata.uvoffset[0] = (float)mTextureRect.GetTopLeft().x;
         quaddata.uvoffset[1] = (float)mTextureRect.GetTopLeft().y;
         quaddata.uvsize[0]   = (float)mTextureRect.GetWidth();
         quaddata.uvsize[1]   = (float)mTextureRect.GetHeight();
-        quaddata.color[0]     = 1.0f;
-        quaddata.color[1]     = 1.0f;
-        quaddata.color[2]     = 1.0f;
-		quaddata.color[3]     = 1.0f;
+        quaddata.color[0]    = 1.0f;
+        quaddata.color[1]    = 1.0f;
+        quaddata.color[2]    = 1.0f;
+		quaddata.color[3]    = 1.0f;
+		quaddata.origin[0]	 = mOrigin.x;
+		quaddata.origin[1]	 = mOrigin.y;
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;

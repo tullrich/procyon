@@ -237,6 +237,8 @@ namespace Procyon {
 	        quaddata.color[1] 	 = mColor.y;
 	        quaddata.color[2] 	 = mColor.z;
 			quaddata.color[3] 	 = mColor.w;
+			quaddata.origin[0]	 = mOrigin.x;
+			quaddata.origin[1]	 = mOrigin.y;
 
 	        RenderCommand cmd;
 	        cmd.op               = RENDER_OP_QUAD;

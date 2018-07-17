@@ -5,6 +5,7 @@ in vec2 	vertPosition;
 in vec2 	uv;
 #endif
 
+in vec2 	quadOrigin;
 in vec2 	quadPos;
 in vec2 	quadSize;
 in float 	quadRotRads;
@@ -31,6 +32,6 @@ void main()
 	float sinRot = sin(quadRotRads);
 	float cosRot = cos(quadRotRads);
 	mat2 rotMat = mat2( cosRot, sinRot, -sinRot, cosRot );
-	vec2 worldPos = ( rotMat * vertPosition ) * quadSize + quadPos;
+	vec2 worldPos = ( rotMat * ( vertPosition + quadOrigin ) ) * quadSize + quadPos;
 	gl_Position = vec4( ( screenSpaceTransform * vec3( worldPos, 1.0f ) ).xy, 0.0f, 1.0f );
 }

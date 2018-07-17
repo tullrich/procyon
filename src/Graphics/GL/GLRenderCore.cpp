@@ -282,6 +282,12 @@ namespace GL {
     	glVertexAttribDivisor( quadTintLoc, 1 );
 	    glEnableVertexAttribArray( quadTintLoc );
 
+	    // Bind the quadbatch positions
+	    GLint quadOriginLoc = program->GetAttributeLocation( "quadOrigin" );
+    	glVertexAttribPointer( quadOriginLoc, 2, GL_FLOAT, GL_FALSE, BATCH_STRIDE, (const void*)(sizeof(float) * 13 + rc.offset) );
+    	glVertexAttribDivisor( quadOriginLoc, 1 );
+	    glEnableVertexAttribArray( quadOriginLoc );
+
 		glDrawElementsInstanced( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0, rc.instancecount );
 
         glVertexAttribDivisor( quadPosLoc, 0 );
@@ -290,6 +296,7 @@ namespace GL {
         glVertexAttribDivisor( quadUVOffsetLoc, 0 );
         glVertexAttribDivisor( quadUVSizeLoc, 0 );
         glVertexAttribDivisor( quadTintLoc, 0 );
+		glVertexAttribDivisor( quadOriginLoc, 0 );
 
 		mFrameStats.batches++;
 		mFrameStats.totalquads += rc.instancecount;

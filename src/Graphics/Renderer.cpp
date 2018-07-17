@@ -592,10 +592,12 @@ namespace Procyon {
         quaddata.uvoffset[1] = textureRect.GetTopLeft().y;
         quaddata.uvsize[0]   = textureRect.GetWidth();
         quaddata.uvsize[1]   = textureRect.GetHeight();
-        quaddata.color[0]     = 1.0f;
-        quaddata.color[1]     = 1.0f;
-        quaddata.color[2]     = 1.0f;
-		quaddata.color[3]     = 1.0f;
+        quaddata.color[0]    = 1.0f;
+        quaddata.color[1]    = 1.0f;
+        quaddata.color[2]    = 1.0f;
+		quaddata.color[3]    = 1.0f;
+		quaddata.origin[0]	 = 0.0f;
+		quaddata.origin[1]	 = 0.0f;
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;
@@ -621,7 +623,9 @@ namespace Procyon {
 		quaddata.color[0]    = 1.0f;
 		quaddata.color[1]    = 1.0f;
 		quaddata.color[2]    = 1.0f;
-		quaddata.color[3]    = 1.0f;;
+		quaddata.color[3]    = 1.0f;
+		quaddata.origin[0]	 = 0.0f;
+		quaddata.origin[1]	 = 0.0f;
 
         RenderCommand cmd;
         cmd.op               = RENDER_OP_QUAD;
@@ -649,6 +653,8 @@ namespace Procyon {
 		quaddata.color[1]     = color.y;
 		quaddata.color[2]     = color.z;
 		quaddata.color[3]     = color.w;
+		quaddata.origin[0]	 = 0.0f;
+		quaddata.origin[1]	 = 0.0f;
 
 		RenderCommand cmd;
 		cmd.op               = RENDER_OP_QUAD;
