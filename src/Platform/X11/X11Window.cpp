@@ -24,6 +24,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "X11Window.h"
+#include "X11Platform.h"
 #include "X11GLContext.h"
 #include "Image.h"
 
@@ -65,8 +66,6 @@ struct XCBError
 
 X11Window::X11Window( const std::string& title, unsigned width, unsigned height )
 	: mIsOpen( false )
-	, mDisplay( NULL )
-	, mConnection( NULL )
 	, mScreen( NULL )
 	, mWindow( 0 )
 	, mSymsTable( NULL )
@@ -74,24 +73,6 @@ X11Window::X11Window( const std::string& title, unsigned width, unsigned height 
 	, mWidth( width )
 	, mHeight( height )
 {
-	// Open Xlib Display
-	mDisplay = XOpenDisplay( 0 );
-	if( !mDisplay )
-	{
-		PROCYON_ERROR( "X11", "Unable to open display." );
-    	throw std::runtime_error("X11Window");
-	}
-
-	// Open XCB Connection
-    mConnection = XGetXCBConnection( mDisplay );
-  	if( !mConnection )
-    {
-    	Destroy();
-		PROCYON_ERROR( "X11", "Unable to open xcb connection" );
-    	throw std::runtime_error("X11Window");
-    }
-    XSetEventQueueOwner( mDisplay, XCBOwnsEventQueue );
-
     if ( !InitSymbolTable() )
     {
     	Destroy();
@@ -100,7 +81,7 @@ X11Window::X11Window( const std::string& title, unsigned width, unsigned height 
     }
 
     // Grab the first screen
-    mScreen = xcb_setup_roots_iterator( xcb_get_setup( mConnection ) ).data;
+    mScreen = xcb_setup_roots_iterator( xcb_get_setup( gConnection ) ).data;
 
     // Open the window
     if( !mScreen || !InitWindow( title, width, height ) )
@@ -119,7 +100,7 @@ X11Window::~X11Window()
 
 void X11Window::Destroy()
 {
-	xcb_flush( mConnection );
+	xcb_flush( gConnection );
 
 	if( mContext )
 	{
@@ -129,7 +110,7 @@ void X11Window::Destroy()
 
 	if( mWindow )
 	{
-		xcb_destroy_window( mConnection, mWindow );
+		xcb_destroy_window( gConnection, mWindow );
 		mWindow = 0;
 	}
 
@@ -139,13 +120,7 @@ void X11Window::Destroy()
 		mSymsTable = NULL;
 	}
 
-	if( mDisplay )
-	{
-   		XCloseDisplay( mDisplay );
-   		mScreen = NULL;
-   		mConnection = NULL; // connection is automatically shutdown
-   		mDisplay = NULL;
-	}
+    mScreen = NULL;
 }
 
 uint X11Window::FindModifierMask( xcb_get_modifier_mapping_reply_t* modMapReply, xcb_keysym_t keysym )
@@ -172,13 +147,13 @@ uint X11Window::FindModifierMask( xcb_get_modifier_mapping_reply_t* modMapReply,
 
 bool X11Window::InitSymbolTable()
 {
-    mSymsTable = xcb_key_symbols_alloc( mConnection );
+    mSymsTable = xcb_key_symbols_alloc( gConnection );
 
-	xcb_get_modifier_mapping_cookie_t modMapCookie = xcb_get_modifier_mapping( mConnection );
+	xcb_get_modifier_mapping_cookie_t modMapCookie = xcb_get_modifier_mapping( gConnection );
 
 	xcb_generic_error_t *error = 0;
     xcb_get_modifier_mapping_reply_t *modMapReply
-    	= xcb_get_modifier_mapping_reply( mConnection, modMapCookie, &error);
+    	= xcb_get_modifier_mapping_reply( gConnection, modMapCookie, &error);
 
     if (error)
     {
@@ -239,10 +214,10 @@ bool X11Window::InitWindow( const std::string& title, unsigned width, unsigned h
     uint32_t valuelist[] = { eventmask, 0 };
     uint32_t valuemask = XCB_CW_EVENT_MASK;
 
-    mWindow = xcb_generate_id( mConnection );
+    mWindow = xcb_generate_id( gConnection );
 
-	XCBError error( mConnection,
-		xcb_create_window_checked( mConnection
+	XCBError error( gConnection,
+		xcb_create_window_checked( gConnection
 		, XCB_COPY_FROM_PARENT
 		, mWindow
 		, mScreen->root
@@ -269,22 +244,22 @@ bool X11Window::InitWindow( const std::string& title, unsigned width, unsigned h
 
     SetTitle( title );
 
-    xcb_map_window( mConnection, mWindow ); // show
+    xcb_map_window( gConnection, mWindow ); // show
 
-	xcb_flush( mConnection );
+	xcb_flush( gConnection );
 
 	return true;
 }
 
 bool X11Window::InitWindowProtocol()
 {
-	xcb_intern_atom_reply_t* reply = xcb_intern_atom_reply(mConnection
-		, xcb_intern_atom(mConnection, 1, 12, "WM_PROTOCOLS"), 0);
+	xcb_intern_atom_reply_t* reply = xcb_intern_atom_reply(gConnection
+		, xcb_intern_atom(gConnection, 1, 12, "WM_PROTOCOLS"), 0);
 
-	xcb_intern_atom_reply_t* reply2 = xcb_intern_atom_reply(mConnection
-		, xcb_intern_atom(mConnection, 0, 16, "WM_DELETE_WINDOW"), 0);
+	xcb_intern_atom_reply_t* reply2 = xcb_intern_atom_reply(gConnection
+		, xcb_intern_atom(gConnection, 0, 16, "WM_DELETE_WINDOW"), 0);
 
-	xcb_change_property(mConnection, XCB_PROP_MODE_REPLACE, mWindow
+	xcb_change_property(gConnection, XCB_PROP_MODE_REPLACE, mWindow
 		, (*reply).atom, 4, 32, 1, &(*reply2).atom);
 
 	return true;
@@ -363,7 +338,7 @@ void X11Window::PollEvents()
 {
 	xcb_generic_event_t *event;
 
-	while ( (event = xcb_poll_for_event( mConnection ) ) )
+	while ( (event = xcb_poll_for_event( gConnection ) ) )
 	{
 		bool notify = false;
 	    InputEvent ievent;
@@ -509,11 +484,11 @@ void X11Window::PollEvents()
 
 void X11Window::SetTitle( const std::string& title )
 {
-	if ( !mConnection || !mWindow )
+	if ( !gConnection || !mWindow )
 		return;
 
 	// Set the window name  property.
-	xcb_icccm_set_wm_name( mConnection
+	xcb_icccm_set_wm_name( gConnection
 		, mWindow
 		, XCB_ATOM_STRING
 		, 8
@@ -525,7 +500,7 @@ void X11Window::SetTitle( const std::string& title )
 	std::string wmClass = title; 	// Class name is set to title for now (probably wrong).
 	wmClass.push_back( '\0' );
 	wmClass += title; 				// as is the instance name.
-	xcb_icccm_set_wm_class( mConnection
+	xcb_icccm_set_wm_class( gConnection
 		, mWindow
 		, wmClass.size()
 		, wmClass.c_str() );
@@ -533,7 +508,7 @@ void X11Window::SetTitle( const std::string& title )
 
 void X11Window::SetIcon( const IImage& icon )
 {
-	if ( !mConnection || !mScreen || !mWindow )
+	if ( !gConnection || !mScreen || !mWindow )
 		return;
 
 	PROCYON_DEBUG( "X11", "SetIcon with image Width: %i Height: %i Components: %i"
@@ -547,9 +522,9 @@ void X11Window::SetIcon( const IImage& icon )
 		std::swap( tempPixels[ x * 4 + 0 ], tempPixels[ x * 4 + 2 ] );
 	}
 
-	xcb_pixmap_t pixmap = xcb_generate_id( mConnection );
-	XCBError error( mConnection,
-		xcb_create_pixmap_checked( mConnection
+	xcb_pixmap_t pixmap = xcb_generate_id( gConnection );
+	XCBError error( gConnection,
+		xcb_create_pixmap_checked( gConnection
 			, mScreen->root_depth
 			, pixmap
 			, mWindow
@@ -564,10 +539,10 @@ void X11Window::SetIcon( const IImage& icon )
         return;
     }
 
-    xcb_gcontext_t gc = xcb_generate_id( mConnection );
-    xcb_create_gc( mConnection, gc, pixmap, 0, NULL);
+    xcb_gcontext_t gc = xcb_generate_id( gConnection );
+    xcb_create_gc( gConnection, gc, pixmap, 0, NULL);
 
-    xcb_put_image_checked( mConnection
+    xcb_put_image_checked( gConnection
     	, XCB_IMAGE_FORMAT_Z_PIXMAP
     	, pixmap
     	, gc
@@ -583,19 +558,14 @@ void X11Window::SetIcon( const IImage& icon )
 	xcb_icccm_wm_hints_t wmHints;
 	xcb_icccm_wm_hints_set_none( &wmHints );
 	xcb_icccm_wm_hints_set_icon_pixmap( &wmHints, pixmap );
-	xcb_icccm_set_wm_hints( mConnection, mWindow, &wmHints );
+	xcb_icccm_set_wm_hints( gConnection, mWindow, &wmHints );
 
-	xcb_free_gc( mConnection, gc );
+	xcb_free_gc( gConnection, gc );
 }
 
 glm::ivec2 X11Window::GetSize() const
 {
 	return glm::ivec2( mWidth, mHeight );
-}
-
-Display* X11Window::GetXDisplay()
-{
-	return mDisplay;
 }
 
 xcb_window_t X11Window::GetXWindow()

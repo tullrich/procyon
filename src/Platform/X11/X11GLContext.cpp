@@ -24,6 +24,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "X11GLContext.h"
+#include "X11Platform.h"
 
 namespace Procyon {
 namespace Unix {
@@ -39,10 +40,8 @@ X11GLContext::X11GLContext( X11Window *window )
 
 X11GLContext::~X11GLContext()
 {
-    Display* display = mWindow->GetXDisplay();
-
-    glXDestroyWindow( display, mGLXWindow );
-    glXDestroyContext( display, mContext );
+    glXDestroyWindow( gDisplay, mGLXWindow );
+    glXDestroyContext( gDisplay, mContext );
 }
 
 bool X11GLContext::CreateX11Context()
@@ -54,12 +53,11 @@ bool X11GLContext::CreateX11Context()
         0
     };
 
-    Display* display = mWindow->GetXDisplay();
     xcb_window_t window = mWindow->GetXWindow();
 
 	GLXFBConfig *fb_configs = 0;
 	int num_fb_configs = 0;
-	fb_configs = glXChooseFBConfig( display, DefaultScreen(display), attribList, &num_fb_configs );
+	fb_configs = glXChooseFBConfig( gDisplay, DefaultScreen( gDisplay ), attribList, &num_fb_configs );
 	if( !fb_configs || num_fb_configs == 0 )
 	{
 		PROCYON_ERROR( "X11", "Error querying framebuffer configuration." );
@@ -68,7 +66,7 @@ bool X11GLContext::CreateX11Context()
 
     mFBConfig = fb_configs[0];
 
-    mContext = glXCreateNewContext(display, mFBConfig, GLX_RGBA_TYPE, 0, true);
+    mContext = glXCreateNewContext( gDisplay, mFBConfig, GLX_RGBA_TYPE, 0, true );
     if( !mContext )
     {
 		PROCYON_ERROR( "X11", "Unable to create GLXContext." );
@@ -76,7 +74,7 @@ bool X11GLContext::CreateX11Context()
     }
 
 	mGLXWindow = glXCreateWindow(
-	    display,
+	    gDisplay,
 	    mFBConfig,
 	    window,
 	    0
@@ -88,20 +86,20 @@ bool X11GLContext::CreateX11Context()
     }
 
     /* make OpenGL context current */
-    if( !glXMakeCurrent( display, mGLXWindow, mContext) )
+    if( !glXMakeCurrent( gDisplay, mGLXWindow, mContext) )
     {
-    	glXDestroyWindow( display, mGLXWindow );
-        glXDestroyContext( display, mContext );
+    	glXDestroyWindow( gDisplay, mGLXWindow );
+        glXDestroyContext( gDisplay, mContext );
 		PROCYON_ERROR( "X11", "Unable to make GLXContext current." );
         return false;
     }
 
-    XVisualInfo *vi = glXGetVisualFromFBConfig( display, mFBConfig );
+    XVisualInfo *vi = glXGetVisualFromFBConfig( gDisplay, mFBConfig );
     if ( vi )
     {
       int samp_buf, samples;
-      glXGetFBConfigAttrib( display, mFBConfig, GLX_SAMPLE_BUFFERS, &samp_buf );
-      glXGetFBConfigAttrib( display, mFBConfig, GLX_SAMPLES       , &samples  );
+      glXGetFBConfigAttrib( gDisplay, mFBConfig, GLX_SAMPLE_BUFFERS, &samp_buf );
+      glXGetFBConfigAttrib( gDisplay, mFBConfig, GLX_SAMPLES       , &samples  );
 
       PROCYON_DEBUG( "X11", "Matching fbconfig visual ID 0x%2x: SAMPLE_BUFFERS = %d,"
               " SAMPLES = %d\n", vi->visualid, samp_buf, samples );
@@ -116,14 +114,12 @@ bool X11GLContext::CreateX11Context()
 
 void X11GLContext::MakeCurrent()
 {
-    Display* display = mWindow->GetXDisplay();
-    glXMakeCurrent( display, mGLXWindow, mContext );
+    glXMakeCurrent( gDisplay, mGLXWindow, mContext );
 }
 
 void X11GLContext::SwapBuffers()
 {
-    Display* display = mWindow->GetXDisplay();
-    glXSwapBuffers( display, mGLXWindow );
+    glXSwapBuffers( gDisplay, mGLXWindow );
 }
 
 } /* namespace Unix */

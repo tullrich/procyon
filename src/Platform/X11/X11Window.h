@@ -61,7 +61,6 @@ namespace Unix {
 		virtual void    SetFullscreen( bool toggle );
 		virtual bool    GetFullscreen() const;
 
-		Display* 		GetXDisplay();
 		xcb_window_t 	GetXWindow();
 		GL::IGLContext*	GetGLContext();
 
@@ -108,8 +107,6 @@ namespace Unix {
 		ProcyonMouseButton  TranslateMouseButton( xcb_button_t state );
 
 		bool				mIsOpen;
-		Display*			mDisplay;
-		xcb_connection_t*	mConnection;
 		xcb_screen_t*		mScreen;
 		xcb_window_t		mWindow;
 
