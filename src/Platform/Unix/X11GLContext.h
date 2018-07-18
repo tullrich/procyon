@@ -27,7 +27,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _X11_GL_CONTEXT_H
 
 #include "ProcyonCommon.h"
-#include "GLContext.h"
+#include "Graphics/GL/GLContext.h"
 #include "X11Window.h"
 
 #include <GL/glx.h>
@@ -35,7 +35,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Procyon {
 namespace Unix {
-	
+
 	class X11GLContext : public GL::GLContextBase
 	{
 	public:
@@ -54,7 +54,7 @@ namespace Unix {
 		GLXContext 		mContext;
 		GLXWindow		mGLXWindow;
 	};
-	
+
 } /* namespace Unix */
 } /* namespace Procyon */
 

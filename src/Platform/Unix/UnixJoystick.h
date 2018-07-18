@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _UNIX_JOYSTICK_H
 
 #include "ProcyonCommon.h"
-#include "Joystick.h"
+#include "Platform/Joystick.h"
 #include <libevdev.h>
 
 // max number of uploadedable effects supported by this implementation
@@ -217,7 +217,7 @@ namespace Unix {
 		// information about each axis (a device must support all of these)
 		AxisInfo 			mAxes[ SUPPORTED_AXES_COUNT ];
 	};
-	
+
 } /* namespace Unix */
 } /* namespace Procyon */
 

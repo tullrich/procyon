@@ -27,7 +27,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define _X11_WINDOW_H
 
 #include "ProcyonCommon.h"
-#include "Window.h"
+#include "Platform/Window.h"
 
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
@@ -55,7 +55,11 @@ namespace Unix {
 		virtual void 	PollEvents();
 		virtual void 	SetTitle( const std::string& title );
 		virtual void 	SetIcon( const IImage& icon );
+		virtual void*   GetNativeHandle() const;
 		virtual glm::ivec2 GetSize() const;
+		virtual bool    HasFocus() const;
+		virtual void    SetFullscreen( bool toggle );
+		virtual bool    GetFullscreen() const;
 
 		Display* 		GetXDisplay();
 		xcb_window_t 	GetXWindow();
@@ -101,7 +105,7 @@ namespace Unix {
 		ProcyonKeyCode 	TranslateKeySym( KeySym sym );
 		long 			KeySymToUnicode( KeySym sym );
 		unsigned  		TranslateKeyState( uint state );
-		MouseButton  	TranslateMouseButton( xcb_button_t state );
+		ProcyonMouseButton  TranslateMouseButton( xcb_button_t state );
 
 		bool				mIsOpen;
 		Display*			mDisplay;

@@ -51,7 +51,7 @@ struct XCBError
 
 	operator bool() const
 	{
-		mError != NULL;
+		return mError != NULL;
 	}
 
 	int Code() const
@@ -103,7 +103,7 @@ X11Window::X11Window( const std::string& title, unsigned width, unsigned height 
     mScreen = xcb_setup_roots_iterator( xcb_get_setup( mConnection ) ).data;
 
     // Open the window
-    if( !InitWindow( title, width, height ) )
+    if( !mScreen || !InitWindow( title, width, height ) )
     {
     	Destroy();
     	throw std::runtime_error("X11Window");
@@ -537,11 +537,11 @@ void X11Window::SetIcon( const IImage& icon )
 		return;
 
 	PROCYON_DEBUG( "X11", "SetIcon with image Width: %i Height: %i Components: %i"
-		, icon.Width(), icon.Height(), icon.Components() );
+		, icon.GetWidth(), icon.GetHeight(), icon.Components() );
 
 	MutableImage tempImg( icon, 4 ); // convert to 4 components
 	uint8_t* tempPixels = tempImg.MutableData();
-	for ( int x = 0; x < icon.Width() * icon.Height(); x++ )
+	for ( int x = 0; x < icon.GetWidth() * icon.GetHeight(); x++ )
 	{
 		// RGBA -> BGRA
 		std::swap( tempPixels[ x * 4 + 0 ], tempPixels[ x * 4 + 2 ] );
@@ -553,8 +553,8 @@ void X11Window::SetIcon( const IImage& icon )
 			, mScreen->root_depth
 			, pixmap
 			, mWindow
-			, icon.Width()
-			, icon.Height() )
+			, icon.GetWidth()
+			, icon.GetHeight() )
 	);
 
 	if( error.mError != NULL )
@@ -571,13 +571,13 @@ void X11Window::SetIcon( const IImage& icon )
     	, XCB_IMAGE_FORMAT_Z_PIXMAP
     	, pixmap
     	, gc
-    	, icon.Width()
-    	, icon.Height()
+    	, icon.GetWidth()
+    	, icon.GetHeight()
     	, 0
     	, 0
     	, 0
     	, mScreen->root_depth
-    	, icon.Width() * icon.Height() * 4
+    	, icon.GetWidth() * icon.GetHeight() * 4
     	, tempPixels );
 
 	xcb_icccm_wm_hints_t wmHints;
@@ -665,38 +665,17 @@ ProcyonKeyCode X11Window::TranslateKeySym( KeySym sym )
 
 		// Misc Latin keys
 		X11_TRANSLATE_CASE( XK_space, KEY_SPACE )
-		X11_TRANSLATE_CASE( XK_exclam, KEY_EXCLAM )
-		X11_TRANSLATE_CASE( XK_quotedbl, KEY_QUOTE_DBL )
-		X11_TRANSLATE_CASE( XK_numbersign, KEY_NUM_SIGN )
-		X11_TRANSLATE_CASE( XK_dollar, KEY_DOLLAR )
-		X11_TRANSLATE_CASE( XK_percent, KEY_PERCENT )
-		X11_TRANSLATE_CASE( XK_ampersand, KEY_AMPERSAND )
 		X11_TRANSLATE_CASE( XK_apostrophe, KEY_APOSTROPHE )
-		X11_TRANSLATE_CASE( XK_parenleft, KEY_PAREN_LEFT )
-		X11_TRANSLATE_CASE( XK_parenright, KEY_PAREN_RIGHT )
-		X11_TRANSLATE_CASE( XK_asterisk, KEY_ASTERISK )
-		X11_TRANSLATE_CASE( XK_plus, KEY_PLUS )
 		X11_TRANSLATE_CASE( XK_comma, KEY_COMMA )
 		X11_TRANSLATE_CASE( XK_minus, KEY_MINUS )
 		X11_TRANSLATE_CASE( XK_period, KEY_PERIOD )
 		X11_TRANSLATE_CASE( XK_slash, KEY_SLASH )
-		X11_TRANSLATE_CASE( XK_colon, KEY_COLON )
 		X11_TRANSLATE_CASE( XK_semicolon, KEY_SEMICOLON )
-		X11_TRANSLATE_CASE( XK_less, KEY_LESS )
 		X11_TRANSLATE_CASE( XK_equal, KEY_EQUAL )
-		X11_TRANSLATE_CASE( XK_greater, KEY_GREATER )
-		X11_TRANSLATE_CASE( XK_question, KEY_QUESTION)
-		X11_TRANSLATE_CASE( XK_at, KEY_AT )
 		X11_TRANSLATE_CASE( XK_bracketleft, KEY_BRACKET_LEFT )
 		X11_TRANSLATE_CASE( XK_backslash, KEY_BACK_SLASH )
 		X11_TRANSLATE_CASE( XK_bracketright, KEY_BRACKET_RIGHT )
-		X11_TRANSLATE_CASE( XK_asciicircum, KEY_CIRCUM )
-		X11_TRANSLATE_CASE( XK_underscore, KEY_UNDERSCORE )
 		X11_TRANSLATE_CASE( XK_grave, KEY_GRAVE )
-		X11_TRANSLATE_CASE( XK_braceleft, KEY_BRACE_LEFT )
-		X11_TRANSLATE_CASE( XK_bar, KEY_BAR )
-		X11_TRANSLATE_CASE( XK_braceright, KEY_BRACE_RIGHT )
-		X11_TRANSLATE_CASE( XK_asciitilde, KEY_TILDE )
 
 		// Function keys
 		X11_TRANSLATE_CASE( XK_F1, KEY_F1 )
@@ -710,32 +689,54 @@ ProcyonKeyCode X11Window::TranslateKeySym( KeySym sym )
 		X11_TRANSLATE_CASE( XK_F9, KEY_F9 )
 		X11_TRANSLATE_CASE( XK_F10, KEY_F10 )
 
+		// Modifier keys
+		X11_TRANSLATE_CASE( XK_Shift_L, KEY_SHIFT_L )
+		X11_TRANSLATE_CASE( XK_Shift_R, KEY_SHIFT_R )
+		X11_TRANSLATE_CASE( XK_Control_L, KEY_CTRL_L )
+		X11_TRANSLATE_CASE( XK_Control_R, KEY_CTRL_R )
+		X11_TRANSLATE_CASE( XK_Alt_L, KEY_ALT_L )
+		X11_TRANSLATE_CASE( XK_Alt_R, KEY_ALT_R )
+		X11_TRANSLATE_CASE( XK_Super_L, KEY_SUPER_L)
+		X11_TRANSLATE_CASE( XK_Super_R, KEY_SUPER_R )
+
 		// Arrow keys
 		X11_TRANSLATE_CASE( XK_Up, KEY_UP )
 		X11_TRANSLATE_CASE( XK_Down, KEY_DOWN )
 		X11_TRANSLATE_CASE( XK_Left, KEY_LEFT )
 		X11_TRANSLATE_CASE( XK_Right, KEY_RIGHT )
 
-		// Modifier keys
-		X11_TRANSLATE_CASE( XK_Shift_L, KEY_SHIFT_L )
-		X11_TRANSLATE_CASE( XK_Shift_R, KEY_SHIFT_R )
-		X11_TRANSLATE_CASE( XK_Control_L, KEY_CTRL_L )
-		X11_TRANSLATE_CASE( XK_Control_R, KEY_CTRL_R )
-		X11_TRANSLATE_CASE( XK_Meta_L, KEY_META_L )
-		X11_TRANSLATE_CASE( XK_Meta_R, KEY_META_R )
-		X11_TRANSLATE_CASE( XK_Alt_L, KEY_ALT_L )
-		X11_TRANSLATE_CASE( XK_Alt_R, KEY_ALT_R )
-		X11_TRANSLATE_CASE( XK_Super_L, KEY_SUPER_L)
-		X11_TRANSLATE_CASE( XK_Super_R, KEY_SUPER_R )
-		X11_TRANSLATE_CASE( XK_Caps_Lock, KEY_CAPS_LOCK )
-
 		// Misc keys
+        X11_TRANSLATE_CASE( XK_Caps_Lock, KEY_CAPS_LOCK )
 		X11_TRANSLATE_CASE( XK_BackSpace, KEY_BACKSPACE )
 		X11_TRANSLATE_CASE( XK_Tab, KEY_TAB )
 		X11_TRANSLATE_CASE( XK_Return, KEY_RETURN )
-		X11_TRANSLATE_CASE( XK_Pause, KEY_PAUSE )
 		X11_TRANSLATE_CASE( XK_Escape, KEY_ESCAPE )
+		X11_TRANSLATE_CASE( XK_Pause, KEY_PAUSE )
 		X11_TRANSLATE_CASE( XK_Delete, KEY_DELETE )
+		X11_TRANSLATE_CASE( XK_Insert, KEY_INSERT )
+		X11_TRANSLATE_CASE( XK_Home, KEY_HOME )
+		X11_TRANSLATE_CASE( XK_End, KEY_END )
+		X11_TRANSLATE_CASE( XK_Page_Up, KEY_PAGE_UP )
+		X11_TRANSLATE_CASE( XK_Page_Down, KEY_PAGE_DOWN )
+
+		// Keypad keys
+		X11_TRANSLATE_CASE( XK_KP_0, KEY_NUMPAD_0 )
+		X11_TRANSLATE_CASE( XK_KP_1, KEY_NUMPAD_1 )
+		X11_TRANSLATE_CASE( XK_KP_2, KEY_NUMPAD_2 )
+		X11_TRANSLATE_CASE( XK_KP_3, KEY_NUMPAD_3 )
+		X11_TRANSLATE_CASE( XK_KP_4, KEY_NUMPAD_4 )
+		X11_TRANSLATE_CASE( XK_KP_5, KEY_NUMPAD_5 )
+		X11_TRANSLATE_CASE( XK_KP_6, KEY_NUMPAD_6 )
+		X11_TRANSLATE_CASE( XK_KP_7, KEY_NUMPAD_7 )
+		X11_TRANSLATE_CASE( XK_KP_8, KEY_NUMPAD_8 )
+		X11_TRANSLATE_CASE( XK_KP_9, KEY_NUMPAD_9 )
+		X11_TRANSLATE_CASE( XK_KP_Add, KEY_NUMPAD_ADD )
+		X11_TRANSLATE_CASE( XK_KP_Subtract, KEY_NUMPAD_SUBTRACT )
+		X11_TRANSLATE_CASE( XK_KP_Multiply, KEY_NUMPAD_MULTIPLY )
+		X11_TRANSLATE_CASE( XK_KP_Divide, KEY_NUMPAD_DIVIDE )
+		X11_TRANSLATE_CASE( XK_KP_Decimal, KEY_NUMPAD_DECIMAL )
+
+		// Misc keys
 		default: return KEY_UNKNOWN;
 	}
 }
@@ -787,6 +788,26 @@ ProcyonMouseButton X11Window::TranslateMouseButton( xcb_button_t state )
 		case 9: return MOUSE_BTN_BACK;
 		default: return MOUSE_BTN_UNKNOWN;
 	}
+}
+
+void* X11Window::GetNativeHandle() const
+{
+    return NULL;
+}
+
+bool X11Window::HasFocus() const
+{
+    return true;
+}
+
+void X11Window::SetFullscreen( bool toggle )
+{
+
+}
+
+bool X11Window::GetFullscreen() const
+{
+    return false;
 }
 
 } /* namespace Unix */
