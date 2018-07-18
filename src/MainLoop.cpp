@@ -24,6 +24,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "MainLoop.h"
 #include "Audio/AudioDevice.h"
+#include "Platform/Platform.h"
 #include "Platform/Window.h"
 #include "Platform/Keyboard.h"
 #include "Platform/Mouse.h"
@@ -48,6 +49,8 @@ namespace Procyon {
         : mAvgFPS( (double)TARGET_FPS )
 		, mFrame( 0 )
 	{
+        Platform::Init();
+
         mStartTime      = Now();
         mSimTime.tsl   = 0.0f;
 		mSimTime.dt    = 0.0f;
@@ -78,6 +81,8 @@ namespace Procyon {
 		delete mRenderer;
 		delete mAudioDev;
 		delete mWindow;
+
+        Platform::Destroy();
     }
 
     void MainLoop::HandleInputEvent( const InputEvent& ev )
