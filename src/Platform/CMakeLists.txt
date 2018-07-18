@@ -1,6 +1,6 @@
 
 if ( PROCYON_LINUX )
-	add_subdirectory( Unix/ )
+	add_subdirectory( X11/ )
 else()
 	add_subdirectory( Win32/ )
 endif()
