@@ -293,10 +293,13 @@ namespace GL {
         glVertexAttribDivisor( quadPosLoc, 0 );
         glVertexAttribDivisor( quadSizeLoc, 0 );
         glVertexAttribDivisor( quadRotLoc, 0 );
-        glVertexAttribDivisor( quadUVOffsetLoc, 0 );
-        glVertexAttribDivisor( quadUVSizeLoc, 0 );
         glVertexAttribDivisor( quadTintLoc, 0 );
 		glVertexAttribDivisor( quadOriginLoc, 0 );
+        if ( rc.texture )
+        {
+            glVertexAttribDivisor( quadUVOffsetLoc, 0 );
+            glVertexAttribDivisor( quadUVSizeLoc, 0 );
+        }
 
 		mFrameStats.batches++;
 		mFrameStats.totalquads += rc.instancecount;
@@ -498,7 +501,6 @@ namespace GL {
 	}
 
 } /* namespace GL
-
 
 	/*static*/ RenderCore* RenderCore::Allocate()
 	{
