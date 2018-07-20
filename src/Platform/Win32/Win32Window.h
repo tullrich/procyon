@@ -47,7 +47,7 @@ namespace Win32 {
 		virtual void SetTitle( const std::string& title );
 		virtual void SetIcon( const IImage& icon );
 		virtual GL::IGLContext* GetGLContext();
-		virtual void* GetNativeHandle() const;
+		virtual intptr_t GetNativeHandle() const;
 		virtual glm::ivec2 GetSize() const;
 		virtual bool HasFocus() const;
 		virtual void SetFullscreen( bool toggle );

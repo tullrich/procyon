@@ -760,9 +760,9 @@ ProcyonMouseButton X11Window::TranslateMouseButton( xcb_button_t state )
 	}
 }
 
-void* X11Window::GetNativeHandle() const
+intptr_t X11Window::GetNativeHandle() const
 {
-    return NULL;
+    return mWindow;
 }
 
 bool X11Window::HasFocus() const

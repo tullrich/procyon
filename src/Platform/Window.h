@@ -143,7 +143,7 @@ namespace Procyon {
 		virtual void SetTitle( const std::string& title ) = 0;
 		virtual void SetIcon( const IImage& icon ) = 0;
 		virtual GL::IGLContext* GetGLContext() = 0;
-		virtual void* GetNativeHandle() const = 0;
+		virtual intptr_t GetNativeHandle() const = 0;
 		virtual glm::ivec2 GetSize() const = 0;
 		virtual uint32_t GetHeight() const = 0;
 		virtual uint32_t GetWidth() const = 0;

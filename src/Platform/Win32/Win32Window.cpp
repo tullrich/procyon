@@ -433,7 +433,7 @@ namespace Win32 {
 		return mContext;
 	}
 
-	void* Win32Window::GetNativeHandle() const
+	intptr_t Win32Window::GetNativeHandle() const
 	{
 		return glfwGetWin32Window( mWindow );
 	}
