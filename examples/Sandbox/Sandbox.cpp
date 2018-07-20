@@ -47,7 +47,6 @@ Sandbox::Sandbox()
     , mCustomMap( NULL )
 	, mFpsText( NULL )
 	, mWorld( NULL )
-	, mBackground( NULL )
 {
 }
 
