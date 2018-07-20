@@ -57,6 +57,11 @@ namespace Procyon {
 		mPosition += delta;
 	}
 
+    float Transformable::GetOrientation() const
+    {
+        return mOrientation;
+    }
+
 	void Transformable::SetOrientation( float angle )
 	{
 		mOrientation = angle;
@@ -100,6 +105,11 @@ namespace Procyon {
     void Transformable::SetOrigin( const glm::vec2& origin )
     {
         mOrigin = origin;
+    }
+
+    glm::vec2 Transformable::GetOrigin() const
+    {
+    	return mOrigin;
     }
 
     glm::mat3 Transformable::GetTransform() const

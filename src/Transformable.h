@@ -41,6 +41,7 @@ namespace Procyon {
 	    void				Move( float deltax, float deltay );
 	    void				Move( const glm::vec2& delta );
 
+        float               GetOrientation() const;
 	    void				SetOrientation( float angle );
 	    void				Rotate( float deltaAngle );
 
@@ -52,6 +53,7 @@ namespace Procyon {
 
 	    void 				SetOrigin( float x, float y );
 	    void 				SetOrigin( const glm::vec2& origin );
+	    glm::vec2 			GetOrigin() const;
 
 	    virtual glm::mat3 	GetTransform() const;
 

@@ -60,8 +60,7 @@ namespace Procyon {
 
 	glm::mat3 Camera2D::GetViewProjection() const
 	{
-		glm::mat3 view = glm::scale( GetTransform(), glm::vec2( 1.0f / mZoom ) );
-		return mProjection * glm::inverse( view );
+		return mProjection * GetView();
 	}
 
 	float Camera2D::GetZoom() const
