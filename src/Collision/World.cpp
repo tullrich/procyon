@@ -152,7 +152,7 @@ namespace Procyon {
 			 maxY < 0 || minY >= mSize.y )
 			return;
 
-		maxX = glm::clamp( maxX, 0, mSize.x - 1 );
+		minX = glm::clamp( minX, 0, mSize.x - 1 );
 		minY = glm::clamp( minY, 0, mSize.y - 1 );
 		maxX = glm::clamp( maxX, 0, mSize.x - 1 );
 		maxY = glm::clamp( maxY, 0, mSize.y - 1 );
