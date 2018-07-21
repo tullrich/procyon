@@ -1,5 +1,5 @@
 {
   "cmd": "make",
-  "args": [ "-j4" ],
-  "cwd": "/home/tim/projects/mine/procyon/build"
+  "args": [ "-j9" ],
+  "cwd": "{PROJECT_PATH}/build"
 }
