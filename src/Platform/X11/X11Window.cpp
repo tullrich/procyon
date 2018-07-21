@@ -66,7 +66,6 @@ struct XCBError
 
 X11Window::X11Window( const std::string& title, unsigned width, unsigned height )
 	: mIsOpen( false )
-	, mScreen( NULL )
 	, mWindow( 0 )
 	, mSymsTable( NULL )
 	, mContext( NULL )
@@ -80,11 +79,8 @@ X11Window::X11Window( const std::string& title, unsigned width, unsigned height 
     	throw std::runtime_error("X11Window");
     }
 
-    // Grab the first screen
-    mScreen = xcb_setup_roots_iterator( xcb_get_setup( gConnection ) ).data;
-
     // Open the window
-    if( !mScreen || !InitWindow( title, width, height ) )
+    if( !gScreen || !InitWindow( title, width, height ) )
     {
     	Destroy();
     	throw std::runtime_error("X11Window");
@@ -119,8 +115,6 @@ void X11Window::Destroy()
 		xcb_key_symbols_free( mSymsTable );
 		mSymsTable = NULL;
 	}
-
-    mScreen = NULL;
 }
 
 uint X11Window::FindModifierMask( xcb_get_modifier_mapping_reply_t* modMapReply, xcb_keysym_t keysym )
@@ -220,12 +214,12 @@ bool X11Window::InitWindow( const std::string& title, unsigned width, unsigned h
 		xcb_create_window_checked( gConnection
 		, XCB_COPY_FROM_PARENT
 		, mWindow
-		, mScreen->root
+		, gScreen->root
 		, 0, 0
 		, width, height
 		, 0
 		, XCB_WINDOW_CLASS_INPUT_OUTPUT
-		, mScreen->root_visual
+		, gScreen->root_visual
 		, valuemask
 		, valuelist
 	));
@@ -508,7 +502,7 @@ void X11Window::SetTitle( const std::string& title )
 
 void X11Window::SetIcon( const IImage& icon )
 {
-	if ( !gConnection || !mScreen || !mWindow )
+	if ( !gConnection || !gScreen || !mWindow )
 		return;
 
 	PROCYON_DEBUG( "X11", "SetIcon with image Width: %i Height: %i Components: %i"
@@ -525,7 +519,7 @@ void X11Window::SetIcon( const IImage& icon )
 	xcb_pixmap_t pixmap = xcb_generate_id( gConnection );
 	XCBError error( gConnection,
 		xcb_create_pixmap_checked( gConnection
-			, mScreen->root_depth
+			, gScreen->root_depth
 			, pixmap
 			, mWindow
 			, icon.GetWidth()
@@ -551,7 +545,7 @@ void X11Window::SetIcon( const IImage& icon )
     	, 0
     	, 0
     	, 0
-    	, mScreen->root_depth
+    	, gScreen->root_depth
     	, icon.GetWidth() * icon.GetHeight() * 4
     	, tempPixels );
 

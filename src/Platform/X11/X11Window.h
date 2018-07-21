@@ -107,7 +107,6 @@ namespace Unix {
 		ProcyonMouseButton  TranslateMouseButton( xcb_button_t state );
 
 		bool				mIsOpen;
-		xcb_screen_t*		mScreen;
 		xcb_window_t		mWindow;
 
 		xcb_key_symbols_t*  mSymsTable;

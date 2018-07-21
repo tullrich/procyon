@@ -34,6 +34,7 @@ namespace Procyon {
     namespace Unix {
         Display* gDisplay = nullptr;
         xcb_connection_t* gConnection = nullptr;
+		xcb_screen_t* gScreen = nullptr;
     } /* namespace Unix */
 
 	/* static */ void Platform::Init()
@@ -57,6 +58,9 @@ namespace Procyon {
         	throw std::runtime_error("X11Window");
         }
         XSetEventQueueOwner( gDisplay, XCBOwnsEventQueue );
+
+        // Grab the first screen
+        gScreen = xcb_setup_roots_iterator( xcb_get_setup( gConnection ) ).data;
 	}
 
 	/* static */ void Platform::Destroy()
@@ -70,6 +74,7 @@ namespace Procyon {
        		XCloseDisplay( gDisplay );
        		gConnection = NULL; // connection is automatically shutdown
        		gDisplay = NULL;
+            gScreen = NULL;
     	}
 	}
 } /* namespace Procyon */

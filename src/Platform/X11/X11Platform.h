@@ -43,6 +43,9 @@ namespace Unix {
     // The singleton xcb connection open for the duration of the process
     extern xcb_connection_t* gConnection;
 
+    // The first screen used by all windows
+    extern xcb_screen_t* gScreen;
+
 } /* namespace Unix */
 } /* namespace Procyon */
 
