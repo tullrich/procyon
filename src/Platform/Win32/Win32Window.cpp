@@ -435,7 +435,7 @@ namespace Win32 {
 
 	intptr_t Win32Window::GetNativeHandle() const
 	{
-		return glfwGetWin32Window( mWindow );
+		return (intptr_t)glfwGetWin32Window( mWindow );
 	}
 
 	glm::ivec2 Win32Window::GetSize() const
