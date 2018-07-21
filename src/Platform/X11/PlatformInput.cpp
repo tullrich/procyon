@@ -211,19 +211,58 @@ namespace Procyon {
 
 	/* static */ glm::ivec2 PlatformInput::GetMousePosition()
 	{
-		return glm::ivec2();
+        xcb_query_pointer_cookie_t qp_cookie = xcb_query_pointer( gConnection, gScreen->root );
+        xcb_query_pointer_reply_t *qp_reply = xcb_query_pointer_reply( gConnection, qp_cookie, NULL );
+
+        glm::ivec2 ret;
+        if (qp_reply) {
+            ret = glm::ivec2( qp_reply->win_x, qp_reply->win_y )
+                    - glm::ivec2( gScreen->width_in_pixels, gScreen->height_in_pixels ) / 2;
+            free (qp_reply);
+        }
+        return ret;
 	}
 
 	/* static */ glm::ivec2 PlatformInput::GetMousePosition( const IWindow* relative )
 	{
-		return glm::ivec2();
+        xcb_query_pointer_cookie_t qp_cookie = xcb_query_pointer( gConnection, (xcb_window_t)relative->GetNativeHandle() );
+        xcb_query_pointer_reply_t *qp_reply = xcb_query_pointer_reply( gConnection, qp_cookie, NULL );
+
+        glm::ivec2 ret;
+        if (qp_reply) {
+            ret = glm::ivec2( qp_reply->win_x, qp_reply->win_y ) - relative->GetSize() / 2;
+            free (qp_reply);
+        }
+        return ret;
 	}
 
 	/* static */ void PlatformInput::SetMousePosition( const glm::ivec2& position )
 	{
+        xcb_warp_pointer( gConnection
+            , XCB_NONE
+            , gScreen->root
+            , 0
+            , 0
+            , 0
+            , 0
+            , position.x
+            , position.y
+        );
+        xcb_flush( gConnection );
 	}
 
 	/* static */ void PlatformInput::SetMousePosition( const glm::ivec2& position, const IWindow* relative )
 	{
+        xcb_warp_pointer( gConnection
+            , XCB_NONE
+            , relative->GetNativeHandle()
+            , 0
+            , 0
+            , 0
+            , 0
+            , position.x
+            , position.y
+        );
+        xcb_flush( gConnection );
 	}
 } /* namespace Procyon */
