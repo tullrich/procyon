@@ -216,8 +216,7 @@ namespace Procyon {
 
         glm::ivec2 ret;
         if (qp_reply) {
-            ret = glm::ivec2( qp_reply->win_x, qp_reply->win_y )
-                    - glm::ivec2( gScreen->width_in_pixels, gScreen->height_in_pixels ) / 2;
+            ret = glm::ivec2( qp_reply->win_x, qp_reply->win_y );
             free (qp_reply);
         }
         return ret;
@@ -230,7 +229,7 @@ namespace Procyon {
 
         glm::ivec2 ret;
         if (qp_reply) {
-            ret = glm::ivec2( qp_reply->win_x, qp_reply->win_y ) - relative->GetSize() / 2;
+            ret = glm::ivec2( qp_reply->win_x, qp_reply->win_y );
             free (qp_reply);
         }
         return ret;
