@@ -47,6 +47,7 @@ class MapDocument;
 class EditorSettings;
 class RecentFileList;
 class SceneObject;
+class SpriteSheetViewerWindow;
 class QtVariantPropertyManager;
 class QtProperty;
 
@@ -78,6 +79,8 @@ protected slots:
     bool SaveDocument( MapDocument *doc = NULL );
     bool SaveDocumentAs( MapDocument *doc = NULL );
     bool CloseDocument( MapDocument *doc = NULL, bool forceDiscard = false );
+
+    void ShowSpriteSheetViewer( bool show );
 
     // Update the status bar camera text to match the provided camera.
 	void CanvasCameraChanged( const Procyon::Camera2D* cam );
@@ -142,6 +145,9 @@ protected:
 
     // Aggregation of QUndoStacks of each open document
     QUndoGroup*     mUndoGroup;
+
+    // Holds the active SpriteSheetViewerWindow if open. Null otherwise.
+    SpriteSheetViewerWindow* mSpriteSheetWindow;
 };
 
 #endif /* _EDITOR_H */

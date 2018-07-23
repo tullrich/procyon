@@ -43,7 +43,7 @@
      <x>0</x>
      <y>0</y>
      <width>961</width>
-     <height>21</height>
+     <height>15</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -85,6 +85,7 @@
      <property name="title">
       <string>Windows</string>
      </property>
+     <addaction name="actionSpriteSheetViewer"/>
     </widget>
     <addaction name="actionReset"/>
     <addaction name="actionDisableGrid"/>
@@ -92,6 +93,7 @@
     <addaction name="separator"/>
     <addaction name="menuWindows"/>
     <addaction name="menuToolbars"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -171,6 +173,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionDisableGrid"/>
+   <addaction name="actionSpriteSheetViewer"/>
   </widget>
   <widget class="QDockWidget" name="dockLog">
    <property name="windowTitle">
@@ -400,6 +403,21 @@
   <action name="actionPreferences">
    <property name="text">
     <string>Preferences...</string>
+   </property>
+  </action>
+  <action name="actionSpriteSheetViewer">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="editor_resources.qrc">
+     <normaloff>:/resources/plus-button.png</normaloff>:/resources/plus-button.png</iconset>
+   </property>
+   <property name="text">
+    <string>Spritesheet Viewer</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Spritesheet Viewer</string>
    </property>
   </action>
  </widget>

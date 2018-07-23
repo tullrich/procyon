@@ -49,9 +49,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "RecentFileList.h"
 #include "PrefsDialog.h"
 #include "NewMapDialog.h"
-
-#include <thread>
-#include <chrono>
+#include "SpriteSheetViewerWindow.h"
 
 // in milliseconds
 #define PROCYON_MSG_TIMEOUT 4000
@@ -71,6 +69,7 @@ Editor::Editor( QWidget *parent )
     , mActiveDocument( nullptr )
     , mRecentFiles( nullptr )
     , mScrollArea( nullptr )
+    , mSpriteSheetWindow( nullptr )
 {
     mUi->setupUi( this );
 
@@ -135,9 +134,9 @@ Editor::Editor( QWidget *parent )
     connect( mUi->actionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
     connect( mUi->actionReset, SIGNAL( triggered() ), this, SLOT( ResetViewport() ) );
     connect( mUi->actionPreferences, SIGNAL( triggered() ), this, SLOT( OpenPreferences() ) );
+    connect( mUi->actionSpriteSheetViewer, SIGNAL( toggled(bool) ), this, SLOT( ShowSpriteSheetViewer(bool) ) );
 
     // Setup the grid show/hide action
-    mUi->actionDisableGrid->setCheckable( true );
     connect( mUi->actionDisableGrid, &QAction::toggled, []( bool checked ) {
         EditorSettings::Get().SetGridVisible( checked );
     } );
@@ -236,7 +235,7 @@ Procyon::TileId Editor::GetSelectedTileId() const
 {
 	if ( !mTileSetsView->currentItem() )
 		return 0;
-		
+
 	return (Procyon::TileId)mTileSetsView->currentRow();
 }
 
@@ -562,6 +561,24 @@ bool Editor::CloseDocument( MapDocument *doc /* = NULL */, bool forceDiscard /* 
 
     delete doc;
     return true;
+}
+
+void Editor::ShowSpriteSheetViewer( bool show )
+{
+    if ( !show && mSpriteSheetWindow )
+    {
+        mSpriteSheetWindow->close();
+        mSpriteSheetWindow = nullptr;
+    }
+    else if ( show && !mSpriteSheetWindow )
+    {
+        mSpriteSheetWindow = new SpriteSheetViewerWindow();
+        connect( mSpriteSheetWindow, &SpriteSheetViewerWindow::Close
+            , [=]() {
+                mUi->actionSpriteSheetViewer->setChecked( false );
+            });
+        mSpriteSheetWindow->show();
+    }
 }
 
 void Editor::CanvasCameraChanged( const Camera2D* cam )

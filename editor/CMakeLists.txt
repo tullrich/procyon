@@ -73,6 +73,10 @@ add_executable(Editor WIN32
 	NewMapDialog.cpp
 	NewMapDialog.h
 	MapDocumentCommands.h
+	SpriteSheetViewerWindow.cpp
+	SpriteSheetViewerWindow.h
+	SpriteSheetViewerCanvas.cpp
+	SpriteSheetViewerCanvas.h
 	editor_resources.qrc
 	${PROCYON_PLATFORM_SOURCES}
 )
