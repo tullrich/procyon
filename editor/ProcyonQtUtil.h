@@ -22,8 +22,8 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 ===========================================================================
 */
-#ifndef _PROCYON_QT_UTIL
-#define _PROCYON_QT_UTIL
+#ifndef _PROCYON_QT_UTIL_H
+#define _PROCYON_QT_UTIL_H
 
 #include "Platform/Window.h"
 
@@ -52,4 +52,4 @@ public:
 
 #include "ProcyonQtUtil.inl"
 
-#endif /* _PROCYON_QT_UTIL */
+#endif /* _PROCYON_QT_UTIL_H */
