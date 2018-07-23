@@ -46,7 +46,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 using namespace Procyon;
 
 ProcyonCanvas::ProcyonCanvas( QWidget* Parent, Editor* editor )
-	: QGLWidget(Parent)
+	: QGLWidget( Parent )
 	, mEditor( editor )
     , mRenderer( NULL )
     , mGhostTile( NULL )
@@ -61,14 +61,16 @@ ProcyonCanvas::ProcyonCanvas( QWidget* Parent, Editor* editor )
     // Receive all mouse events
     setMouseTracking( true );
 
-    // Enable msaa
+    // Disable vsync if supported
     QGLFormat fmt = QGLFormat::defaultFormat();
-    //fmt.setSamples( 4 );
-	fmt.setSwapInterval( 0 );
-	//fmt.setSwapBehavior( QGLFormat::DoubleBuffer );
-
+    if ( fmt.swapInterval() != -1 )
+    {
+        fmt.setSwapInterval( 0 );
+    }
+    //fmt.setSamples( 4 ); // Enable msaa
     setFormat( fmt );
 
+    // Init gl
 	glInit();
 }
 
