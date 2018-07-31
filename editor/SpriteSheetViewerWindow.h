@@ -34,11 +34,15 @@ namespace Ui {
 	class SpriteSheetViewerWindow;
 }
 
+namespace Procyon {
+    class Sprite;
+}
+
 class SpriteSheetViewerWindow : public QMainWindow
 {
 	Q_OBJECT
 public:
-	SpriteSheetViewerWindow( QWidget *parent = 0 );
+	SpriteSheetViewerWindow( QString spritePath, QWidget *parent = 0 );
 	virtual ~SpriteSheetViewerWindow();
 
 signals:
@@ -49,6 +53,9 @@ protected:
 
 	// Designer layout
     Ui::SpriteSheetViewerWindow* 	mUi;
+
+    // The sprite under edition
+    Procyon::Sprite* mSprite;
 };
 
 #endif /* _SPRITE_SHEET_VIEWER_WINDOW_H */

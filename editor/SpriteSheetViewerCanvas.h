@@ -45,7 +45,8 @@ class SpriteSheetViewerCanvas : public QGLWidget
 
 public:
 
-            SpriteSheetViewerCanvas( QWidget* Parent );
+            SpriteSheetViewerCanvas( QWidget* Parent, Procyon::Sprite* sprite
+                , QString texturePath );
     virtual ~SpriteSheetViewerCanvas();
 
 protected:
@@ -67,6 +68,12 @@ protected:
 
     // Last frame dt information used to compute this frames dt.
     Procyon::FrameTime  mLastDt;
+
+    // The sprite under edition
+    Procyon::Sprite*    mSprite;
+
+    // The texture to load
+    QString             mTexturePath;
 };
 
 #endif /* _SPRITE_SHEET_VIEWER_CANVAS_H */

@@ -20,7 +20,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="SpriteSheetViewerCanvas" name="Canvas" native="true">
+      <widget class="QWidget" name="canvasHolder" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
          <horstretch>6</horstretch>
@@ -31,7 +31,7 @@
       <widget class="QWidget" name="verticalLayoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QGroupBox" name="Controls">
+         <widget class="QGroupBox" name="controls">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>1</horstretch>
@@ -112,14 +112,6 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>SpriteSheetViewerCanvas</class>
-   <extends>QWidget</extends>
-   <header>SpriteSheetViewerCanvas.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -27,6 +27,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "SpriteSheetViewerCanvas.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/Sprite.h"
+#include "Graphics/Texture.h"
 #include "ProcyonQtUtil.h"
 #include "Platform/Window.h"
 #include "Graphics/Camera.h"
@@ -40,11 +41,13 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace Procyon;
 
-SpriteSheetViewerCanvas::SpriteSheetViewerCanvas( QWidget* Parent )
+SpriteSheetViewerCanvas::SpriteSheetViewerCanvas( QWidget* Parent, Procyon::Sprite* sprite, QString texturePath  )
 	: QGLWidget( Parent )
     , mRenderer( NULL )
     , mTimer( NULL )
     , mCamera( NULL )
+    , mSprite( sprite )
+    , mTexturePath( texturePath )
 {
     // Accepts both clicking and tabbing focus, enabling keyboard events.
     setFocusPolicy( Qt::StrongFocus );
@@ -78,7 +81,7 @@ void SpriteSheetViewerCanvas::initializeGL()
 
     // Create the renderer
     mRenderer   = new Renderer( NULL );
-	mRenderer->SetClearColor( glm::vec4(0.0f, 0.0f, 121.0f/255.0f, 1.0f ) );
+	mRenderer->SetClearColor( glm::vec4(49.0f/255.0f, 77.0f/255.0f, 121.0f/255.0f, 1.0f ) );
 
     // Setup the viewport camera
     mCamera     = new Camera2D();
@@ -90,6 +93,14 @@ void SpriteSheetViewerCanvas::initializeGL()
     // Start the DeltaTime tracker
     connect(mTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
     mTimer->start( 1000 / 60 );
+
+    // Load the sprite texture
+    Texture* texture = Texture::Allocate( mTexturePath.toUtf8().constData() );
+    if ( texture )
+    {
+        mSprite->SetTexture( texture );
+        mSprite->SetScale( glm::vec2( 20.0f ) );
+    }
 }
 
 void SpriteSheetViewerCanvas::paintGL()
@@ -109,6 +120,8 @@ void SpriteSheetViewerCanvas::paintGL()
     mRenderer->BeginRender();
     {
         mRenderer->ResetCameras( *mCamera );
+
+        mRenderer->Draw( mSprite );
     }
     mRenderer->EndRender();
 }
