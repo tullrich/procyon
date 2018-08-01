@@ -47,17 +47,15 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #define PLAYER_ARIAL_ACCELERATION (PLAYER_DEFAULT_SPEED*4.5f)
 
 namespace Procyon {
-
 	class Renderable;
 	class Renderer;
+    class AnimatedSprite;
 	class World;
 	class Tile;
 	class Contact;
 	class Sound;
 	class Text;
 }
-
-class AnimatedSprite;
 
 class Player
 {
@@ -85,15 +83,15 @@ protected:
 
 	void 				CollisionResponse( const Procyon::Contact& c, Procyon::FrameTime ft );
 
-	Procyon::World* 	mWorld;
-	Procyon::Aabb		mBounds;
-	glm::vec2			mInput;
-	glm::vec2 			mVelocity;
-	AnimatedSprite* 	mSprite;
-	glm::vec2 			mPenetrationCorrection;
-	Procyon::Sound*		mJumpSnd;
-	Procyon::Text*		mPlayerText;
-	bool				mGrounded;
+	Procyon::World* 	     mWorld;
+	Procyon::Aabb		     mBounds;
+	glm::vec2	             mInput;
+	glm::vec2 			     mVelocity;
+	Procyon::AnimatedSprite* mSprite;
+	glm::vec2 			     mPenetrationCorrection;
+	Procyon::Sound*		     mJumpSnd;
+	Procyon::Text*		     mPlayerText;
+	bool				     mGrounded;
 };
 
 #endif /* _PLAYER_H */

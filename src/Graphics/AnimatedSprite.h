@@ -31,19 +31,19 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 namespace Procyon
 {
 	class Texture;
-}
 
-class AnimatedSprite : public Procyon::Sprite
-{
-public:
-    AnimatedSprite( Procyon::Texture* texture );
+    class AnimatedSprite : public Procyon::Sprite
+    {
+    public:
+        AnimatedSprite( Procyon::Texture* texture );
 
-    void Process( Procyon::FrameTime t );
-	void Play();
-	void Stop();
-protected:
-	float               mLifespan;
-	bool				mPlaying;
-};
+        void Process( Procyon::FrameTime t );
+    	void Play();
+    	void Stop();
+    protected:
+    	float               mLifespan;
+    	bool				mPlaying;
+    };
+} /* namespace Procyon */
 
 #endif /* _ANIMATED_SPRITE_H */

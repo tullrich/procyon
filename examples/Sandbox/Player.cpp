@@ -23,6 +23,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================
 */
 #include "Graphics/Sprite.h"
+#include "Graphics/AnimatedSprite.h"
 #include "Graphics/Text.h"
 #include "Graphics/Renderer.h"
 #include "Collision/World.h"
@@ -30,7 +31,6 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 #include "Audio/Sound.h"
 #include "Player.h"
 #include "SandboxAssets.h"
-#include "AnimatedSprite.h"
 
 using namespace Procyon;
 

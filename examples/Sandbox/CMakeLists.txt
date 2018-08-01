@@ -12,8 +12,6 @@ add_executable( Sandbox
 	Sandbox.cpp
 	Player.h
 	Player.cpp
-	AnimatedSprite.h
-	AnimatedSprite.cpp
 	SandboxAssets.h
 	SandboxAssets.cpp
 	XmlMap.h
