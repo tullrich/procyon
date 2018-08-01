@@ -33,7 +33,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 namespace Procyon {
 	class Camera2D;
     class Renderer;
-    class Sprite;
+    class AnimatedSprite;
     class World;
 }
 class MapDocument;
@@ -45,7 +45,7 @@ class SpriteSheetViewerCanvas : public QGLWidget
 
 public:
 
-            SpriteSheetViewerCanvas( QWidget* Parent, Procyon::Sprite* sprite
+            SpriteSheetViewerCanvas( QWidget* Parent, Procyon::AnimatedSprite* sprite
                 , QString texturePath );
     virtual ~SpriteSheetViewerCanvas();
 
@@ -70,7 +70,7 @@ protected:
     Procyon::FrameTime  mLastDt;
 
     // The sprite under edition
-    Procyon::Sprite*    mSprite;
+    Procyon::AnimatedSprite*    mSprite;
 
     // The texture to load
     QString             mTexturePath;

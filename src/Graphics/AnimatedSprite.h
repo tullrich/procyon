@@ -35,6 +35,7 @@ namespace Procyon
     class AnimatedSprite : public Procyon::Sprite
     {
     public:
+		AnimatedSprite();
         AnimatedSprite( Procyon::Texture* texture );
 
         void Process( Procyon::FrameTime t );

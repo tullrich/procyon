@@ -26,7 +26,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SpriteSheetViewerCanvas.h"
 #include "Graphics/Renderer.h"
-#include "Graphics/Sprite.h"
+#include "Graphics/AnimatedSprite.h"
 #include "Graphics/Texture.h"
 #include "ProcyonQtUtil.h"
 #include "Platform/Window.h"
@@ -41,7 +41,7 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace Procyon;
 
-SpriteSheetViewerCanvas::SpriteSheetViewerCanvas( QWidget* Parent, Procyon::Sprite* sprite, QString texturePath  )
+SpriteSheetViewerCanvas::SpriteSheetViewerCanvas( QWidget* Parent, Procyon::AnimatedSprite* sprite, QString texturePath  )
 	: QGLWidget( Parent )
     , mRenderer( NULL )
     , mTimer( NULL )
@@ -99,7 +99,7 @@ void SpriteSheetViewerCanvas::initializeGL()
     if ( texture )
     {
         mSprite->SetTexture( texture );
-        mSprite->SetScale( glm::vec2( 20.0f ) );
+        mSprite->SetScale( glm::vec2( 4.0f ) );
     }
 }
 
@@ -112,6 +112,8 @@ void SpriteSheetViewerCanvas::paintGL()
         elapsedSecs
     };
     mLastDt = ft;
+
+    mSprite->Process( ft );
 
     // Enable some required gl settings
 	glViewport( 0, 0, mCamera->GetWidth(), mCamera->GetHeight() );

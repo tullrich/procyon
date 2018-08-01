@@ -35,7 +35,7 @@ namespace Ui {
 }
 
 namespace Procyon {
-    class Sprite;
+    class AnimatedSprite;
 }
 
 class SpriteSheetViewerWindow : public QMainWindow
@@ -55,7 +55,7 @@ protected:
     Ui::SpriteSheetViewerWindow* 	mUi;
 
     // The sprite under edition
-    Procyon::Sprite* mSprite;
+    Procyon::AnimatedSprite* mSprite;
 };
 
 #endif /* _SPRITE_SHEET_VIEWER_WINDOW_H */

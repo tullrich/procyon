@@ -28,6 +28,12 @@ along with Procyon.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace Procyon;
 
+AnimatedSprite::AnimatedSprite()
+    : mLifespan( 0.0f )
+	, mPlaying( false )
+{
+}
+
 AnimatedSprite::AnimatedSprite( Texture* texture )
     : Sprite( texture )
     , mLifespan( 0.0f )
