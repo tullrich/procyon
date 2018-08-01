@@ -572,7 +572,7 @@ void Editor::ShowSpriteSheetViewer( bool show )
     }
     else if ( show && !mSpriteSheetWindow )
     {
-        mSpriteSheetWindow = new SpriteSheetViewerWindow( "sprites/tile.png" );
+        mSpriteSheetWindow = new SpriteSheetViewerWindow( "sprites/Raccoon_Spritesheet.png" );
         connect( mSpriteSheetWindow, &SpriteSheetViewerWindow::Close
             , [=]() {
                 mUi->actionSpriteSheetViewer->setChecked( false );
